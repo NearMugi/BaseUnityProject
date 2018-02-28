@@ -16,9 +16,13 @@ public class Interface : MonoBehaviour {
     Text txtDispDebug;
     StringBuilder sb;
 
+    [SerializeField]
+    GameObject Button;
+
     // Use this for initialization
     void Start () {
         sb = new StringBuilder();
+        btn_isTarget();
     }
 	
 	// Update is called once per frame
@@ -39,6 +43,28 @@ public class Interface : MonoBehaviour {
     public void btn_MoveToMainEvent()
     {
         sceneManage.Instance.chgScene(sceneManage_Name.SCENE_NAME.MAINEVENT);
+    }
+    /// <summary>
+    /// ボタン名の記載されていないボタンは無効にする
+    /// </summary>
+    void btn_isTarget()
+    {
+        GameObject _c = null;
+        bool sw;
+        foreach (Transform child in Button.transform)
+        {
+            sw = false;
+            _c = child.Find("Text").gameObject;
+            if(_c != null)
+            {
+                Debug.LogWarning(child.name + "  " + _c.name);
+                if (_c.GetComponent<Text>().text.Length != 0 )
+                {
+                    sw = true;
+                }
+            }
+            if (!sw) child.GetComponent<Button>().interactable = false;
+        }
     }
 
     void createDispDebugList()
