@@ -1,0 +1,26 @@
+fileFormatVersion: 2
+guid: b328a6ef8f5ce1a4ebda2883acd32abb
+timeCreated: 1509616464
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Gen Shin Gothic
+  fontNames:
+  - Gen Shin Gothic
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 0ca8af205bf78fa42b2511236fea9b25, type: 3}
+  - {fileID: 12800000, guid: b1d04b819a1c4974b92b5db034ef4f21, type: 3}
+  - {fileID: 12800000, guid: 9181d564b0a6788439a404022984b2bf, type: 3}
+  - {fileID: 12800000, guid: 62c6eb4b169b31d4cb26f76331642ad9, type: 3}
+  - {fileID: 12800000, guid: 00c5b3ef390e2204fad30a8bedfba3cc, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
