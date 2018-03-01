@@ -29,11 +29,51 @@ public class SerialConnect_Arduino : MonoBehaviour {
 
     #endregion Singleton
 
-    const string endPoint = "\t";
-    const string splitPoint = ",";
 
-    string stockdata;   //受信したデータを保存する変数
+    /// <summary>
+    /// Arduinoと紐づくSerialHandler.serial_unit
+    /// </summary>
+    SerialHandler.serial_unit _serial;
+    Coroutine NowCoroutine;
+    [SerializeField]
+    int SerialListNo;   //SerialHandlerのリストと紐づく
 
+    const byte endPoint = 0x09; //"\t"
+    const byte splitPoint = 0x2c; //","
+
+    //Arduinoからの１バイトデータ
+    [Flags]
+    public enum ReceiveCmd
+    {
+        flg_7 = 1 << 7,//
+        flg_6 = 1 << 6,//
+        flg_5 = 1 << 5,//
+        flg_4 = 1 << 4,//
+        flg_3 = 1 << 3,//
+        flg_2 = 1 << 2,//
+        flg_1 = 1 << 1,//
+        flg_0 = 1,               //常にTrue
+    };
+    const int MAX_GETDATA_SIZE = 10;
+    [HideInInspector]
+    public ReceiveCmd[] GetData = new ReceiveCmd[MAX_GETDATA_SIZE];
+
+
+    public string DebugList()
+    {
+        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+        sb.Append("--- CONNECT ARDUINO INFO ---");
+        sb.Append("\n");
+        sb.Append("[GetData]");
+        sb.Append("\n");
+        foreach (ReceiveCmd cmd in GetData)
+        {
+            sb.Append(cmd);
+            sb.Append("\n");
+        }
+
+        return sb.ToString();
+    }
 
     void DebugMsg(string head, string _s)
     {
@@ -51,56 +91,84 @@ public class SerialConnect_Arduino : MonoBehaviour {
         Debug.LogWarning(msg);
     }
 
-    public void Connect()
+    private void Start()
     {
-        SerialHandler_Arduino.Instance.OnDataReceived -= OnDataReceived;
-        //USBの切断・接続
-        SerialHandler_Arduino.Instance.ReConnect();
-        //信号を受信したときに、そのメッセージの処理を行う
-        SerialHandler_Arduino.Instance.OnDataReceived += OnDataReceived;
+        Connect();
     }
 
+    public void Connect()
+    {
+        if (NowCoroutine != null) StopCoroutine(NowCoroutine);
+        NowCoroutine = StartCoroutine(ConnectCoroutine());
+    }
+
+    public IEnumerator ConnectCoroutine()
+    {
+        var wait = new WaitForSeconds(0.1f);
+        yield return wait;
+
+        _serial = SerialHandler.Instance.PortList[SerialListNo];   //SerialHandlerのリストと紐づく
+
+        //USBの切断
+        _serial.Close();
+        _serial.OnDataReceived -= OnDataReceived;
+        yield return wait;
+
+
+        //USBの接続
+        _serial.Open();
+        _serial.OnDataReceived += OnDataReceived;
+
+        yield break;
+
+    }
 
     public void DataSend(string _s)
     {
         string _send = _s + endPoint;
         //DebugMsg("[DataSend] SendData ", _send);
-        SerialHandler_Arduino.Instance.Write(_send);
+        _serial.Write(_send);
     }
 
 
     //受信した信号(message)に対する処理
-    void OnDataReceived(string message)
+    void OnDataReceived(string[] message)
     {
-        //今回はArduinoの状態だけを取得するので、
-        //一番最後のendPointを見つけてその前の１バイトだけを使う。
-        //あとは全て捨てる。
-
-        //DebugMsg("[OnDataReceived] message       ", message);
-        stockdata += message;
-        //DebugMsg("[OnDataReceived] stockdata_bef ", stockdata);
-
-        int _pos = stockdata.LastIndexOf(endPoint); //末尾から探す
-        //Debug.LogWarning("[OnDataReceived] _pos{" + _pos +"}");
-        if (_pos > 0)
+        string joinMsg = string.Empty;
+        foreach(string _t in message)
         {
-            try
-            {
-                byte[] _tmp = System.Text.Encoding.ASCII.GetBytes(stockdata);
-                SerialConnect_Arduino_Air.Instance.GetData = (SerialConnect_Arduino_Air.ReceiveCmd)_tmp[_pos - 1];
-                //Debug.LogWarning("[SerialConnect_Valve] GetData " + GetData + "  <-  Hex:" + Convert.ToString(_tmp[_pos - 1], 16));
-            }
-            catch (System.Exception e)
-            {
-                Debug.LogWarning(e.Message);
-            }
-
-            stockdata = string.Empty;
+            joinMsg += _t;
         }
 
-        //DebugMsg("[OnDataReceived] stockdata_aft ", stockdata);
+        GetData = new ReceiveCmd[MAX_GETDATA_SIZE];
 
+        byte[] _tmp = System.Text.Encoding.ASCII.GetBytes(joinMsg);
+        byte data = 0x00;
+        int i = 0;
+        //1バイトのデータを取得する前提
+        foreach(byte _b in _tmp)
+        {
+            switch (_b)
+            {
+                case 0x00:  //要らないデータを除去
+                    break;
+                case 0xFF:  //要らないデータを除去
+                    break;
+                case endPoint:  //区切り文字
+                    GetData[i++] = (ReceiveCmd)data; 
+                    break;
+                case splitPoint:  //区切り文字
+                    GetData[i++] = (ReceiveCmd)data;
+                    break;
 
+                default:
+                    data = _b;
+                    break;
+
+            }
+            if (i >= MAX_GETDATA_SIZE) break;
+        }
+        
     }
 
 

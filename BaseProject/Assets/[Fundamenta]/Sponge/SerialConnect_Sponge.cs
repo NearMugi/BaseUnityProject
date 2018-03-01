@@ -36,6 +36,8 @@ public class SerialConnect_Sponge : MonoBehaviour {
     /// スポンジセンサーと紐づくSerialHandler.serial_unit
     /// </summary>
     SerialHandler.serial_unit _serial;
+    [SerializeField]
+    int SerialListNo;   //SerialHandlerのリストと紐づく
 
     [SerializeField]
     int Def_SensorCnt;         //基準値　使用するセンサーの個数(個)
@@ -245,8 +247,8 @@ public class SerialConnect_Sponge : MonoBehaviour {
 
     // Use this for initialization
     void Start() {
-        _serial = SerialHandler.Instance.PortList[0];   //SerialHandlerのゼロ番目がスポンジ
-        
+        _serial = SerialHandler.Instance.PortList[SerialListNo];   ///SerialHandlerのリストと紐づく
+
         Now_Mode = MODE.TURMINAL;
         Bef_Mode = MODE.TURMINAL;
 
