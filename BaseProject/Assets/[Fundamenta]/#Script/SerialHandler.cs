@@ -150,7 +150,7 @@ public class SerialHandler : MonoBehaviour {
             }
             isNewMessageReceived_ = false;
         }
-
+        
         private void Read()
         {
             while (isRunning_ && serialPort_ != null && serialPort_.IsOpen)
@@ -163,7 +163,7 @@ public class SerialHandler : MonoBehaviour {
                     readCnt++;
                     isNewMessageReceived_ = true;
                 }
-                catch (System.Exception ex)
+                catch (System.Exception)
                 {
                     //errMsg = "[Read]" + ex.Message;
                     //Debug.LogWarning("[SerialHandler][Read] ErrMessage " + ex.Message);
