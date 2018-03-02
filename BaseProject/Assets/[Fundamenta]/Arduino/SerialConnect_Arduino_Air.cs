@@ -28,7 +28,34 @@ public class SerialConnect_Arduino_Air : MonoBehaviour {
     }
 
     #endregion Singleton
-    
+
+    /// <summary>
+    /// Arduinoと紐づくSerialHandler.serial_unit
+    /// </summary>
+    SerialHandler.serial_unit _serial;
+    Coroutine NowCoroutine;
+
+    const byte endPoint = 0x09; //"\t"
+    const byte splitPoint = 0x2c; //","
+
+    //Arduinoからの１バイトデータ
+    [Flags]
+    public enum ReceiveCmd
+    {
+        flg_7 = 1 << 7,//
+        flg_6 = 1 << 6,//
+        ONE_LOOP_END = 1 << 5,//
+        VALVE_OPEN = 1 << 4,     //電磁弁の開閉
+        PUMP_PLAY = 1 << 3,      //ポンプON
+        VALVE_PLAY = 1 << 2,     //電磁弁ON
+        flg_1 = 1 << 1,   //
+        flg_0 = 1,               //常にTrue
+    };
+    const int MAX_GETDATA_SIZE = 5;
+    [HideInInspector]
+    public ReceiveCmd[] GetData = new ReceiveCmd[MAX_GETDATA_SIZE];
+
+
     [SerializeField]
     float Def_OneTime; //基準値　1サイクルの時間(ms)
     [SerializeField]
@@ -45,9 +72,7 @@ public class SerialConnect_Arduino_Air : MonoBehaviour {
 
     const int CYCLECNT_MIN = 1;   //1サイクルを実行する回数
     const int CYCLECNT_MAX = 2000;
-
-    Coroutine NowCoroutine;
-
+    
     //コマンドの定義
     public enum CMD_TYPE
     {
@@ -80,22 +105,7 @@ public class SerialConnect_Arduino_Air : MonoBehaviour {
     
     bool isConnect;
 
-    //Arduinoからの１バイトデータ
-    [Flags]
-    public enum ReceiveCmd
-    {
-        flg_7 = 1 << 7,//
-        flg_6 = 1 << 6,//
-        ONE_LOOP_END = 1 << 5,//
-        VALVE_OPEN = 1 << 4,     //電磁弁の開閉
-        PUMP_PLAY = 1 << 3,      //ポンプON
-        VALVE_PLAY = 1 << 2,     //電磁弁ON
-        flg_1= 1 << 1,   //
-        flg_0 = 1,               //常にTrue
-    };
 
-    [HideInInspector]
-    public ReceiveCmd GetData;
 
 
     public string DebugList()
@@ -105,11 +115,39 @@ public class SerialConnect_Arduino_Air : MonoBehaviour {
         sb.Append("\n");
         sb.Append("[Connect]");
         sb.Append(isConnect);
-        sb.Append("[Data]");
-        sb.Append(GetData);
         sb.Append("\n");
+        sb.Append("[GetData]");
+        sb.Append("\n");
+        foreach (ReceiveCmd cmd in GetData)
+        {
+            sb.Append(cmd);
+            sb.Append("\n");
+        }
 
         return sb.ToString();
+    }
+
+    /// <summary>
+    /// 受信データからフラグが立っているか探す
+    /// </summary>
+    /// <returns></returns>
+    private bool chkFlg(ReceiveCmd findFlg)
+    {
+        bool sw = false;
+
+        foreach(ReceiveCmd _cmd in GetData)
+        {
+            if (findFlg == (_cmd & findFlg))
+            {
+                sw = true;
+                break;
+            }
+        }
+
+
+
+
+        return sw;
     }
 
     /// <summary>
@@ -198,7 +236,7 @@ public class SerialConnect_Arduino_Air : MonoBehaviour {
         if (sendCmd.Length == CmdLength)
         {
             //Debug.LogWarning("SetSendCmd:" + sendCmd);
-            SerialConnect_Arduino.Instance.DataSend(sendCmd);
+            DataSend(sendCmd);
         }
     }
 
@@ -243,35 +281,58 @@ public class SerialConnect_Arduino_Air : MonoBehaviour {
                 break;
         }
         //Debug.LogWarning("[sendCmd] " + sendCmd);
-        if (sendCmd.Length == CmdLength) SerialConnect_Arduino.Instance.DataSend(sendCmd);
+        if (sendCmd.Length == CmdLength) DataSend(sendCmd);
     }
     
+
+    private void Start()
+    {
+        Connect();
+    }
+
+    public void Connect()
+    {
+        if (NowCoroutine != null) StopCoroutine(NowCoroutine);
+        NowCoroutine = StartCoroutine(ConnectCoroutine());
+    }
+
     public IEnumerator ConnectCoroutine()
     {
-        var wait = new WaitForSeconds(0.5f);
+        var wait = new WaitForSeconds(0.1f);
         isConnect = false;
-        yield return null;
-
-        SerialConnect_Arduino.Instance.Connect();
         yield return wait;
+
+        SerialPortName _sp = GetComponent<SerialPortName>();
+        if (_sp == null) yield break;
+        _serial = SerialHandler.Instance.PortList[_sp.SerialListNo];   //SerialHandlerのリストと紐づく
+
+        //USBの切断
+        _serial.Close();
+        _serial.OnDataReceived -= OnDataReceived;
+        yield return wait;
+
+
+        //USBの接続
+        _serial.Open();
+        _serial.OnDataReceived += OnDataReceived;
 
 
         //電磁弁・ポンプを止める
         //電磁弁を停止させる
-        bool isPlay = ReceiveCmd.VALVE_PLAY == (GetData & ReceiveCmd.VALVE_PLAY);
+        bool isPlay = chkFlg(ReceiveCmd.VALVE_PLAY);
         while (isPlay)
         {
             SetSendCmd(CMD_TYPE.VALVE, false);
-            isPlay = ReceiveCmd.VALVE_PLAY == (GetData & ReceiveCmd.VALVE_PLAY);
+            isPlay = chkFlg(ReceiveCmd.VALVE_PLAY);
             yield return wait;
         }
 
         //ポンプを停止させる
-        isPlay = ReceiveCmd.PUMP_PLAY == (GetData & ReceiveCmd.PUMP_PLAY);
+        isPlay = chkFlg(ReceiveCmd.PUMP_PLAY);
         while (isPlay)
         {
             SetSendCmd(CMD_TYPE.PUMP, false);
-            isPlay = ReceiveCmd.PUMP_PLAY == (GetData & ReceiveCmd.PUMP_PLAY);
+            isPlay = chkFlg(ReceiveCmd.PUMP_PLAY);
             yield return wait;
         }
 
@@ -280,15 +341,53 @@ public class SerialConnect_Arduino_Air : MonoBehaviour {
 
     }
 
-
-    // Use this for initialization
-    void Start() {
-        isConnect = false;
-
-        if (NowCoroutine != null) StopCoroutine(NowCoroutine);
-        NowCoroutine = StartCoroutine(ConnectCoroutine());
+    public void DataSend(string _s)
+    {
+        string _send = _s + endPoint;
+        //DebugMsg("[DataSend] SendData ", _send);
+        _serial.Write(_send);
     }
 
+
+    //受信した信号(message)に対する処理
+    void OnDataReceived(string[] message)
+    {
+        string joinMsg = string.Empty;
+        foreach (string _t in message)
+        {
+            joinMsg += _t;
+        }
+
+        GetData = new ReceiveCmd[MAX_GETDATA_SIZE];
+
+        byte[] _tmp = System.Text.Encoding.ASCII.GetBytes(joinMsg);
+        byte data = 0x00;
+        int i = 0;
+        //1バイトのデータを取得する前提
+        foreach (byte _b in _tmp)
+        {
+            switch (_b)
+            {
+                case 0x00:  //要らないデータを除去
+                    break;
+                case 0xFF:  //要らないデータを除去
+                    break;
+                case endPoint:  //区切り文字
+                    GetData[i++] = (ReceiveCmd)data;
+                    break;
+                case splitPoint:  //区切り文字
+                    GetData[i++] = (ReceiveCmd)data;
+                    break;
+
+                default:
+                    data = _b;
+                    break;
+
+            }
+            if (i >= MAX_GETDATA_SIZE) break;
+        }
+
+    }
 
     private void Update()
     {
@@ -523,10 +622,10 @@ public class SerialConnect_Arduino_Air : MonoBehaviour {
         //※コマンドの送信は1回だけにする。2回以上送ると電磁弁がON状態になってしまう…
         chkData();
         SetSendCmd(CMD_TYPE.VALVE, true);
-        bool isPlay = ReceiveCmd.VALVE_PLAY == (GetData & ReceiveCmd.VALVE_PLAY);
+        bool isPlay = chkFlg(ReceiveCmd.VALVE_PLAY);
         while (!isPlay)
         {
-            isPlay = ReceiveCmd.VALVE_PLAY == (GetData & ReceiveCmd.VALVE_PLAY);
+            isPlay = chkFlg(ReceiveCmd.VALVE_PLAY);
             yield return t;
         }
         callback("PlayValveCoroutine");
@@ -538,10 +637,10 @@ public class SerialConnect_Arduino_Air : MonoBehaviour {
 
         //ポンプを可動させる
         SetSendCmd(CMD_TYPE.PUMP, true);
-        bool isPlay = ReceiveCmd.PUMP_PLAY == (GetData & ReceiveCmd.PUMP_PLAY);
+        bool isPlay = chkFlg(ReceiveCmd.VALVE_PLAY);
         while (!isPlay)
         {
-            isPlay = ReceiveCmd.PUMP_PLAY == (GetData & ReceiveCmd.PUMP_PLAY);
+            isPlay = chkFlg(ReceiveCmd.VALVE_PLAY);
             yield return t;
         }
         callback("PlayPumpCoroutine");
@@ -555,10 +654,10 @@ public class SerialConnect_Arduino_Air : MonoBehaviour {
 
         //ポンプを可動させる
         SetSendCmd(CMD_TYPE.PUMP, true);
-        bool isPlay = ReceiveCmd.PUMP_PLAY == (GetData & ReceiveCmd.PUMP_PLAY);
+        bool isPlay = chkFlg(ReceiveCmd.PUMP_PLAY);
         while (!isPlay)
         {
-            isPlay = ReceiveCmd.PUMP_PLAY == (GetData & ReceiveCmd.PUMP_PLAY);
+            isPlay = chkFlg(ReceiveCmd.PUMP_PLAY);
             yield return t;
         }
 
@@ -570,19 +669,19 @@ public class SerialConnect_Arduino_Air : MonoBehaviour {
         //電磁弁を可動させる
         chkData();
         SetSendCmd(CMD_TYPE.VALVE, true);
-        isPlay = ReceiveCmd.VALVE_PLAY == (GetData & ReceiveCmd.VALVE_PLAY);
+        isPlay = chkFlg(ReceiveCmd.VALVE_PLAY);
         while (!isPlay)
         {
-            isPlay = ReceiveCmd.VALVE_PLAY == (GetData & ReceiveCmd.VALVE_PLAY);
+            isPlay = chkFlg(ReceiveCmd.VALVE_PLAY);
             yield return t;
         }
 
 
         //電磁弁が止まるまで待つ
-        isPlay = ReceiveCmd.VALVE_PLAY == (GetData & ReceiveCmd.VALVE_PLAY);
+        isPlay = chkFlg(ReceiveCmd.VALVE_PLAY);
         while (isPlay)
         {
-            isPlay = ReceiveCmd.VALVE_PLAY == (GetData & ReceiveCmd.VALVE_PLAY);
+            isPlay = chkFlg(ReceiveCmd.VALVE_PLAY);
             yield return null;
         }
         //ポンプを止める
@@ -598,11 +697,11 @@ public class SerialConnect_Arduino_Air : MonoBehaviour {
         WaitForSeconds t = new WaitForSeconds(0.001f);
 
         //ポンプを停止させる
-        bool isPlay = ReceiveCmd.PUMP_PLAY == (GetData & ReceiveCmd.PUMP_PLAY);
+        bool isPlay = chkFlg(ReceiveCmd.PUMP_PLAY);
         while (isPlay)
         {
             SetSendCmd(CMD_TYPE.PUMP, false);
-            isPlay = ReceiveCmd.PUMP_PLAY == (GetData & ReceiveCmd.PUMP_PLAY);
+            isPlay = chkFlg(ReceiveCmd.PUMP_PLAY);
             yield return t;
         }
 
@@ -615,20 +714,20 @@ public class SerialConnect_Arduino_Air : MonoBehaviour {
         WaitForSeconds t = new WaitForSeconds(0.001f);
 
         //電磁弁を停止させる
-        bool isPlay = ReceiveCmd.VALVE_PLAY == (GetData & ReceiveCmd.VALVE_PLAY);
+        bool isPlay = chkFlg(ReceiveCmd.VALVE_PLAY);
         while (isPlay)
         {
             SetSendCmd(CMD_TYPE.VALVE, false);
-            isPlay = ReceiveCmd.VALVE_PLAY == (GetData & ReceiveCmd.VALVE_PLAY);
+            isPlay = chkFlg(ReceiveCmd.VALVE_PLAY);
             yield return t;
         }
 
         //ポンプを停止させる
-        isPlay = ReceiveCmd.PUMP_PLAY == (GetData & ReceiveCmd.PUMP_PLAY);
+        isPlay = chkFlg(ReceiveCmd.PUMP_PLAY);
         while (isPlay)
         {
             SetSendCmd(CMD_TYPE.PUMP, false);
-            isPlay = ReceiveCmd.PUMP_PLAY == (GetData & ReceiveCmd.PUMP_PLAY);
+            isPlay = chkFlg(ReceiveCmd.PUMP_PLAY);
             yield return t;
         }
 

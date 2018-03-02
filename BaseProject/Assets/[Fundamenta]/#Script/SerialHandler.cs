@@ -29,10 +29,8 @@ public class SerialHandler : MonoBehaviour {
 
     #endregion Singleton
 
-    [SerializeField]
     public List<serial_unit> PortList;
 
-    [System.Serializable]
     public class serial_unit
     {
         public delegate void SerialDataReceivedEventHandler(string[] message);
@@ -194,7 +192,7 @@ public class SerialHandler : MonoBehaviour {
         {
             return serialPort_.IsOpen;
         }
-        
+
     }
 
     public serial_unit GetPortListData(string _portName)
@@ -232,8 +230,38 @@ public class SerialHandler : MonoBehaviour {
         return sb.ToString();
     }
 
+    /// <summary>
+    /// 使用するシリアルポートを設定する
+    /// <para>親子関係になっている前提</para>
+    /// </summary>
+    void SetUpSerialPort()
+    {
+        PortList = new List<serial_unit>();
+
+        int no = 0;
+        serial_unit _unit;
+        //子供を探してリストを追加する
+        foreach (Transform child in transform)
+        {
+            SerialPortName _sp = child.GetComponent<SerialPortName>();
+            if (_sp != null)
+            {
+                _unit = new serial_unit();
+                _unit.UserName = _sp.UserName;
+                _unit.portName = _sp.portName;
+                _unit.baudRate = _sp.baudRate;
+                PortList.Add(_unit);
+
+                _sp.SerialListNo = no++;
+            }
+        }
+    }
+
     void Awake()
     {
+        SetUpSerialPort();
+
+        if (PortList.Count <= 0) return;
         foreach (serial_unit _serial in PortList)
         {
             _serial.err = 0;
@@ -244,6 +272,7 @@ public class SerialHandler : MonoBehaviour {
 
     void Update()
     {
+        if (PortList.Count <= 0) return;
         foreach (serial_unit _serial in PortList)
         {
             _serial.chkReadMessage();
@@ -253,6 +282,7 @@ public class SerialHandler : MonoBehaviour {
 
     void OnDestroy()
     {
+        if (PortList.Count <= 0) return;
         foreach (serial_unit _serial in PortList)
         {
             _serial.Close();          

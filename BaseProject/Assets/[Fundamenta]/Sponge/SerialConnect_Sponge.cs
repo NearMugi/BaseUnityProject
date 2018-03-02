@@ -36,9 +36,7 @@ public class SerialConnect_Sponge : MonoBehaviour {
     /// スポンジセンサーと紐づくSerialHandler.serial_unit
     /// </summary>
     SerialHandler.serial_unit _serial;
-    [SerializeField]
-    int SerialListNo;   //SerialHandlerのリストと紐づく
-
+    
     [SerializeField]
     int Def_SensorCnt;         //基準値　使用するセンサーの個数(個)
     [SerializeField]
@@ -247,8 +245,11 @@ public class SerialConnect_Sponge : MonoBehaviour {
 
     // Use this for initialization
     void Start() {
-        _serial = SerialHandler.Instance.PortList[SerialListNo];   ///SerialHandlerのリストと紐づく
+        Connect();
+    }
 
+    public void Connect()
+    {
         Now_Mode = MODE.TURMINAL;
         Bef_Mode = MODE.TURMINAL;
 
@@ -256,7 +257,7 @@ public class SerialConnect_Sponge : MonoBehaviour {
         StartCoroutine(ConnectCoroutine());
     }
 
-    public IEnumerator ConnectCoroutine()
+    private IEnumerator ConnectCoroutine()
     {
         flg_TimeOver = false;
         timeOver = 0.0f;
@@ -268,7 +269,11 @@ public class SerialConnect_Sponge : MonoBehaviour {
 
         if (NowCoroutine != null) StopCoroutine(NowCoroutine);
         yield return null;
-        
+
+        SerialPortName _sp = GetComponent<SerialPortName>();
+        if (_sp == null) yield break;
+        _serial = SerialHandler.Instance.PortList[_sp.SerialListNo];   //SerialHandlerのリストと紐づく
+
         //USBの切断
         _serial.Close();
         yield return wait;

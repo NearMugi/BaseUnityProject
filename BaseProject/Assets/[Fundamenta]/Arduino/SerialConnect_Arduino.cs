@@ -35,8 +35,6 @@ public class SerialConnect_Arduino : MonoBehaviour {
     /// </summary>
     SerialHandler.serial_unit _serial;
     Coroutine NowCoroutine;
-    [SerializeField]
-    int SerialListNo;   //SerialHandlerのリストと紐づく
 
     const byte endPoint = 0x09; //"\t"
     const byte splitPoint = 0x2c; //","
@@ -54,7 +52,7 @@ public class SerialConnect_Arduino : MonoBehaviour {
         flg_1 = 1 << 1,//
         flg_0 = 1,               //常にTrue
     };
-    const int MAX_GETDATA_SIZE = 10;
+    const int MAX_GETDATA_SIZE = 5;
     [HideInInspector]
     public ReceiveCmd[] GetData = new ReceiveCmd[MAX_GETDATA_SIZE];
 
@@ -102,12 +100,14 @@ public class SerialConnect_Arduino : MonoBehaviour {
         NowCoroutine = StartCoroutine(ConnectCoroutine());
     }
 
-    public IEnumerator ConnectCoroutine()
+    private IEnumerator ConnectCoroutine()
     {
         var wait = new WaitForSeconds(0.1f);
         yield return wait;
 
-        _serial = SerialHandler.Instance.PortList[SerialListNo];   //SerialHandlerのリストと紐づく
+        SerialPortName _sp = GetComponent<SerialPortName>();
+        if (_sp == null) yield break;
+        _serial = SerialHandler.Instance.PortList[_sp.SerialListNo];   //SerialHandlerのリストと紐づく
 
         //USBの切断
         _serial.Close();

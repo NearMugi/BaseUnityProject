@@ -138,7 +138,9 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 443840571}
+  - {fileID: 45101300}
   m_Father: {fileID: 2091987216}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -153,17 +155,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d97f8844f178a648b9bf947611b7e57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PortList:
-  - UserName: Sponge
-    portName: COM5
-    baudRate: 115200
-    err: 0
-    errMsg: 
-  - UserName: Arduino
-    portName: COM7
-    baudRate: 115200
-    err: 0
-    errMsg: 
 --- !u!1 &38144061
 GameObject:
   m_ObjectHideFlags: 0
@@ -207,6 +198,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 45101300}
+  - component: {fileID: 45101306}
   - component: {fileID: 45101305}
   - component: {fileID: 45101304}
   - component: {fileID: 45101303}
@@ -225,12 +217,12 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 45101299}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 2091987216}
-  m_RootOrder: 2
+  m_Father: {fileID: 9386384}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!23 &45101301
 MeshRenderer:
@@ -310,10 +302,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f87fbaeb44859934795569534653020d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SerialListNo: 0
   Def_SensorCnt: 1
   Def_ReceiveInterval: 1
   MeshPlot: []
+--- !u!114 &45101306
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 45101299}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd3ef3e2f143d244a8e193dc27acd961, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UserName: Spoonge
+  portName: COM5
+  baudRate: 115200
 --- !u!1 &180508427
 GameObject:
   m_ObjectHideFlags: 0
@@ -1015,6 +1020,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 443840571}
+  - component: {fileID: 443840573}
   - component: {fileID: 443840572}
   m_Layer: 0
   m_Name: Arduino
@@ -1029,12 +1035,12 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 443840570}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 2091987216}
-  m_RootOrder: 1
+  m_Father: {fileID: 9386384}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &443840572
 MonoBehaviour:
@@ -1047,8 +1053,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0396653a19b4894fb345f0092280dd7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SerialListNo: 1
   GetData: 00000000000000000000000000000000000000000000000000000000000000000000000000000000
+--- !u!114 &443840573
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 443840570}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd3ef3e2f143d244a8e193dc27acd961, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UserName: Arduino
+  portName: COM7
+  baudRate: 115200
 --- !u!1 &536379925
 GameObject:
   m_ObjectHideFlags: 0
@@ -3046,8 +3065,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 9386384}
-  - {fileID: 443840571}
-  - {fileID: 45101300}
   m_Father: {fileID: 2091987205}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
