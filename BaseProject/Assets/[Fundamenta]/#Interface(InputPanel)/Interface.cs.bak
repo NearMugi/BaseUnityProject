@@ -57,7 +57,7 @@ public class Interface : MonoBehaviour {
             _c = child.Find("Text").gameObject;
             if(_c != null)
             {
-                Debug.LogWarning(child.name + "  " + _c.name);
+                //Debug.LogWarning(child.name + "  " + _c.name);
                 if (_c.GetComponent<Text>().text.Length != 0 )
                 {
                     sw = true;
@@ -73,6 +73,10 @@ public class Interface : MonoBehaviour {
 
         sb.Length = 0;
         sb.Append(SerialHandler.Instance.DebugList());
+        sb.Append("\n");
+        sb.Append(SerialConnect_Sponge.Instance.DebugList());
+        sb.Append("\n");
+        sb.Append(SerialConnect_Arduino.Instance.DebugList());
         sb.Append("\n");
         txtDispDebug.text = sb.ToString();
     }

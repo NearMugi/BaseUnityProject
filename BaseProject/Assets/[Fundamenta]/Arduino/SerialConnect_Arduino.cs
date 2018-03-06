@@ -91,7 +91,6 @@ public class SerialConnect_Arduino : MonoBehaviour {
 
     private void Start()
     {
-        Connect();
     }
 
     public void Connect()

@@ -140,8 +140,11 @@ public class SerialConnect_Sponge : MonoBehaviour {
         for (int _id = 0; _id < Def_SensorCnt; _id++)
         {
             ave = 0;
-            Sponge_Manage.SpongeInfo _info = _spongeManage.GetSpongeInfo(_id.ToString());
-            if (_info != null) ave = _info.distValue_ave;
+            if(_spongeManage != null)
+            {
+                Sponge_Manage.SpongeInfo _info = _spongeManage.GetSpongeInfo(_id.ToString());
+                if (_info != null) ave = _info.distValue_ave;
+            }
             sb.Append(ave);
             sb.Append(",");
 
@@ -245,7 +248,6 @@ public class SerialConnect_Sponge : MonoBehaviour {
 
     // Use this for initialization
     void Start() {
-        Connect();
     }
 
     public void Connect()
