@@ -59,6 +59,8 @@ public class SerialConnect_Arduino : MonoBehaviour {
 
     public string DebugList()
     {
+        if (_serial == null) return string.Empty;
+
         System.Text.StringBuilder sb = new System.Text.StringBuilder();
         sb.Append("--- CONNECT ARDUINO INFO ---");
         sb.Append("\n");
@@ -91,6 +93,7 @@ public class SerialConnect_Arduino : MonoBehaviour {
 
     private void Start()
     {
+        _serial = null;
     }
 
     public void Connect()
@@ -124,7 +127,7 @@ public class SerialConnect_Arduino : MonoBehaviour {
 
     public void DataSend(string _s)
     {
-        string _send = _s + endPoint;
+        string _send = _s + (char)endPoint;
         //DebugMsg("[DataSend] SendData ", _send);
         _serial.Write(_send);
     }

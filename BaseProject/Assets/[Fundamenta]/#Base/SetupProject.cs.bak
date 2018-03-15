@@ -32,6 +32,40 @@ public class SetupProject : MonoBehaviour
     [SerializeField]
     Camera MainCamera;
 
+
+    public string DebugList()
+    {
+        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+        sb.Append("--- SETUP PROJECT INFO ---");
+        sb.Append("\n");
+        sb.Append("[DiplayInfo]");
+        sb.Append("\n");
+
+        for (int i = 0; i < DisplayCount && i < Display.displays.Length; i++)
+        {
+            sb.Append(i);
+            sb.Append(" : ");
+            sb.Append(Display.displays[i].renderingWidth);
+            sb.Append(" , ");
+            sb.Append(Display.displays[i].renderingHeight);
+            sb.Append("\n");
+        }
+
+        sb.Append("[MainCameraInfo]");
+        sb.Append("\n");
+        sb.Append("orthographicSize : ");
+        sb.Append(MainCamera.orthographicSize);
+        sb.Append("\n");
+        sb.Append("ViewRect :");
+        sb.Append(MainCamera.rect);
+        sb.Append("\n");
+
+        return sb.ToString();
+    }
+
+
+
+
     // 初期化
     void Awake()
     {
@@ -60,12 +94,12 @@ public class SetupProject : MonoBehaviour
     public void SetDisplayOrthographic()
     {
         if (MainCamera == null) return;
-        
-        // 動画再生用の板のサイズ　※高さだけしか使わない。
-        float height = 1080f;
+
+        // 動画再生用の板のサイズ
+        float width = 800f;
+        float height = 600f;
         // 画像のPixel Per Unit
         float pixelPerUnit = 100f;
-
 
         sceneManage_Name.SCENE_NAME nowScene = sceneManage.Instance.GetNowSceneName();
         switch (nowScene)
@@ -75,9 +109,51 @@ public class SetupProject : MonoBehaviour
                 break;
         }
 
+        int displayNo = MainCamera.targetDisplay;
+        float Screen_width;
+        float Screen_height;
+        try
+        {
+            Screen_width = Display.displays[displayNo].renderingWidth;
+            Screen_height = Display.displays[displayNo].renderingHeight;
 
+        }
+        catch (System.Exception)
+        {   
+            //デバッグで起動させた場合はDisplayを正しく認識できないのでエラーになる。
+            //回避策として起動しているディスプレイのサイズを取得する
+            Screen_width = Screen.width;
+            Screen_height = Screen.height;
+
+        }
+        float aspect = Screen_height / Screen_width;
+        float bgAspect = height / width;
+
+        //orthographicの設定
         MainCamera.orthographic = true;
         MainCamera.orthographicSize = height / 2f / pixelPerUnit;
 
+
+
+        //viewportRectの設定
+        MainCamera.rect = new Rect(0f, 0f, 1f, 1f);
+        if (bgAspect > aspect)
+        {
+            // 倍率
+            float bgScale = height / Screen.height;
+            // viewport rectの幅
+            float camWidth = width / (Screen.width * bgScale);
+            // viewportRectを設定
+            MainCamera.rect = new Rect((1f - camWidth) / 2f, 0f, camWidth, 1f);
+        }
+        else if(bgAspect < aspect)
+        {
+            // 倍率
+            float bgScale = width / Screen.width;
+            // viewport rectの幅
+            float camHeight = height / (Screen.height * bgScale);
+            // viewportRectを設定
+            MainCamera.rect = new Rect(0f, (1f - camHeight) / 2f, 1f, camHeight);
+        }
     }
 }

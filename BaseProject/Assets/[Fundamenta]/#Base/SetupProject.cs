@@ -32,11 +32,20 @@ public class SetupProject : MonoBehaviour
     [SerializeField]
     Camera MainCamera;
 
+    //動画再生用の板のサイズ
+    float MovieScreenWidth;
+    float MovieScreenHeight;
 
     public string DebugList()
     {
         System.Text.StringBuilder sb = new System.Text.StringBuilder();
         sb.Append("--- SETUP PROJECT INFO ---");
+        sb.Append("\n");
+        sb.Append("[MainMovieScreenSize]");
+        sb.Append("\n");
+        sb.Append(MovieScreenWidth);
+        sb.Append(" : ");
+        sb.Append(MovieScreenHeight);
         sb.Append("\n");
         sb.Append("[DiplayInfo]");
         sb.Append("\n");
@@ -96,19 +105,11 @@ public class SetupProject : MonoBehaviour
         if (MainCamera == null) return;
 
         // 動画再生用の板のサイズ
-        float width = 800f;
-        float height = 600f;
+        MovieScreenWidth = 1280f;
+        MovieScreenHeight = 1024f;
         // 画像のPixel Per Unit
         float pixelPerUnit = 100f;
-
-        sceneManage_Name.SCENE_NAME nowScene = sceneManage.Instance.GetNowSceneName();
-        switch (nowScene)
-        {
-            case sceneManage_Name.SCENE_NAME.MAINEVENT:
-                //height = ;
-                break;
-        }
-
+        
         int displayNo = MainCamera.targetDisplay;
         float Screen_width;
         float Screen_height;
@@ -126,12 +127,13 @@ public class SetupProject : MonoBehaviour
             Screen_height = Screen.height;
 
         }
+
         float aspect = Screen_height / Screen_width;
-        float bgAspect = height / width;
+        float bgAspect = MovieScreenHeight / MovieScreenWidth;
 
         //orthographicの設定
         MainCamera.orthographic = true;
-        MainCamera.orthographicSize = height / 2f / pixelPerUnit;
+        MainCamera.orthographicSize = MovieScreenHeight / 2f / pixelPerUnit;
 
 
 
@@ -140,18 +142,18 @@ public class SetupProject : MonoBehaviour
         if (bgAspect > aspect)
         {
             // 倍率
-            float bgScale = height / Screen.height;
+            float bgScale = MovieScreenHeight / Screen.height;
             // viewport rectの幅
-            float camWidth = width / (Screen.width * bgScale);
+            float camWidth = MovieScreenWidth / (Screen.width * bgScale);
             // viewportRectを設定
             MainCamera.rect = new Rect((1f - camWidth) / 2f, 0f, camWidth, 1f);
         }
         else if(bgAspect < aspect)
         {
             // 倍率
-            float bgScale = width / Screen.width;
+            float bgScale = MovieScreenWidth / Screen.width;
             // viewport rectの幅
-            float camHeight = height / (Screen.height * bgScale);
+            float camHeight = MovieScreenHeight / (Screen.height * bgScale);
             // viewportRectを設定
             MainCamera.rect = new Rect(0f, (1f - camHeight) / 2f, 1f, camHeight);
         }

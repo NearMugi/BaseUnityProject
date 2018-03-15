@@ -19,7 +19,8 @@ public class PlayableBehaviour_Init : PlayableBehaviour
 
     // Called when the state of the playable is set to Play
     public override void OnBehaviourPlay(Playable playable, FrameData info) {
-
+        if (EventTrigger.Instance == null) return;
+        EventTrigger.Instance._reset();
     }
 
     // Called when the state of the playable is set to Paused
