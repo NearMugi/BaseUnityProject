@@ -55,7 +55,8 @@ public class SerialConnect_Arduino : MonoBehaviour {
     const int MAX_GETDATA_SIZE = 5;
     [HideInInspector]
     public ReceiveCmd[] GetData = new ReceiveCmd[MAX_GETDATA_SIZE];
-
+    [HideInInspector]
+    public int GetDataSize { get; private set; }
 
     public string DebugList()
     {
@@ -143,10 +144,9 @@ public class SerialConnect_Arduino : MonoBehaviour {
         }
 
         GetData = new ReceiveCmd[MAX_GETDATA_SIZE];
-
+        GetDataSize = 0;
         byte[] _tmp = System.Text.Encoding.ASCII.GetBytes(joinMsg);
         byte data = 0x00;
-        int i = 0;
         //1バイトのデータを取得する前提
         foreach(byte _b in _tmp)
         {
@@ -157,10 +157,10 @@ public class SerialConnect_Arduino : MonoBehaviour {
                 case 0xFF:  //要らないデータを除去
                     break;
                 case endPoint:  //区切り文字
-                    GetData[i++] = (ReceiveCmd)data; 
+                    GetData[GetDataSize++] = (ReceiveCmd)data; 
                     break;
                 case splitPoint:  //区切り文字
-                    GetData[i++] = (ReceiveCmd)data;
+                    GetData[GetDataSize++] = (ReceiveCmd)data;
                     break;
 
                 default:
@@ -168,7 +168,7 @@ public class SerialConnect_Arduino : MonoBehaviour {
                     break;
 
             }
-            if (i >= MAX_GETDATA_SIZE) break;
+            if (GetDataSize >= MAX_GETDATA_SIZE) break;
         }
         
     }

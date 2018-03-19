@@ -41,33 +41,40 @@ public class SetupProject : MonoBehaviour
         System.Text.StringBuilder sb = new System.Text.StringBuilder();
         sb.Append("--- SETUP PROJECT INFO ---");
         sb.Append("\n");
-        sb.Append("[MainMovieScreenSize]");
-        sb.Append("\n");
-        sb.Append(MovieScreenWidth);
-        sb.Append(" : ");
-        sb.Append(MovieScreenHeight);
-        sb.Append("\n");
-        sb.Append("[DiplayInfo]");
-        sb.Append("\n");
 
-        for (int i = 0; i < DisplayCount && i < Display.displays.Length; i++)
+        if(MainCamera != null)
         {
-            sb.Append(i);
-            sb.Append(" : ");
-            sb.Append(Display.displays[i].renderingWidth);
-            sb.Append(" , ");
-            sb.Append(Display.displays[i].renderingHeight);
+            sb.Append("[MainMovieScreenSize]");
             sb.Append("\n");
-        }
+            sb.Append(MovieScreenWidth);
+            sb.Append(" : ");
+            sb.Append(MovieScreenHeight);
+            sb.Append("\n");
+            sb.Append("[DiplayInfo]");
+            sb.Append("\n");
 
-        sb.Append("[MainCameraInfo]");
-        sb.Append("\n");
-        sb.Append("orthographicSize : ");
-        sb.Append(MainCamera.orthographicSize);
-        sb.Append("\n");
-        sb.Append("ViewRect :");
-        sb.Append(MainCamera.rect);
-        sb.Append("\n");
+            for (int i = 0; i < DisplayCount && i < Display.displays.Length; i++)
+            {
+                sb.Append(i);
+                sb.Append(" : ");
+                sb.Append(Display.displays[i].renderingWidth);
+                sb.Append(" , ");
+                sb.Append(Display.displays[i].renderingHeight);
+                sb.Append("\n");
+            }
+
+            sb.Append("[MainCameraInfo]");
+            sb.Append("\n");
+            sb.Append("orthographicSize : ");
+            sb.Append(MainCamera.orthographicSize);
+            sb.Append("\n");
+            sb.Append("ViewRect :");
+            sb.Append(MainCamera.rect);
+            sb.Append("\n");
+        } else
+        {
+            sb.Append("... No Information \n");
+        }
 
         return sb.ToString();
     }
@@ -99,14 +106,12 @@ public class SetupProject : MonoBehaviour
     /// <summary>
     /// 表示に使用するディスプレイごとにOrthographicのSizeを変更する
     /// <para>「ディスプレイの解像度に合わせて動画を全画面表示する」ことを基準にしている。</para>
+    /// <para>カメラの設定が書き換えられるので、インスペクター上で設定しても変わってしまう点に注意。</para>
     /// </summary>
     public void SetDisplayOrthographic()
     {
         if (MainCamera == null) return;
 
-        // 動画再生用の板のサイズ
-        MovieScreenWidth = 1280f;
-        MovieScreenHeight = 1024f;
         // 画像のPixel Per Unit
         float pixelPerUnit = 100f;
         
@@ -127,6 +132,13 @@ public class SetupProject : MonoBehaviour
             Screen_height = Screen.height;
 
         }
+
+        // 動画再生用の板のサイズ(初期設定)
+        MovieScreenWidth = Screen_width;
+        MovieScreenHeight = Screen_height;
+        //※もし板のサイズを変えるのであれば、ここに記載
+
+
 
         float aspect = Screen_height / Screen_width;
         float bgAspect = MovieScreenHeight / MovieScreenWidth;
