@@ -78,7 +78,7 @@ public class Interface : MonoBehaviour {
         sb.Append("\n");
         sb.Append(SerialConnect_Sponge.Instance.DebugList());
         sb.Append("\n");
-        sb.Append(SerialConnect_Arduino.Instance.DebugList());
+        sb.Append(SerialConnect_Arduino_Base.Instance.DebugList());
         sb.Append("\n");
 
         txtDispDebug.text = sb.ToString();
