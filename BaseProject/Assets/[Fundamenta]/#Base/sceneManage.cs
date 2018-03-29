@@ -375,7 +375,9 @@ public class sceneManage : MonoBehaviour
 
         now_sceneName = next_sceneName; //現在のシーン名を更新
         ScenePool[(int)now_sceneName].ActiveFlg = true;
-        SetupProject.Instance.SetDisplayOrthographic();
+        Camera _camera = null;
+        if (ScenePool[(int)now_sceneName].MainCamera != null) _camera = ScenePool[(int)now_sceneName].MainCamera.GetComponent<Camera>();
+        SetupProject.Instance.SetDisplayOrthographic(_camera);
 
         //次のシーン名(編集)と次のシーン名を一致させる
         ScenePool[(int)now_sceneName].nextNum_Edit = ScenePool[(int)now_sceneName].nextNum;
