@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UGUI_Motor : MonoBehaviour {
+public class EventTrigger_Motor : MonoBehaviour {
     
     [SerializeField]
     SerialConnect_Arduino_Unipolar.CMD_TYPE motor;

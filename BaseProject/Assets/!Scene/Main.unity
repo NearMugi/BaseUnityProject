@@ -1452,7 +1452,7 @@ MonoBehaviour:
   isUseAssetBundle: 0
   ScenePool:
   - name: 0
-    nextNum: 4
+    nextNum: 1
     nextNum_Edit: 0
     isStartFadeIn: 0
     isEndFadeOut: 0
