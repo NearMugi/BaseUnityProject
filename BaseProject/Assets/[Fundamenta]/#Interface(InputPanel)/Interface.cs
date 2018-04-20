@@ -49,6 +49,31 @@ public class Interface : MonoBehaviour {
         sceneManage.Instance.chgScene(sceneManage_Name.SCENE_NAME.CONNECT_UNIPOLAR);
     }
 
+
+
+    public void btn_Connect_UnipolarMotor()
+    {
+        if (SerialConnect_Arduino_Unipolar.Instance_Unipolar == null) return;
+        SerialConnect_Arduino_Unipolar.Instance_Unipolar.Connect();
+    }
+    public void btn_Connect_DCMotor()
+    {
+        if (SerialConnect_Arduino_DCMotor.Instance_DCMotor == null) return;
+        SerialConnect_Arduino_DCMotor.Instance_DCMotor.Connect();
+        SerialConnect_Arduino_DCMotor.Instance_DCMotor.SerialInit();
+    }
+    public void btn_Connect_Sponge()
+    {
+        if (SerialConnect_Sponge.Instance == null) return;
+        SerialConnect_Sponge.Instance.Connect();
+    }
+    public void btn_Connect_Air()
+    {
+        if (SerialConnect_Arduino_Air.Instance_Air == null) return;
+        SerialConnect_Arduino_Air.Instance_Air.Connect();
+    }
+
+
     /// <summary>
     /// ボタン名の記載されていないボタンは無効にする
     /// </summary>
@@ -90,6 +115,18 @@ public class Interface : MonoBehaviour {
         if (SerialConnect_Arduino_Unipolar.Instance_Unipolar != null)
         {
             sb.Append(SerialConnect_Arduino_Unipolar.Instance_Unipolar.DebugList());
+            sb.Append("\n");
+        }
+
+        if (SerialConnect_Arduino_DCMotor.Instance_DCMotor != null)
+        {
+            sb.Append(SerialConnect_Arduino_DCMotor.Instance_DCMotor.DebugList());
+            sb.Append("\n");
+        }
+
+        if (SerialConnect_Arduino_Air.Instance_Air != null)
+        {
+            sb.Append(SerialConnect_Arduino_Air.Instance_Air.DebugList());
             sb.Append("\n");
         }
 

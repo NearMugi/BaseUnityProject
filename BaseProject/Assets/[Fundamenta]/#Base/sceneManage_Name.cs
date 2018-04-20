@@ -15,6 +15,8 @@ public class sceneManage_Name : MonoBehaviour {
         MAINEVENT,
 
         CONNECT_UNIPOLAR,
+        CONNECT_AIR,
+        CONNECT_DCMOTOR,
 
         TERMINAL,
     }
