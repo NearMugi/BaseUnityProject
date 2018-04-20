@@ -13,22 +13,28 @@ public class Interface : MonoBehaviour {
     Text txtActiveObjectList;
 
     [SerializeField]
-    Text txtDispDebug;
-    StringBuilder sb;
+    Text txtDispDebug_1;
+    StringBuilder sb_1;
+
+    [SerializeField]
+    Text txtDispDebug_2;
+    StringBuilder sb_2;
 
     [SerializeField]
     GameObject Button;
 
     // Use this for initialization
     void Start () {
-        sb = new StringBuilder();
+        sb_1 = new StringBuilder();
+        sb_2 = new StringBuilder();
         btn_isTarget();
     }
 	
 	// Update is called once per frame
 	void Update () {
         createActiveObjectList();
-        createDispDebugList();
+        createDispDebugList_1();
+        createDispDebugList_2();
     }
 
     public void btn_Exit()
@@ -72,6 +78,11 @@ public class Interface : MonoBehaviour {
         if (SerialConnect_Arduino_Air.Instance_Air == null) return;
         SerialConnect_Arduino_Air.Instance_Air.Connect();
     }
+    public void btn_Connect_PotentioMeter()
+    {
+        if (SerialConnect_Arduino_PotentioMeter.Instance_PotentioMeter == null) return;
+        SerialConnect_Arduino_PotentioMeter.Instance_PotentioMeter.Connect();
+    }
 
 
     /// <summary>
@@ -97,40 +108,34 @@ public class Interface : MonoBehaviour {
         }
     }
 
-    void createDispDebugList()
+    void createDispDebugList_1()
     {
-        if (txtDispDebug == null) return;
+        if (txtDispDebug_1 == null) return;
 
-        sb.Length = 0;
-        sb.Append(SetupProject.Instance.DebugList());
-        sb.Append("\n");
-        sb.Append(SerialHandler.Instance.DebugList());
-        sb.Append("\n");
-        if (SerialConnect_Sponge.Instance != null)
-        {
-            sb.Append(SerialConnect_Sponge.Instance.DebugList());
-            sb.Append("\n");
-        }
+        sb_1.Length = 0;
+        sb_1.Append(SetupProject.Instance.DebugList());
+        sb_1.Append("\n");
+        sb_1.Append(SerialHandler.Instance.DebugList());
+        sb_1.Append("\n");
+        txtDispDebug_1.text = sb_1.ToString();
+    }
 
-        if (SerialConnect_Arduino_Unipolar.Instance_Unipolar != null)
-        {
-            sb.Append(SerialConnect_Arduino_Unipolar.Instance_Unipolar.DebugList());
-            sb.Append("\n");
-        }
+    void createDispDebugList_2()
+    {
+        if (txtDispDebug_2 == null) return;
+        sb_2.Length = 0;
+        if (SerialConnect_Sponge.Instance != null) sb_2.Append(SerialConnect_Sponge.Instance.DebugList());
 
-        if (SerialConnect_Arduino_DCMotor.Instance_DCMotor != null)
-        {
-            sb.Append(SerialConnect_Arduino_DCMotor.Instance_DCMotor.DebugList());
-            sb.Append("\n");
-        }
+        if (SerialConnect_Arduino_Unipolar.Instance_Unipolar != null) sb_2.Append(SerialConnect_Arduino_Unipolar.Instance_Unipolar.DebugList());
 
-        if (SerialConnect_Arduino_Air.Instance_Air != null)
-        {
-            sb.Append(SerialConnect_Arduino_Air.Instance_Air.DebugList());
-            sb.Append("\n");
-        }
+        if (SerialConnect_Arduino_DCMotor.Instance_DCMotor != null) sb_2.Append(SerialConnect_Arduino_DCMotor.Instance_DCMotor.DebugList());
 
-        txtDispDebug.text = sb.ToString();
+        if (SerialConnect_Arduino_Air.Instance_Air != null) sb_2.Append(SerialConnect_Arduino_Air.Instance_Air.DebugList());
+
+        if (SerialConnect_Arduino_PotentioMeter.Instance_PotentioMeter != null) sb_2.Append(SerialConnect_Arduino_PotentioMeter.Instance_PotentioMeter.DebugList());
+
+        txtDispDebug_2.text = sb_2.ToString();
+
     }
 
 
@@ -142,7 +147,7 @@ public class Interface : MonoBehaviour {
         if (txtActiveObjectList == null) return;
 
         StringBuilder sb = new StringBuilder();
-
+        VideoPlayer _video;
         int sceneCnt = SceneManager.sceneCount;
         Scene sc;
         int videocnt = 0;
@@ -161,14 +166,21 @@ public class Interface : MonoBehaviour {
 
                 sb.Append(ob.name);
                 sb.Append("\n");
-                if (ob.GetComponent<VideoPlayer>() != null) videocnt++;
-                
+                _video = ob.GetComponent<VideoPlayer>();
+                if (_video != null)
+                {
+                    if (_video.isPrepared || _video.isPlaying) videocnt++;
+                }
                 //子
                 foreach (Transform child in ob.transform)
                 {
                     if (!child.gameObject.activeSelf) continue;
 
-                    if (child.gameObject.GetComponent<VideoPlayer>() != null) videocnt++;
+                    _video = child.gameObject.GetComponent<VideoPlayer>();
+                    if (_video != null)
+                    {
+                        if (_video.isPrepared || _video.isPlaying) videocnt++;
+                    }
                     sb.Append(" + ");
                     sb.Append(child.name);
                     sb.Append("\n");
@@ -178,8 +190,12 @@ public class Interface : MonoBehaviour {
                     {
                         if (!childchild.gameObject.activeSelf) continue;
 
-                        if (childchild.gameObject.GetComponent<VideoPlayer>() != null) videocnt++;
-                        sb.Append("  + ");
+                        _video = childchild.gameObject.GetComponent<VideoPlayer>();
+                        if (_video != null)
+                        {
+                            if (_video.isPrepared || _video.isPlaying) videocnt++;
+                        }
+                        sb.Append("    + ");
                         sb.Append(childchild.name);
                         sb.Append("\n");
                     }

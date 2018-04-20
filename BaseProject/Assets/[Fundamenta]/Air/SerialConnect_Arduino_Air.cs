@@ -112,6 +112,8 @@ public class SerialConnect_Arduino_Air : SerialConnect_Arduino_Base
 
     public new string DebugList()
     {
+        if (_serial == null) return string.Empty;
+
         System.Text.StringBuilder sb = new System.Text.StringBuilder();
         sb.Append("--- CONNECT ARDUINO AIR INFO ---  ");
         sb.Append("\n");
@@ -162,9 +164,6 @@ public class SerialConnect_Arduino_Air : SerialConnect_Arduino_Base
 
     private void Update()
     {
-        //送信する値の妥当性をチェックする
-        chkData();
-
         isAnalysis = true;
 
         //接続できていない場合は何もしない。
@@ -172,10 +171,6 @@ public class SerialConnect_Arduino_Air : SerialConnect_Arduino_Base
 
         //入力値を解析する
         foreach (string _d in GetData) analisysGetData(_d);
-
-        //電磁弁に設定するコマンドを出力する
-        SendSettingValue();
-
 
         isAnalysis = false;
 
@@ -219,7 +214,7 @@ public class SerialConnect_Arduino_Air : SerialConnect_Arduino_Base
         Def_CycleCnt = _v;
     }
 
-    private void chkData()
+    public void chkData()
     {
         //チェックの順番は1サイクルOn時間→1サイクル時間にする
         Def_OneTime_On = ChkOneTime_On(Def_OneTime_On);
@@ -292,9 +287,6 @@ public class SerialConnect_Arduino_Air : SerialConnect_Arduino_Base
 
     private void SendSettingValue()
     {
-        //電磁弁が実行中の場合、コマンドを送信しない
-        if (_arData.isValvePlay) return;
-
         SetSendCmd(CMD_TYPE.ONETIME_INT);
         SetSendCmd(CMD_TYPE.ONETIME_DEC);
         SetSendCmd(CMD_TYPE.ONETIME_ON);
@@ -439,6 +431,51 @@ public class SerialConnect_Arduino_Air : SerialConnect_Arduino_Base
             return;
         }
     }
+    
+    /// <summary>
+    /// 設定値だけ送信する
+    /// </summary>
+    /// <param name="_Def_OneTime"></param>
+    /// <param name="_Def_OneTime_On"></param>
+    /// <param name="_Def_CycleCnt"></param>
+    public void SettingValve(float _Def_OneTime, float _Def_OneTime_On, int _Def_CycleCnt)
+    {
+        //設定値の変数を更新
+        Def_OneTime = _Def_OneTime;
+        Def_OneTime_On = _Def_OneTime_On;
+        Def_CycleCnt = _Def_CycleCnt;
+
+        //設定値を送信する
+        chkData();
+        SendSettingValue();
+    }
+
+    public void PlayValve_OneSet(float _Def_OneTime, float _Def_OneTime_On, int _Def_CycleCnt)
+    {
+        //設定値の変数を更新
+        Def_OneTime = _Def_OneTime;
+        Def_OneTime_On = _Def_OneTime_On;
+        Def_CycleCnt = _Def_CycleCnt;
+
+        if (NowCoroutine != null) StopCoroutine(NowCoroutine);
+        NowCoroutine = StartCoroutine(PlayValve_OneSetCoroutine(OnResponseCoroutine));
+    }
+
+    private IEnumerator PlayValve_OneSetCoroutine(UnityAction<string> callback)
+    {
+        //電磁弁を停止する
+        SetSendCmd(CMD_TYPE.VALVE, false);
+        yield return null;
+
+        //設定値を送信する
+        chkData();
+        SendSettingValue();
+        yield return null;
+
+        //電磁弁を可動する
+        SetSendCmd(CMD_TYPE.VALVE, true);
+        yield break;
+    }
 
     /// <summary>
     /// 電磁弁・ポンプを可動させる
@@ -461,6 +498,12 @@ public class SerialConnect_Arduino_Air : SerialConnect_Arduino_Base
 
     private IEnumerator PlayAllCoroutine(UnityAction<string> callback)
     {
+        //バルブの設定値を送信する
+
+        chkData();
+        SendSettingValue();
+
+
         //ポンプを可動させる
         SetSendCmd(CMD_TYPE.PUMP, true);
 
@@ -468,7 +511,6 @@ public class SerialConnect_Arduino_Air : SerialConnect_Arduino_Base
         yield return new WaitForSeconds(1.0f);
         
         //電磁弁を可動させる
-        chkData();
         SetSendCmd(CMD_TYPE.VALVE, true);
         yield return new WaitForSeconds(1.0f);  //ポンプを一定時間可動させる。
 

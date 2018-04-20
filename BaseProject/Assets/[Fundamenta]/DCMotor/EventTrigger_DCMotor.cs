@@ -83,11 +83,11 @@ public class EventTrigger_DCMotor : MonoBehaviour {
                 txt_Mode.text = "停止中\n設定スピード:" + _speedValue;
                 break;
             case 1:
-                MotorPlay_Trigger();
+                MotorPlay_Trigger(0);
                 txt_Mode.text = "閾値を超えるとスタート・ストップ\n設定スピード:" + _speedValue;
                 break;
             case 2:
-                MotorPlay_Linear();
+                MotorPlay_Linear(0);
                 txt_Mode.text = "入力値に沿って回転スピードを可変\n設定スピード:" + _speedValue;
                 break;
         }
@@ -141,9 +141,9 @@ public class EventTrigger_DCMotor : MonoBehaviour {
     /// スポンジ入力からモーターの回転速度を決める(速度一定)
     /// </summary>
     /// <returns></returns>
-    public void MotorPlay_Trigger()
+    public void MotorPlay_Trigger(int SpongeNo)
     {
-        float v = GetSpeedValue(0);  //1番目のスポンジの平均値を使う
+        float v = GetSpeedValue(SpongeNo);  //SpongeNo番目のスポンジの平均値を使う
 
         //閾値の判定 最小値に満たない場合は可動させない
         //満たしている場合は一定の値で回転させる。
@@ -164,9 +164,9 @@ public class EventTrigger_DCMotor : MonoBehaviour {
     /// スポンジ入力からモーターの回転速度を決める(スポンジの値に合わせて可変する)
     /// </summary>
     /// <returns></returns>
-    public void MotorPlay_Linear()
+    public void MotorPlay_Linear(int SpongeNo)
     {
-        float v = GetSpeedValue(0);  //1番目のスポンジの平均値を使う
+        float v = GetSpeedValue(SpongeNo);  //SpongeNo番目のスポンジの平均値を使う
         if (v > MOTOR_MAX) v = MOTOR_MAX;
         if (v < MOTOR_MIN) v = MOTOR_MIN;
         _speedValue = (int)v;

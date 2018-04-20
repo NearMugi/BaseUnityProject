@@ -70,7 +70,7 @@ public class MovieDecodeAndPlay : MonoBehaviour {
 
     private IEnumerator DecodeCoroutine()
     {
-        Debug.LogWarning(player.name + " Decode Start");
+        //Debug.LogWarning(player.name + " Decode Start");
         //動画が再生していたら止める
         while (player.isPlaying)
         {

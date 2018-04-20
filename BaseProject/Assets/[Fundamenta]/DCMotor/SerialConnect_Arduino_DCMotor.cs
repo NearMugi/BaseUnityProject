@@ -73,8 +73,10 @@ public class SerialConnect_Arduino_DCMotor : SerialConnect_Arduino_Base
 
     public new string DebugList()
     {
+        if (_serial == null) return string.Empty;
+
         System.Text.StringBuilder sb = new System.Text.StringBuilder();
-        sb.Append("--- CONNECT ARDUINO RSMOTOR INFO ---  ");
+        sb.Append("--- CONNECT DCMOTOR INFO ---  ");
         sb.Append("\n");
         sb.Append("[Status]");
         sb.Append("\n");
