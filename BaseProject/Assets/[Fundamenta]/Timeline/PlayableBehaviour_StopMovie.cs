@@ -13,17 +13,17 @@ public class PlayableBehaviour_StopMovie : PlayableBehaviour
     public GameObject movieObj_5;
 
     // Called when the owning graph starts playing
-    public override void OnGraphStart(Playable playable) {
-		
-	}
+    public override void OnGraphStart(Playable playable)
+    {
+    }
 
-	// Called when the owning graph stops playing
-	public override void OnGraphStop(Playable playable) {
+    // Called when the owning graph stops playing
+    public override void OnGraphStop(Playable playable) {
 		
 	}
 
 	// Called when the state of the playable is set to Play
-	public override void OnBehaviourPlay(Playable playable, FrameData info) {        
+	public override void OnBehaviourPlay(Playable playable, FrameData info) {
         if (movieObj_1 != null) movieObj_1.GetComponent<MovieDecodeAndPlay>().StopMovie();
         if (movieObj_2 != null) movieObj_2.GetComponent<MovieDecodeAndPlay>().StopMovie();
         if (movieObj_3 != null) movieObj_3.GetComponent<MovieDecodeAndPlay>().StopMovie();
@@ -38,6 +38,5 @@ public class PlayableBehaviour_StopMovie : PlayableBehaviour
 
 	// Called each frame while the state is set to Play
 	public override void PrepareFrame(Playable playable, FrameData info) {
-		
-	}
+    }
 }

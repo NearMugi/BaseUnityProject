@@ -44,6 +44,11 @@ public class Interface : MonoBehaviour {
     {
         sceneManage.Instance.chgScene(sceneManage_Name.SCENE_NAME.MAINEVENT);
     }
+    public void btn_MoveToConnect_Unipolar()
+    {
+        sceneManage.Instance.chgScene(sceneManage_Name.SCENE_NAME.CONNECT_UNIPOLAR);
+    }
+
     /// <summary>
     /// ボタン名の記載されていないボタンは無効にする
     /// </summary>
@@ -72,12 +77,15 @@ public class Interface : MonoBehaviour {
         if (txtDispDebug == null) return;
 
         sb.Length = 0;
+        sb.Append(SetupProject.Instance.DebugList());
+        sb.Append("\n");
         sb.Append(SerialHandler.Instance.DebugList());
         sb.Append("\n");
         sb.Append(SerialConnect_Sponge.Instance.DebugList());
         sb.Append("\n");
-        sb.Append(SerialConnect_Arduino.Instance.DebugList());
+        sb.Append(SerialConnect_Arduino_Base.Instance.DebugList());
         sb.Append("\n");
+
         txtDispDebug.text = sb.ToString();
     }
 

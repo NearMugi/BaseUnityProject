@@ -19,12 +19,7 @@ public class SerialConnect_Sponge : MonoBehaviour {
         {
             if (instance == null)
             {
-                instance = (SerialConnect_Sponge)FindObjectOfType(typeof(SerialConnect_Sponge));
-
-                if (instance == null)
-                {
-                    Debug.LogError(typeof(SerialConnect_Sponge) + "is nothing");
-                }
+                instance = (SerialConnect_Sponge)FindObjectOfType(typeof(SerialConnect_Sponge));                
             }
             return instance;
         }
@@ -247,6 +242,7 @@ public class SerialConnect_Sponge : MonoBehaviour {
 
     // Use this for initialization
     void Start() {
+
     }
 
     public void Connect()

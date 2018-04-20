@@ -174,7 +174,8 @@ public class SerialConnect_Arduino_Base : MonoBehaviour {
         //Debug.LogWarning(joinMsg);
         joinMsg = string.Empty;
 
-        byte[] saveData = new byte[10];
+        int _maxSaveSize = 50;   //例えば「255」のデータはbyteで3桁になる。大きめに取っておく。
+        byte[] saveData = new byte[_maxSaveSize];
         int j = 0;
 
         int i = 0;
@@ -187,7 +188,7 @@ public class SerialConnect_Arduino_Base : MonoBehaviour {
                 case endPoint:  //区切り文字
                     GetData[i++] = System.Text.Encoding.ASCII.GetString(saveData);
                     //Debug.LogWarning("[Hit] " + GetData[i - 1]);
-                    saveData = new byte[10];
+                    saveData = new byte[_maxSaveSize];
                     j = 0;
                     break;
                 default:
@@ -195,9 +196,9 @@ public class SerialConnect_Arduino_Base : MonoBehaviour {
                     break;
 
             }
-            if (j > 10)
+            if (j > _maxSaveSize - 1)
             {
-                saveData = new byte[10];
+                saveData = new byte[_maxSaveSize];
                 j = 0;
             }
             if (i >= MAX_GETDATA_SIZE) break;

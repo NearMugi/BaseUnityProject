@@ -243,6 +243,9 @@ public class SerialHandler : MonoBehaviour {
         //子供を探してリストを追加する
         foreach (Transform child in transform)
         {
+            //アクティブな子供だけを追加する
+            if (!child.gameObject.activeSelf) continue;
+
             SerialPortName _sp = child.GetComponent<SerialPortName>();
             if (_sp != null)
             {

@@ -17,3 +17,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/!Scene/None.unity
     guid: f55d9d4569c5245488ebc98bc0623b9b
+  - enabled: 1
+    path: Assets/!Scene/Connect_Unipolar.unity
+    guid: 2d60774c6bdd9fd49b96d430d0c895d2

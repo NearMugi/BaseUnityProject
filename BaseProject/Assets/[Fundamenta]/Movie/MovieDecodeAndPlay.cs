@@ -13,63 +13,64 @@ public class MovieDecodeAndPlay : MonoBehaviour {
     [SerializeField]
     float activePos_z;  //動画再生時のｚ座標
 
-    bool isPrepare;
-    bool isStart;
+    [SerializeField]
+    bool isFullScreen;
+    [SerializeField]
+    Camera targetCamera;
     
     VideoPlayer player;
     Coroutine NowCoroutine;
+    bool isDecode;
+
 
     private void Start()
     {
-        isPrepare = false;
-        isStart = false;
-        
+        DispMovie(false);
+        isDecode = false;
+
         //同一オブジェクトにある前提
         player = GetComponent<VideoPlayer>();
 
-        //動画再生まで後ろのほうに移動させておく。
-        //デコード完了後、1frm目が表示されるので、意図的に見せたい場合は前のほうにする
-        Vector3 pos = DispOb.GetComponent<Transform>().localPosition;
-        pos.z = preparePos_z;
-        DispOb.GetComponent<Transform>().localPosition = pos;
-
-    }
-
-
-    // Update is called once per frame
-    void Update () {
-        if (!isPrepare)
+        //フルスクリーンの指定がある場合、スクリーンのスケールを変更する
+        if (isFullScreen)
         {
-            isPrepare = true;
-            if (NowCoroutine != null) StopCoroutine(NowCoroutine);
-            NowCoroutine = StartCoroutine(DecodeAndPlayCoroutine());
+            float Screen_width = Screen.width;
+            float Screen_height = Screen.height;
+            try
+            {
+                int displayNo = targetCamera.targetDisplay;
+                Screen_width = Display.displays[displayNo].renderingWidth;
+                Screen_height = Display.displays[displayNo].renderingHeight;
+            }
+            catch (System.Exception)
+            {
+            }
+            Vector3 size = new Vector3(Screen_width / 1000f, 1.0f, Screen_height / 1000f);
+            DispOb.GetComponent<Transform>().localScale = size;
         }
-    }
 
-    public void SetisStart()
-    {
-        isStart = true;
     }
 
     /// <summary>
     /// 動画実行中　true
     /// </summary>
     /// <returns></returns>
-    public bool isPlay()
+    public bool GetisPlay()
     {
         return player.isPlaying;
     }
 
-    /// <summary>
-    /// 外部から準備を指示
-    /// </summary>
-    public void Reset()
+    public void SettingMovie()
     {
-        isPrepare = false;
+        if (isDecode) return;   //すでにデコード中、もしくは完了している場合は何もしない。
+        isDecode = true;
+        if (NowCoroutine != null) StopCoroutine(NowCoroutine);
+        NowCoroutine = StartCoroutine(DecodeCoroutine());
     }
 
-    private IEnumerator DecodeAndPlayCoroutine()
+    private IEnumerator DecodeCoroutine()
     {
+        Debug.LogWarning(player.name + " Decode Start");
         //動画が再生していたら止める
         while (player.isPlaying)
         {
@@ -83,62 +84,82 @@ public class MovieDecodeAndPlay : MonoBehaviour {
             snd.Stop();
         }
 
-        //座標を戻す
-        Vector3 pos = DispOb.GetComponent<Transform>().localPosition;
-        pos.z = preparePos_z;
-        DispOb.GetComponent<Transform>().localPosition = pos;
+        //動画再生まで後ろのほうに移動させておく。
+        //デコード完了後、1frm目が表示されるので、意図的に見せたい場合は前のほうにする
+        DispMovie(false);
 
         //デコード
         player.Prepare();
-        yield return null;
 
-        //外部から再生指示があるまで待つ
-        while (!isStart)
-        {
-            yield return null;
-        }
+        while (!player.isPrepared) yield return null;
 
-        if (!player.isPrepared) Debug.LogWarning( player.name + " Not Prepared !");
-
-        player.Play();
-        //指定した座標へ移動する
-        pos = DispOb.GetComponent<Transform>().localPosition;
-        pos.z = activePos_z;
-        DispOb.GetComponent<Transform>().localPosition = pos;
-
-        //Debug.LogWarning(this.name + " pos:" + pos);
-
-        //サウンドがある場合は有効にする
-        if(snd != null)
-        {
-            snd.Play();
-        }
-
+        //Debug.LogWarning(player.name + "Decode End");
 
         yield break;
 
     }
 
+
+    public void StartMovie()
+    {
+        if (player.isPlaying) return;   //すでに再生している場合は何もしない。
+
+        if (NowCoroutine != null) StopCoroutine(NowCoroutine);
+        NowCoroutine = StartCoroutine(PlayCoroutine());
+    }
+
+    private IEnumerator PlayCoroutine()
+    {
+        isDecode = false;
+        if (!player.isPrepared) Debug.LogWarning(player.name + " Not Prepared !");
+        
+        player.Play();
+        //指定した座標へ移動する
+        DispMovie(true);
+
+        //Debug.LogWarning(this.name + " pos:" + pos);
+
+        //サウンドがある場合は有効にする
+        AudioSource snd = GetComponent<AudioSource>();
+        if (snd != null)
+        {
+            snd.Play();
+        }
+
+        yield break;
+    }
+
+
     public void StopMovie()
     {
-        isStart = false;
-        isPrepare = false;
-        
+        if (NowCoroutine != null) StopCoroutine(NowCoroutine);
+        NowCoroutine = StartCoroutine(StopCoroutine());
+
+    }
+
+    private IEnumerator StopCoroutine()
+    {
+        isDecode = false;
         //座標を戻す
-        Vector3 pos = DispOb.GetComponent<Transform>().localPosition;
-        pos.z = preparePos_z;
-        DispOb.GetComponent<Transform>().localPosition = pos;
+        DispMovie(false);
+        yield return null;
 
         //動画、サウンドを止める
-        if(player != null) player.Stop();
+        if (player != null)
+        {
+            player.Stop();
+            while (player.isPrepared) yield return null;
+        }
+
         AudioSource snd = GetComponent<AudioSource>();
         if (snd != null)
         {
             snd.Stop();
         }
-        //Debug.LogWarning(gameObject.name + "  isPrepare " + isPrepare);
-
+        yield break;
     }
+
+
     /// <summary>
     /// 座標を変えて表示・非表示にする
     /// </summary>

@@ -17,11 +17,6 @@ public class SerialConnect_Arduino_Unipolar : SerialConnect_Arduino_Base
             if (instance == null)
             {
                 instance = (SerialConnect_Arduino_Unipolar)FindObjectOfType(typeof(SerialConnect_Arduino_Unipolar));
-
-                if (instance == null)
-                {
-                    Debug.LogError(typeof(SerialConnect_Arduino_Unipolar) + "is nothing");
-                }
             }
             return instance;
         }
@@ -89,7 +84,12 @@ public class SerialConnect_Arduino_Unipolar : SerialConnect_Arduino_Base
     const string subCmd_DirForward = "0000";
     const string subCmd_DirReverse = "0001";
 
-    //Arduinoからの１バイトデータ
+    //Arduinoから受信するデータ
+    //1バイト目：ヘッダー
+    //flg_0,7がTrue、それ以外はfalse
+
+
+    //2バイト目：モーター1，2のステータス
     //flg_7
     //flg_6
     //flg_5 モーター２　true…準備OK、false…NG
@@ -336,20 +336,19 @@ public class SerialConnect_Arduino_Unipolar : SerialConnect_Arduino_Base
         if (data == null) return;
         if (data.Length <= 0) return;
 
-#if false
         //カンマ区切りでデータを分ける。
-        //1バイトでない場合は何もしない。
+        //1バイト目：ヘッダー、2バイト目：モーター1，2のステータス
+        //2バイトでない場合は何もしない。
         string[] Onebyte = data.Split(splitPoint);
 
-        if (Onebyte.Length != 1) return;
-#else
-        //今回は1バイトを受信している前提なので、変換せずそのまま処理に使う
+        if (Onebyte.Length != 2) return;
 
-#endif
-        //ヘッダーの判定
         try
         {
-            UnipolarStatus = (ReceiveCmd)(int.Parse(data));
+            //ヘッダーの判定
+            if (int.Parse(Onebyte[0]) != 129) return;   //129 -> 0b10000001
+
+            UnipolarStatus = (ReceiveCmd)(int.Parse(Onebyte[1]));
             GetDataSize++;
             //Debug.LogWarning("cmd : " + int.Parse(data) + "  ->  " + UnipolarStatus);
 

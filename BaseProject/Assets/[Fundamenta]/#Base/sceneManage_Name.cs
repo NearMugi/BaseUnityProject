@@ -14,6 +14,8 @@ public class sceneManage_Name : MonoBehaviour {
         MENU,
         MAINEVENT,
 
+        CONNECT_UNIPOLAR,
+
         TERMINAL,
     }
 }

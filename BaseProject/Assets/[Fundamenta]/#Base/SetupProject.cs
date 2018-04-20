@@ -92,19 +92,22 @@ public class SetupProject : MonoBehaviour
             Display.displays[i].Activate();
         }
     }
-
+    public void SetDisplayOrthographic(Camera _TargetCamera)
+    {
+        SetDisplayOrthographic(_TargetCamera, 1920f, 1080f);
+    }
     /// <summary>
     /// 表示に使用するディスプレイごとにOrthographicのSizeを変更する
     /// <para>「ディスプレイの解像度に合わせて動画を全画面表示する」ことを基準にしている。</para>
     /// </summary>
-    public void SetDisplayOrthographic(Camera _TargetCamera)
+    public void SetDisplayOrthographic(Camera _TargetCamera, float _width, float _height)
     {
         MainCamera = _TargetCamera;
         if (MainCamera == null) return;
 
         // 動画再生用の板のサイズ
-        float width = 800f;
-        float height = 600f;
+        float width = _width;
+        float height = _height;
         // 画像のPixel Per Unit
         float pixelPerUnit = 100f;
 

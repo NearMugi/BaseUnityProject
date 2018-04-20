@@ -63,6 +63,8 @@ public class SerialConnect_Arduino_Base : MonoBehaviour {
     [HideInInspector]
     public int GetDataSize;
 
+    const int MAX_WAITCNT = 2;
+    int WaitCnt;
     string joinMsg;
 
     /// <summary>
@@ -112,6 +114,7 @@ public class SerialConnect_Arduino_Base : MonoBehaviour {
     public void StartInit()
     {
         _serial = null;
+        WaitCnt = 0;
         isConnect = false;
     }
 
@@ -165,14 +168,18 @@ public class SerialConnect_Arduino_Base : MonoBehaviour {
             joinMsg += _t;
         }
 
+        //大きなメッセージを受信することを想定して、何回か連結させる
+        if (++WaitCnt <= MAX_WAITCNT) return;
+        WaitCnt = 0;
+
+        //Debug.LogWarning(joinMsg);
+
         //update処理内で解析中の場合は以下の処理を行わない
         if (isAnalysis) return;
 
         GetData = new String[MAX_GETDATA_SIZE];
 
         byte[] _tmp = System.Text.Encoding.ASCII.GetBytes(joinMsg);
-        //Debug.LogWarning(joinMsg);
-        joinMsg = string.Empty;
 
         int _maxSaveSize = 50;   //例えば「255」のデータはbyteで3桁になる。大きめに取っておく。
         byte[] saveData = new byte[_maxSaveSize];
@@ -202,6 +209,12 @@ public class SerialConnect_Arduino_Base : MonoBehaviour {
                 j = 0;
             }
             if (i >= MAX_GETDATA_SIZE) break;
+        }
+
+        //一つでも条件に合うデータを取得出来たら、連結データを削除する
+        if(GetData.Length > 0)
+        {
+            joinMsg = string.Empty;
         }
     }
 
