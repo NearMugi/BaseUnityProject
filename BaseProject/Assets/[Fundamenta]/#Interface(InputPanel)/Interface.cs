@@ -83,6 +83,11 @@ public class Interface : MonoBehaviour {
         if (SerialConnect_Arduino_PotentioMeter.Instance_PotentioMeter == null) return;
         SerialConnect_Arduino_PotentioMeter.Instance_PotentioMeter.Connect();
     }
+    public void btn_Connect_MPU6050()
+    {
+        if (SerialConnect_Arduino_mpu6050.Instance_mpu6050 == null) return;
+        SerialConnect_Arduino_mpu6050.Instance_mpu6050.Connect();
+    }
 
 
     /// <summary>
@@ -133,6 +138,8 @@ public class Interface : MonoBehaviour {
         if (SerialConnect_Arduino_Air.Instance_Air != null) sb_2.Append(SerialConnect_Arduino_Air.Instance_Air.DebugList());
 
         if (SerialConnect_Arduino_PotentioMeter.Instance_PotentioMeter != null) sb_2.Append(SerialConnect_Arduino_PotentioMeter.Instance_PotentioMeter.DebugList());
+
+        if (SerialConnect_Arduino_mpu6050.Instance_mpu6050 != null) sb_2.Append(SerialConnect_Arduino_mpu6050.Instance_mpu6050.DebugList());
 
         txtDispDebug_2.text = sb_2.ToString();
 

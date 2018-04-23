@@ -17,6 +17,7 @@ public class sceneManage_Name : MonoBehaviour {
         CONNECT_UNIPOLAR,
         CONNECT_AIR,
         CONNECT_DCMOTOR,
+        CONNECT_MPU6050,
 
         TERMINAL,
     }
