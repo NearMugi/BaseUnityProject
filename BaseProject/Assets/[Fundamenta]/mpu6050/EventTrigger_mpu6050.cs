@@ -101,9 +101,7 @@ public class EventTrigger_mpu6050 : MonoBehaviour {
         sb.Append(_arData.CalOfs[2]); sb.Append(", ");
         sb.Append(_arData.CalOfs[3]);
         sb.Append("\n");
-
-
-
+        
         sb.Append("Quaternion[w,x,y,z]\n(");
         sb.Append(_arData._q[0].ToString("f2")); sb.Append(", ");
         sb.Append(_arData._q[1].ToString("f2")); sb.Append(", ");
@@ -114,6 +112,12 @@ public class EventTrigger_mpu6050 : MonoBehaviour {
         sb.Append("UnityでのQuaternion[x,y,z,w]\n");
         sb.Append(SerialConnect_Arduino_mpu6050.Instance_mpu6050.GetQuaternion.ToString("f2"));
         sb.Append("\n");
+
+        sb.Append("WorldAccel[x,y,z]\n");
+        sb.Append(_arData._worldAccel[0].ToString()); sb.Append("\n");
+        sb.Append(_arData._worldAccel[1].ToString()); sb.Append("\n");
+        sb.Append(_arData._worldAccel[2].ToString()); sb.Append("\n");
+
 
         text_InputValue.text = sb.ToString();
     }

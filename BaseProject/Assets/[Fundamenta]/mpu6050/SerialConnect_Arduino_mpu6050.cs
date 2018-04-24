@@ -32,6 +32,9 @@ public class SerialConnect_Arduino_mpu6050 : SerialConnect_Arduino_Base
     [HideInInspector]
     public Quaternion GetQuaternion { get; private set; }
 
+    [HideInInspector]
+    public Vector3 GetWorldAccel { get; private set; }
+
     /// <summary>
     /// 外部からオフセット設定するときに使用する変数
     /// </summary>
@@ -76,6 +79,7 @@ public class SerialConnect_Arduino_mpu6050 : SerialConnect_Arduino_Base
         public int[] CalOfs = new int[4];
 
         public float[] _q = new float[4];
+        public Vector3 _worldAccel = new Vector3();
 
     }
     ArduinoSendData _arData = new ArduinoSendData();
@@ -225,6 +229,7 @@ public class SerialConnect_Arduino_mpu6050 : SerialConnect_Arduino_Base
         //0xFF:ステータス(2バイト)
         //0xFE:オフセット(5バイト)
         //0xFD:Quaternion(5バイト)
+        //0xFC:WorldAccel(4バイト)
         try
         {
             switch (int.Parse(Onebyte[0]))
@@ -257,6 +262,14 @@ public class SerialConnect_Arduino_mpu6050 : SerialConnect_Arduino_Base
                     //変換
                     GetQuaternion = new Quaternion(-1.0f * _arData._q[1], -1.0f * _arData._q[3], -1.0f * _arData._q[2], _arData._q[0]);
                     break;
+                
+                //WorldAccelの取得
+                case 0xFC:
+                    if (GetDataSize != 4) break;
+                    //[x,y,z]
+                    _arData._worldAccel = new Vector3(int.Parse(Onebyte[1]), int.Parse(Onebyte[2]), int.Parse(Onebyte[3]));
+                    break;
+
 
                 default:
                     break;
