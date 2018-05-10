@@ -44,8 +44,16 @@ public class EventTrigger_mpu6050 : MonoBehaviour {
     [SerializeField]
     Vector3 ofs_localRotation;
 
+    public Quaternion TargetQuaternion;
+
+    private void Start()
+    {
+        TargetQuaternion = new Quaternion();
+    }
+
     private void Update()
     {
+
         if(SerialConnect_Arduino_mpu6050.Instance_mpu6050 != null)
         {
             Quaternion _q = SerialConnect_Arduino_mpu6050.Instance_mpu6050.GetQuaternion;
@@ -53,12 +61,12 @@ public class EventTrigger_mpu6050 : MonoBehaviour {
             _q[0] += ofs_localRotation.x;
             _q[1] += ofs_localRotation.y;
             _q[2] += ofs_localRotation.z;
-
-            obj.GetComponent<Transform>().localRotation = _q;
-
+            TargetQuaternion = _q;
+            
             //受信したデータをテキストに反映する
             Set_InputValue();
         }
+        obj.GetComponent<Transform>().localRotation = TargetQuaternion;
 
         //設定するデータをテキストに反映する
         Set_OutputValue();
