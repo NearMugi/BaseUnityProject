@@ -13,7 +13,7 @@ OcclusionCullingSettings:
 --- !u!104 &2
 RenderSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 8
+  serializedVersion: 9
   m_Fog: 0
   m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   m_FogMode: 3
@@ -39,6 +39,7 @@ RenderSettings:
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
   m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -54,11 +55,10 @@ LightmapSettings:
     m_EnableBakedLightmaps: 1
     m_EnableRealtimeLightmaps: 1
   m_LightmapEditorSettings:
-    serializedVersion: 9
+    serializedVersion: 10
     m_Resolution: 2
     m_BakeResolution: 40
-    m_TextureWidth: 1024
-    m_TextureHeight: 1024
+    m_AtlasSize: 1024
     m_AO: 0
     m_AOMaxDistance: 1
     m_CompAOExponent: 1
@@ -241,6 +241,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 0}
   m_StaticBatchInfo:
@@ -320,6 +321,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd3ef3e2f143d244a8e193dc27acd961, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  portName_def: 1
   UserName: Spoonge
   portName: COM5
   baudRate: 115200
@@ -1537,8 +1539,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd3ef3e2f143d244a8e193dc27acd961, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  portName_def: 255
   UserName: UnipolarMotor
-  portName: COM3
+  portName: COM4
   baudRate: 115200
 --- !u!1 &536379925
 GameObject:
@@ -2474,8 +2477,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd3ef3e2f143d244a8e193dc27acd961, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  portName_def: 254
   UserName: Air
-  portName: COM3
+  portName: COM7
   baudRate: 115200
 --- !u!1 &855698310
 GameObject:
@@ -2543,8 +2547,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd3ef3e2f143d244a8e193dc27acd961, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  portName_def: 253
   UserName: DCMotor
-  portName: COM3
+  portName: COM4
   baudRate: 115200
 --- !u!1 &919189773
 GameObject:
@@ -2950,6 +2955,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd3ef3e2f143d244a8e193dc27acd961, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  portName_def: 252
   UserName: PotentioMeter
   portName: COM3
   baudRate: 115200
@@ -3135,8 +3141,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd3ef3e2f143d244a8e193dc27acd961, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  portName_def: 251
   UserName: MPU6050
-  portName: COM3
+  portName: COM4
   baudRate: 115200
 --- !u!1 &1220854615
 GameObject:

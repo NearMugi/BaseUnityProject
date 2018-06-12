@@ -29,6 +29,17 @@ public class SerialHandler : MonoBehaviour {
 
     #endregion Singleton
 
+    public enum Def_PortName
+    {
+        NONE = 0,
+        SPONGE = 1,
+        UNIPOLAR = 0xFF,
+        AIR = 0xFE,
+        DCMOTOR = 0xFD,
+        POTENTIONMETER = 0xFC,
+        MPU6050 = 0xFB,
+    }
+
     public List<serial_unit> PortList;
 
     public class serial_unit
@@ -37,6 +48,7 @@ public class SerialHandler : MonoBehaviour {
         public event SerialDataReceivedEventHandler OnDataReceived = delegate { };
 
         // Use this for initialization
+        public Def_PortName portName_def;
         public string UserName; //分かりやすい名前
         public string portName; //ポート名
         public int baudRate;   //ボードレート
@@ -250,6 +262,7 @@ public class SerialHandler : MonoBehaviour {
             if (_sp != null)
             {
                 _unit = new serial_unit();
+                _unit.portName_def = _sp.portName_def;
                 _unit.UserName = _sp.UserName;
                 _unit.portName = _sp.portName;
                 _unit.baudRate = _sp.baudRate;
@@ -280,6 +293,13 @@ public class SerialHandler : MonoBehaviour {
         {
             _serial.chkReadMessage();
         }
+
+
+        foreach(string port in SerialPort.GetPortNames())
+        {
+            Debug.LogWarning(port);
+        }
+
 
     }
 
