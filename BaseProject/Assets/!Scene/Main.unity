@@ -1489,7 +1489,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &443840571
 Transform:
   m_ObjectHideFlags: 0
@@ -2221,7 +2221,7 @@ MonoBehaviour:
   isUseAssetBundle: 0
   ScenePool:
   - name: 0
-    nextNum: 6
+    nextNum: 3
     nextNum_Edit: 0
     isStartFadeIn: 0
     isEndFadeOut: 0
@@ -3091,7 +3091,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1160996957
 Transform:
   m_ObjectHideFlags: 0

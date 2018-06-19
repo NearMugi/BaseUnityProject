@@ -8,7 +8,7 @@ public class EventTrigger_Motor : MonoBehaviour {
     [SerializeField]
     SerialConnect_Arduino_Unipolar.CMD_TYPE motor;
     
-    enum STATUS { NONE,STOP,START,NOTREADY,TURMINAL}
+    enum STATUS { NONE,STOP,START,NOT_READY,TURMINAL}
     STATUS now_status;
 
     [SerializeField]
@@ -51,20 +51,29 @@ public class EventTrigger_Motor : MonoBehaviour {
             SerialConnect_Arduino_Base.ReceiveCmd status = SerialConnect_Arduino_Unipolar.Instance_Unipolar.UnipolarStatus;
             bool _motplay = false;
             bool _motready = false;
-            if (motor == SerialConnect_Arduino_Unipolar.CMD_TYPE.MOTOR1)
+            switch (motor)
             {
-                _motplay = status.HasFlag(SerialConnect_Arduino_Base.ReceiveCmd.flg_1);
-                _motready = status.HasFlag(SerialConnect_Arduino_Base.ReceiveCmd.flg_2);
-            }
-            else
-            {
-                _motplay = status.HasFlag(SerialConnect_Arduino_Base.ReceiveCmd.flg_4);
-                _motready = status.HasFlag(SerialConnect_Arduino_Base.ReceiveCmd.flg_5);
+                case SerialConnect_Arduino_Unipolar.CMD_TYPE.MOTOR1:
+                    _motready = status.HasFlag(SerialConnect_Arduino_Base.ReceiveCmd.flg_7);
+                    _motplay = status.HasFlag(SerialConnect_Arduino_Base.ReceiveCmd.flg_6);
+                    break;
+                case SerialConnect_Arduino_Unipolar.CMD_TYPE.MOTOR2:
+                    _motready = status.HasFlag(SerialConnect_Arduino_Base.ReceiveCmd.flg_5);
+                    _motplay = status.HasFlag(SerialConnect_Arduino_Base.ReceiveCmd.flg_4);
+                    break;
+                case SerialConnect_Arduino_Unipolar.CMD_TYPE.MOTOR3:
+                    _motready = status.HasFlag(SerialConnect_Arduino_Base.ReceiveCmd.flg_3);
+                    _motplay = status.HasFlag(SerialConnect_Arduino_Base.ReceiveCmd.flg_2);
+                    break;
+                case SerialConnect_Arduino_Unipolar.CMD_TYPE.MOTOR4:
+                    _motready = status.HasFlag(SerialConnect_Arduino_Base.ReceiveCmd.flg_1);
+                    _motplay = status.HasFlag(SerialConnect_Arduino_Base.ReceiveCmd.flg_0);
+                    break;
             }
 
             if (!_motready)
             {
-                now_status = STATUS.NOTREADY;
+                now_status = STATUS.NOT_READY;
             }
             else
             {
@@ -118,7 +127,7 @@ public class EventTrigger_Motor : MonoBehaviour {
                 break;
 
             //準備中または停止中の場合、ppsを送信、設定
-            case STATUS.NOTREADY:
+            case STATUS.NOT_READY:
             case STATUS.STOP:
                 SetStop();
                 break;

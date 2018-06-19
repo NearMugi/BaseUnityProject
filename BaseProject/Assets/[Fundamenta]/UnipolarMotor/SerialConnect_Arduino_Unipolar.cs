@@ -31,6 +31,8 @@ public class SerialConnect_Arduino_Unipolar : SerialConnect_Arduino_Base
         NONE,
         MOTOR1,     //モーター１実行・停止、またはppsを即時反映
         MOTOR2,     //モーター２実行・停止、またはppsを即時反映
+        MOTOR3,     //モーター３実行・停止、またはppsを即時反映
+        MOTOR4,     //モーター４実行・停止、またはppsを即時反映
         TERMINAL,   //
     }
 
@@ -54,7 +56,7 @@ public class SerialConnect_Arduino_Unipolar : SerialConnect_Arduino_Base
         public int pps;
         public bool dir;
     }
-    MotorSetting[] MotorInfo = new MotorSetting[2];
+    MotorSetting[] MotorInfo = new MotorSetting[4];
 
     [HideInInspector]
     public ReceiveCmd UnipolarStatus { get; private set; }
@@ -69,6 +71,8 @@ public class SerialConnect_Arduino_Unipolar : SerialConnect_Arduino_Base
                                 //0x0001　モーター２に～
     const string cmd_B3 = "B3"; //0x0000～0xFFFF　モーター１に指定したppsを即時反映
     const string cmd_B4 = "B4"; //0x0000～0xFFFF　モーター２に指定したppsを即時反映
+    const string cmd_B5 = "B5"; //0x0000～0xFFFF　モーター３に指定したppsを即時反映
+    const string cmd_B6 = "B6"; //0x0000～0xFFFF　モーター４に指定したppsを即時反映
 
     const bool PLAY = true;
     const bool STOP = false;
@@ -78,6 +82,8 @@ public class SerialConnect_Arduino_Unipolar : SerialConnect_Arduino_Base
     const bool MOTOR2 = false;
     const string subCmd_Motor1 = "0000";
     const string subCmd_Motor2 = "0001";
+    const string subCmd_Motor3 = "0002";
+    const string subCmd_Motor4 = "0003";
 
     const bool FORWARD = true;
     const bool REVERSE = false;
@@ -122,6 +128,8 @@ public class SerialConnect_Arduino_Unipolar : SerialConnect_Arduino_Base
         StartInit();
         MotorInfo[0] = new MotorSetting { isReady = false, _ptn = SEND_PTN.NONE, type = CMD_TYPE.MOTOR1, pps = 0, dir = true };
         MotorInfo[1] = new MotorSetting { isReady = false, _ptn = SEND_PTN.NONE, type = CMD_TYPE.MOTOR2, pps = 0, dir = true };
+        MotorInfo[2] = new MotorSetting { isReady = false, _ptn = SEND_PTN.NONE, type = CMD_TYPE.MOTOR3, pps = 0, dir = true };
+        MotorInfo[3] = new MotorSetting { isReady = false, _ptn = SEND_PTN.NONE, type = CMD_TYPE.MOTOR4, pps = 0, dir = true };
 
     }
 
@@ -265,6 +273,12 @@ public class SerialConnect_Arduino_Unipolar : SerialConnect_Arduino_Base
             case CMD_TYPE.MOTOR2:
                 sendCmd += subCmd_Motor2;
                 break;
+            case CMD_TYPE.MOTOR3:
+                sendCmd += subCmd_Motor3;
+                break;
+            case CMD_TYPE.MOTOR4:
+                sendCmd += subCmd_Motor4;
+                break;
         }
 
         if (sendCmd.Length == CmdLength) DataSend(sendCmd);
@@ -303,6 +317,12 @@ public class SerialConnect_Arduino_Unipolar : SerialConnect_Arduino_Base
             case CMD_TYPE.MOTOR2:
                 sendCmd += subCmd_Motor2;
                 break;
+            case CMD_TYPE.MOTOR3:
+                sendCmd += subCmd_Motor3;
+                break;
+            case CMD_TYPE.MOTOR4:
+                sendCmd += subCmd_Motor4;
+                break;
         }
 
         if (sendCmd.Length == CmdLength) DataSend(sendCmd);
@@ -323,6 +343,12 @@ public class SerialConnect_Arduino_Unipolar : SerialConnect_Arduino_Base
                 break;
             case CMD_TYPE.MOTOR2:
                 sendCmd = cmd_B4;
+                break;
+            case CMD_TYPE.MOTOR3:
+                sendCmd = cmd_B5;
+                break;
+            case CMD_TYPE.MOTOR4:
+                sendCmd = cmd_B6;
                 break;
         }
 
