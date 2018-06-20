@@ -143,6 +143,19 @@ public class EventTrigger_Motor : MonoBehaviour {
         SerialConnect_Arduino_Unipolar.Instance_Unipolar.ReadyOK(motor);
     }
 
+    bool isOn = false;
+    public void SetOnOff()
+    {
+        isOn = !isOn;
+        if (isOn)
+        {
+            SetStart();
+        } else
+        {
+            SetStop();
+        }
+    }
+
     public void SetStart()
     {
         if(now_status != STATUS.START)

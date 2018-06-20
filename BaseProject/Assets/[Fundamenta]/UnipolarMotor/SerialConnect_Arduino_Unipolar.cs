@@ -63,8 +63,8 @@ public class SerialConnect_Arduino_Unipolar : SerialConnect_Arduino_Base
 
     const int CmdLength = 6;    //コマンドの長さ(終点を除く文字列)
 
-    const string cmd_A0 = "A0"; //0x0000　モーター１実行・0x0001　モーター２実行
-    const string cmd_80 = "80"; //0x0000  モーター１停止・0x0001　モーター２停止
+    const string cmd_A0 = "A0"; //モーター実行
+    const string cmd_80 = "80"; //モーター停止
     const string cmd_B0 = "B0"; //0x0000～0xFFFF　pps
     const string cmd_B1 = "B1"; //0x0000　正方向・0x0001　逆方向
     const string cmd_B2 = "B2"; //0x0000　モーター１に指定したpps、方向を設定　※モーターは停止する
@@ -95,15 +95,7 @@ public class SerialConnect_Arduino_Unipolar : SerialConnect_Arduino_Base
     //flg_0,7がTrue、それ以外はfalse
 
 
-    //2バイト目：モーター1，2のステータス
-    //flg_7
-    //flg_6
-    //flg_5 モーター２　true…準備OK、false…NG
-    //flg_4 モーター２　true…開始、false…停止
-    //flg_3
-    //flg_2 モーター１　true…準備OK、false…NG
-    //flg_1 モーター１　true…開始、false…停止
-    //flg_0
+    //2バイト目：モーターのステータス
     
     public new string DebugList()
     {
