@@ -2221,7 +2221,7 @@ MonoBehaviour:
   isUseAssetBundle: 0
   ScenePool:
   - name: 0
-    nextNum: 3
+    nextNum: 7
     nextNum_Edit: 0
     isStartFadeIn: 0
     isEndFadeOut: 0
@@ -2264,6 +2264,13 @@ MonoBehaviour:
     ActiveFlg: 0
   - name: 6
     nextNum: 6
+    nextNum_Edit: 0
+    isStartFadeIn: 0
+    isEndFadeOut: 0
+    MainCamera: {fileID: 0}
+    ActiveFlg: 0
+  - name: 7
+    nextNum: 7
     nextNum_Edit: 0
     isStartFadeIn: 0
     isEndFadeOut: 0
