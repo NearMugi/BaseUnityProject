@@ -56,6 +56,6 @@ public class mqttBase : MonoBehaviour {
 
     public void SetPublish(string topic, string msg)
     {
-        client.Publish(topic, System.Text.Encoding.UTF8.GetBytes(msg), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, true);
+        client.Publish(topic, System.Text.Encoding.UTF8.GetBytes(msg), MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE, false);
     }
 }

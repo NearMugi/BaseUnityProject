@@ -23,7 +23,7 @@ public class mqttUnit : MonoBehaviour
         if (GUI.Button(new Rect(20, 70, 80, 20), "Publish"))
         {
             Debug.Log("sending...");
-            mqttBase.Instance.SetPublish(PublishTopic, "Sending from Unity3D");
+            mqttBase.Instance.SetPublish(PublishTopic, "メッセージ送信");
             Debug.Log("sent");
         }
     }
