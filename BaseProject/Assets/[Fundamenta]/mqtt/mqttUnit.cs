@@ -10,8 +10,6 @@ public class mqttUnit : MonoBehaviour
     [SerializeField]
     string PublishTopic;
     [SerializeField]
-    Text txt_ts;
-    [SerializeField]
     Text txt_data;
 
     public void Init()
@@ -20,7 +18,7 @@ public class mqttUnit : MonoBehaviour
         mqttBase.Instance.Init();
         mqttBase.Instance.SetSubscribeTopic(SubscribeTopic);
         Debug.Log("Success");
-        txt_ts.text = "Wait Message...";
+        txt_data.text = "Wait Message...";
     }
     public void SetPublish(string _s)
     {
@@ -30,9 +28,10 @@ public class mqttUnit : MonoBehaviour
     }
     private void Update()
     {
+        if (txt_data == null) return;
         if (mqttBase.Instance == null) return;
         if (mqttBase.Instance.msg == null) return;
-        txt_ts.text = mqttBase.Instance.timestamp.ToString("yyyy-MM-dd HH:mm:ss");
-        txt_data.text = mqttBase.Instance.msg.data;
+        txt_data.text = mqttBase.Instance.timestamp.ToString("yyyy-MM-dd HH:mm:ss") + "\n";
+        txt_data.text += mqttBase.Instance.msg.data;
     }
 }

@@ -2294,6 +2294,13 @@ MonoBehaviour:
     isEndFadeOut: 0
     MainCamera: {fileID: 0}
     ActiveFlg: 0
+  - name: 8
+    nextNum: 8
+    nextNum_Edit: 0
+    isStartFadeIn: 0
+    isEndFadeOut: 0
+    MainCamera: {fileID: 0}
+    ActiveFlg: 0
 --- !u!81 &712182262
 AudioListener:
   m_ObjectHideFlags: 0
