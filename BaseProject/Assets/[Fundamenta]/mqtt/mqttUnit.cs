@@ -31,7 +31,8 @@ public class mqttUnit : MonoBehaviour
         if (txt_data == null) return;
         if (mqttBase.Instance == null) return;
         if (mqttBase.Instance.msg == null) return;
-        txt_data.text = mqttBase.Instance.timestamp.ToString("yyyy-MM-dd HH:mm:ss") + "\n";
-        txt_data.text += mqttBase.Instance.msg.data;
+        //txt_data.text = mqttBase.Instance.timestamp.ToString("yyyy-MM-dd HH:mm:ss") + "\n";
+        //txt_data.text += mqttBase.Instance.msg.data;
+        txt_data.text = mqttBase.Instance.msg.data;
     }
 }
