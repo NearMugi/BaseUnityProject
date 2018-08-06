@@ -29,3 +29,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/!Scene/Connect_mpu6050.unity
     guid: 596e1422cc6cabd49aef2cd42e81ca6c
+  - enabled: 1
+    path: Assets/!Scene/mqtt.unity
+    guid: 6ab1517a5b9791e47aa827c49ec69983
+  m_configObjects: {}
