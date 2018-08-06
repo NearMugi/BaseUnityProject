@@ -89,9 +89,9 @@ public class mqttBase : MonoBehaviour {
 
     void client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
     {
-        Debug.Log("topic: " + e.Topic);
+        //Debug.Log("topic: " + e.Topic);
         PublishMsg = System.Text.Encoding.UTF8.GetString(e.Message);
-        Debug.Log("Received: " + PublishMsg);
+        //Debug.Log("Received: " + PublishMsg);
         msg = JsonConvert.DeserializeObject<PublishMsg_Beebotte>(PublishMsg);
         timestamp = FromUnixTime(msg.ts / 1000);
     }

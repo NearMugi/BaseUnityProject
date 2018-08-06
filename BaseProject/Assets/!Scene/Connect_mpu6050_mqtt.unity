@@ -6813,7 +6813,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   text_OutputValue: {fileID: 1335082004}
   obj: {fileID: 1965206060}
-  ofs_localRotation: {x: -0.02, y: -0.3, z: 0.01}
+  ofs_localRotation: {x: 0.03, y: 0.01, z: -0.03}
   TargetQuaternion: {x: 0, y: 0, z: 0, w: 0}
 --- !u!1 &1512210501
 GameObject:

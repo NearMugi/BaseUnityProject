@@ -53,7 +53,7 @@ public class EventTrigger_mpu6050_mqtt : MonoBehaviour
             if (tmp.Length == 4)
             {
                 base_qt = new Quaternion(float.Parse(tmp[0]), float.Parse(tmp[1]), float.Parse(tmp[2]), float.Parse(tmp[3]));
-                unity_qt = new Quaternion(-1.0f * base_qt[1], -1.0f * base_qt[3], -1.0f * base_qt[2], base_qt[0]);
+                unity_qt = new Quaternion(1.0f * base_qt[2], -1.0f * base_qt[3], -1.0f * base_qt[1], base_qt[0]);
                 //画面に合わせて角度を調整する
                 TargetQuaternion = new Quaternion(unity_qt[0] + ofs_localRotation.x, unity_qt[1] + ofs_localRotation.y, unity_qt[2] + ofs_localRotation.z, unity_qt[3]);
             }
