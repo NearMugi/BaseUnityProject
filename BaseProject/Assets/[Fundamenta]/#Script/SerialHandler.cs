@@ -38,6 +38,7 @@ public class SerialHandler : MonoBehaviour {
         DCMOTOR = 0xFD,
         POTENTIONMETER = 0xFC,
         MPU6050 = 0xFB,
+        BLUETOOTH = 0xFA,
     }
 
     public List<serial_unit> PortList;
@@ -79,7 +80,7 @@ public class SerialHandler : MonoBehaviour {
                 serialPort_.RtsEnable = true;
                 serialPort_.Open();
 
-                //Debug.LogWarning("[Open]" + serialPort_.PortName + ", IsOpen " + serialPort_.IsOpen);
+                Debug.LogWarning("[Open]" + serialPort_.PortName + ", IsOpen " + serialPort_.IsOpen);
 
                 isRunning_ = true;
 
@@ -92,11 +93,13 @@ public class SerialHandler : MonoBehaviour {
             catch (System.IO.IOException ex)
             {
                 errMsg = ex.Message;
+                Debug.LogError(errMsg);
                 err++;
             }
             catch (System.Exception ex)
             {
                 errMsg = ex.Message;
+                Debug.LogError(errMsg);
                 err++;
             }
             return false;

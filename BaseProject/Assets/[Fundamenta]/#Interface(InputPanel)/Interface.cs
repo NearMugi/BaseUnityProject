@@ -88,6 +88,11 @@ public class Interface : MonoBehaviour {
         if (SerialConnect_Arduino_mpu6050.Instance_mpu6050 == null) return;
         SerialConnect_Arduino_mpu6050.Instance_mpu6050.Connect();
     }
+    public void btn_Connect_BlueTooth()
+    {
+        if (SerialConnect_BlueTooth.Instance_BlueTooth == null) return;
+        SerialConnect_BlueTooth.Instance_BlueTooth.Connect();
+    }
 
 
     /// <summary>
