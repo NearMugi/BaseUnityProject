@@ -80,7 +80,7 @@ public class SerialHandler : MonoBehaviour {
                 serialPort_.RtsEnable = true;
                 serialPort_.Open();
 
-                Debug.LogWarning("[Open]" + serialPort_.PortName + ", IsOpen " + serialPort_.IsOpen);
+                //Debug.LogWarning("[Open]" + serialPort_.PortName + ", IsOpen " + serialPort_.IsOpen);
 
                 isRunning_ = true;
 
@@ -300,7 +300,7 @@ public class SerialHandler : MonoBehaviour {
 
         foreach(string port in SerialPort.GetPortNames())
         {
-            Debug.LogWarning(port);
+            //Debug.LogWarning(port);
         }
 
 

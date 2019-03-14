@@ -51,6 +51,7 @@ public class SerialConnect_BlueTooth : SerialConnect_Arduino_Base
         //接続できていない場合は何もしない。
         if (!isConnect) { isAnalysis = false; return; }
 
+        
         //入力値を解析する
         foreach (string _d in GetData) analisysGetData(_d);
 

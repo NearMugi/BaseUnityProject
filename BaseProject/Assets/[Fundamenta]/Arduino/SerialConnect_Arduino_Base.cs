@@ -172,7 +172,7 @@ public class SerialConnect_Arduino_Base : MonoBehaviour {
         if (++WaitCnt <= MAX_WAITCNT) return;
         WaitCnt = 0;
 
-        //Debug.LogWarning(joinMsg);
+        Debug.LogWarning(joinMsg);
 
         //update処理内で解析中の場合は以下の処理を行わない
         if (isAnalysis) return;

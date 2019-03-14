@@ -2355,7 +2355,7 @@ MonoBehaviour:
   isUseAssetBundle: 0
   ScenePool:
   - name: 0
-    nextNum: 6
+    nextNum: 1
     nextNum_Edit: 0
     isStartFadeIn: 0
     isEndFadeOut: 0
@@ -3545,8 +3545,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   portName_def: 250
   UserName: Bluetooth
-  portName: COM5
-  baudRate: 9600
+  portName: COM8
+  baudRate: 115200
 --- !u!1 &1473032450
 GameObject:
   m_ObjectHideFlags: 0
