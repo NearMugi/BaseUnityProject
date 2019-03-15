@@ -6,7 +6,7 @@ using UnityEngine.Events;
 /// <summary>
 /// Bluetooth接続
 /// </summary>
-public class SerialConnect_BlueTooth : SerialConnect_Arduino_Base
+public class SerialConnect_BlueTooth : SerialConnect_BlueTooth_Base
 {
 
     #region Singleton
@@ -28,6 +28,9 @@ public class SerialConnect_BlueTooth : SerialConnect_Arduino_Base
     #endregion Singleton
 
 
+    const int cmdSize = 3;
+    string[] cmd = new string[cmdSize];
+
     public new string DebugList()
     {
         if (_serial == null) return string.Empty;
@@ -35,7 +38,11 @@ public class SerialConnect_BlueTooth : SerialConnect_Arduino_Base
         System.Text.StringBuilder sb = new System.Text.StringBuilder();
         sb.Append("--- CONNECT BLUETOOTH INFO ---  ");
         sb.Append("\n");
-
+        sb.Append(cmd[0]);
+        sb.Append("\n");
+        sb.Append(cmd[1]);
+        sb.Append("\n");
+        sb.Append(cmd[2]);
         return sb.ToString();
     }
     
@@ -51,11 +58,15 @@ public class SerialConnect_BlueTooth : SerialConnect_Arduino_Base
         //接続できていない場合は何もしない。
         if (!isConnect) { isAnalysis = false; return; }
 
-        
+
         //入力値を解析する
+        cmd = new string[cmdSize];
         foreach (string _d in GetData) analisysGetData(_d);
 
         isAnalysis = false;
+
+
+        DataSend("A");
 
     }
 
@@ -63,8 +74,14 @@ public class SerialConnect_BlueTooth : SerialConnect_Arduino_Base
     {
         if (data == null) return;
         if (data.Length <= 0) return;
-        
-        Debug.LogWarning(data);        
+
+        string[] _tmp = data.Split(splitPoint);
+        if (_tmp.Length != cmdSize) return;
+        int i = 0;
+        foreach(string d in _tmp)
+        {
+            cmd[i++] = d;
+        }
     }
 
 

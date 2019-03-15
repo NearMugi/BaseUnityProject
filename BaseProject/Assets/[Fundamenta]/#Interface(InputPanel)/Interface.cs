@@ -146,6 +146,8 @@ public class Interface : MonoBehaviour {
 
         if (SerialConnect_Arduino_mpu6050.Instance_mpu6050 != null) sb_2.Append(SerialConnect_Arduino_mpu6050.Instance_mpu6050.DebugList());
 
+        if (SerialConnect_BlueTooth.Instance_BlueTooth != null) sb_2.Append(SerialConnect_BlueTooth.Instance_BlueTooth.DebugList());
+
         txtDispDebug_2.text = sb_2.ToString();
 
     }
