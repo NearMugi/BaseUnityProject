@@ -46,13 +46,6 @@ public class sceneManage : MonoBehaviour
     //
     bool flgSceneChg;           //シーンチェンジ指定フラグ　trueになると次のシーンへ切り替わる ※外部から指定
     sceneManage_Name.SCENE_NAME next_sceneName;   //次のシーン名
-    //シーン切り替え時の制御用
-    enum SCENE_CHANGE
-    {
-        STEP_0 = 0, //0 : シーン切り替え処理を開始
-        STEP_1,     //1 : 切り替え後の初期化
-    }
-    SCENE_CHANGE StepChgScene;
 
     //+++++++++++++++++++++++
 
@@ -100,7 +93,6 @@ public class sceneManage : MonoBehaviour
     public void SetflgSceneChgTrue()
     {
         flgSceneChg = true;
-        StepChgScene = SCENE_CHANGE.STEP_0;
     }
 
     /// <summary>
@@ -158,7 +150,6 @@ public class sceneManage : MonoBehaviour
         //ゼロ番目はエラー用
         now_sceneName = (sceneManage_Name.SCENE_NAME)((int)sceneManage_Name.SCENE_NAME.NONE);
         flgSceneChg = true;
-        StepChgScene = SCENE_CHANGE.STEP_0;
 
         NowCoroutine = null;
     }
@@ -167,30 +158,10 @@ public class sceneManage : MonoBehaviour
     void Update()
     {
         if (!flgSceneChg) return;
-
-        
-        //シーンチェンジを指示されている場合
-        //Debug.LogWarning("[シーンチェンジ中]" + StepChgScene + "  now_sceneName:" + now_sceneName);
-        switch (StepChgScene)
-        {
-            //次のシーンへ切り替え
-            case SCENE_CHANGE.STEP_0:
-                if (NowCoroutine == null) NowCoroutine = StartCoroutine(ChgScene(OnFinichedCoroutine_NextStep));
-                break;
-
-            //切り替え後の初期化
-            case SCENE_CHANGE.STEP_1:
-                if (NowCoroutine == null) NowCoroutine = StartCoroutine(EndChgScene());
-                break;
-
-            default:
-                break;
-
-        }
-
+        if (NowCoroutine == null) NowCoroutine = StartCoroutine(ChgScene(OnFinichedCoroutine));
     }
 
-    void OnFinichedCoroutine_NextStep()
+    void OnFinichedCoroutine()
     {
         //Debug.LogWarning("OnFinichedCoroutine_NextStep ");
         if (NowCoroutine != null)
@@ -198,24 +169,17 @@ public class sceneManage : MonoBehaviour
             //Debug.LogWarning("[sceneManage][StopCoroutine] StepChgScene" + StepChgScene);
             StopCoroutine(NowCoroutine);
             NowCoroutine = null;
-        } else
-        {
-            //Debug.LogWarning("NowCoroutine is null");
         }
-        StepChgScene++;
     }
+    
 
-
-    bool isRunning = false;
     /// <summary>
-    /// AssetBundleの読み込み＆次のシーンへ切り替え
+    /// 次のシーンへ切り替え
     /// </summary>
     /// <returns></returns>
     private IEnumerator ChgScene(UnityAction callback)
     {
-        if (isRunning) yield break;
-        isRunning = true;
-        
+
         //次のシーン名を取得する　処理中に変更されている場合はそっちを採用
         next_sceneName = ScenePool[(int)now_sceneName].nextNum;
         if (next_sceneName != ScenePool[(int)now_sceneName].nextNum_Edit)
@@ -223,59 +187,24 @@ public class sceneManage : MonoBehaviour
             next_sceneName = ScenePool[(int)now_sceneName].nextNum_Edit;
         }
         //Debug.LogWarning("次のシーン：" + next_sceneName);
-
-
+        
         //シーン切り替え
         ScenePool[(int)now_sceneName].ActiveFlg = false;
         SceneManager.LoadScene(next_sceneName.ToString());
         yield return null;
         
-        //コールバック
-        callback();
-        isRunning = false;
-        yield break;
-    }
-
-
-    /// <summary>
-    /// シーンの切り替えが終了したときの後処理
-    /// </summary>
-    /// <returns></returns>
-    public IEnumerator EndChgScene()
-    {
-
-        //Debug.LogWarning("EndChgScene");
-
-        if (isRunning) yield break;
-        isRunning = true;
-
         now_sceneName = next_sceneName; //現在のシーン名を更新
         ScenePool[(int)now_sceneName].ActiveFlg = true;
 
         //次のシーン名(編集)と次のシーン名を一致させる
         ScenePool[(int)now_sceneName].nextNum_Edit = ScenePool[(int)now_sceneName].nextNum;
-
-        //シーンチェンジのフラグを初期値に戻す
-        StepChgScene = SCENE_CHANGE.STEP_0;
-
+        
         //シーンチェンジ指示をfalseにする
         flgSceneChg = false;
-        isRunning = false;
-        
+
+
+        //コールバック
+        callback();
         yield break;
-
-
-    }
-    
-    public string GetStatusLabel(sceneData d)
-    {
-        string s = "[[none]]";
-
-        if (d.name.ToString() != "")
-        {
-            s = d.name.ToString();
-        }
-
-        return s;
     }
 }
