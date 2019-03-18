@@ -28,6 +28,7 @@ public class SerialConnect_BlueTooth : SerialConnect_BlueTooth_Base
     #endregion Singleton
 
 
+    const int dataSize = 9; //nnn,nn,nn
     const int cmdSize = 3;
     string[] cmd = new string[cmdSize];
 
@@ -37,6 +38,8 @@ public class SerialConnect_BlueTooth : SerialConnect_BlueTooth_Base
 
         System.Text.StringBuilder sb = new System.Text.StringBuilder();
         sb.Append("--- CONNECT BLUETOOTH INFO ---  ");
+        sb.Append("\n");
+        sb.Append("[GetLastData]");
         sb.Append("\n");
         sb.Append(cmd[0]);
         sb.Append("\n");
@@ -61,19 +64,19 @@ public class SerialConnect_BlueTooth : SerialConnect_BlueTooth_Base
 
         //入力値を解析する
         cmd = new string[cmdSize];
-        foreach (string _d in GetData) analisysGetData(_d);
+        analisysGetData(GetLastData);
 
         isAnalysis = false;
 
 
-        DataSend("A");
+        DataSend("Hoge HOGE");
 
     }
 
     void analisysGetData(string data)
     {
         if (data == null) return;
-        if (data.Length <= 0) return;
+        if (data.Length != dataSize) return;
 
         string[] _tmp = data.Split(splitPoint);
         if (_tmp.Length != cmdSize) return;

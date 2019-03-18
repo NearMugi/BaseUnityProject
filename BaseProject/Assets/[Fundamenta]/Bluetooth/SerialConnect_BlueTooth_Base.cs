@@ -41,12 +41,14 @@ public class SerialConnect_BlueTooth_Base : MonoBehaviour {
     [HideInInspector]
     public bool isAnalysis;
 
-    public const byte endPoint = 0x09; //"\t"
+    public const char endPoint = '@';
     public const char splitPoint = ',';
     
     [HideInInspector]
     public string[] GetData;
-    
+    [HideInInspector]
+    public string GetLastData;  //最新受信データ
+
     string joinMsg;
 
     /// <summary>
@@ -76,7 +78,7 @@ public class SerialConnect_BlueTooth_Base : MonoBehaviour {
         return sb.ToString();
     }
 
-    void DebugMsg(string head, string _s)
+    string DebugMsg(string head, string _s)
     {
         string msg = head + _s;
 
@@ -90,6 +92,7 @@ public class SerialConnect_BlueTooth_Base : MonoBehaviour {
         }
 
         Debug.LogWarning(msg);
+        return msg;
     }
     
 
@@ -103,6 +106,12 @@ public class SerialConnect_BlueTooth_Base : MonoBehaviour {
     {
         if (NowCoroutine != null) StopCoroutine(NowCoroutine);
         NowCoroutine = StartCoroutine(ConnectCoroutine());
+    }
+
+    public void Disconnect()
+    {
+        _serial.Close();
+        _serial.OnDataReceived -= OnDataReceived;
     }
 
     private IEnumerator ConnectCoroutine()
@@ -147,18 +156,23 @@ public class SerialConnect_BlueTooth_Base : MonoBehaviour {
         foreach (string _t in message)
         {
             joinMsg += _t;
-        }        
+        }
+        if (joinMsg.Length <= 0) return;
         //Debug.LogWarning(joinMsg);
 
         //update処理内で解析中の場合は以下の処理を行わない
         if (isAnalysis) return;
 
         //endPoint区切りのデータを格納している。
-        //a,b,c\t1,2,3\t -> GetData[0] = a,b,c GetData[1] = 1,2,3
-        GetData = joinMsg.Split((char)endPoint);
+        //a,b,c@1,2,3@ -> GetData[0] = a,b,c GetData[1] = 1,2,3
+        //最後に取得したデータをGetLastDataに保存
+        GetData = joinMsg.Split(endPoint);
+        GetLastData = GetData[GetData.Length - 2];
+        //Debug.Log(joinMsg + "  ->  " + GetLastData);
+        //DebugMsg("", joinMsg);
 
         //一つでも条件に合うデータを取得出来たら、連結データを削除する
-        if(GetData.Length > 0)
+        if (GetData.Length > 0)
         {
             joinMsg = string.Empty;
         }

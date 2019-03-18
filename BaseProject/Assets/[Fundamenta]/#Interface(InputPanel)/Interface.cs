@@ -94,6 +94,12 @@ public class Interface : MonoBehaviour {
         SerialConnect_BlueTooth.Instance_BlueTooth.Connect();
     }
 
+    public void btn_Disconnect_BlueTooth()
+    {
+        if (SerialConnect_BlueTooth.Instance_BlueTooth == null) return;
+        SerialConnect_BlueTooth.Instance_BlueTooth.Disconnect();
+    }
+
 
     /// <summary>
     /// ボタン名の記載されていないボタンは無効にする
