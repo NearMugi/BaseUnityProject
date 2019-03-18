@@ -34,8 +34,6 @@ public class sceneManage : MonoBehaviour
     
     static sceneManage_Name.SCENE_NAME now_sceneName;   //現在のシーン名
 
-    [SerializeField]
-    bool isUseAssetBundle;  //アセットバンドルの使用有無
 
     [SerializeField]
     List<sceneData> ScenePool;
@@ -175,7 +173,7 @@ public class sceneManage : MonoBehaviour
         //Debug.LogWarning("[シーンチェンジ中]" + StepChgScene + "  now_sceneName:" + now_sceneName);
         switch (StepChgScene)
         {
-            //AssetBundleの読み込み＆次のシーンへ切り替え
+            //次のシーンへ切り替え
             case SCENE_CHANGE.STEP_0:
                 if (NowCoroutine == null) NowCoroutine = StartCoroutine(ChgScene(OnFinichedCoroutine_NextStep));
                 break;
@@ -226,17 +224,6 @@ public class sceneManage : MonoBehaviour
         }
         //Debug.LogWarning("次のシーン：" + next_sceneName);
 
-
-        //AssetBundleを読み込む
-        if (isUseAssetBundle)
-        {
-            //AssetBundleManager.Instance.ChgScene_AssetBundleLoad(next_sceneName.ToString(), ScenePool[(int)now_sceneName].MainCamera);
-            yield return null;
-            while (!AssetBundleManager.Instance.GetisLoadEnd())
-            {
-                yield return null;
-            }
-        }
 
         //シーン切り替え
         ScenePool[(int)now_sceneName].ActiveFlg = false;
