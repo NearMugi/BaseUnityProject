@@ -52,9 +52,7 @@ public class sceneManage : MonoBehaviour
     enum SCENE_CHANGE
     {
         STEP_0 = 0, //0 : シーン切り替え処理を開始
-        STEP_1,     //1 : フェードアウト終了
-        STEP_2,     //2 : シーンの切り替え終了
-        STEP_3,     //3 : フェードイン終了
+        STEP_1,     //1 : 切り替え後の初期化
     }
     SCENE_CHANGE StepChgScene;
 
@@ -68,18 +66,6 @@ public class sceneManage : MonoBehaviour
         public sceneManage_Name.SCENE_NAME nextNum; //次のシーン
         [HideInInspector]
         public sceneManage_Name.SCENE_NAME nextNum_Edit;    //処理中に指定したときの次のシーン　※外部から指定
-
-        //シーンを読み込むときフェードインするかどうか
-        public bool isStartFadeIn;
-
-        /// <summary>
-        /// シーンを閉じるときフェードアウトするかどうか
-        /// </summary>
-        public bool isEndFadeOut;
-        /// <summary>
-        /// フェードを表示させるカメラ
-        /// </summary>
-        public GameObject MainCamera;
 
         //処理用
         [HideInInspector]
@@ -116,6 +102,7 @@ public class sceneManage : MonoBehaviour
     public void SetflgSceneChgTrue()
     {
         flgSceneChg = true;
+        StepChgScene = SCENE_CHANGE.STEP_0;
     }
 
     /// <summary>
@@ -151,7 +138,7 @@ public class sceneManage : MonoBehaviour
         if (_nextScene != sceneManage_Name.SCENE_NAME.NONE)
         {
 
-            Debug.LogWarning("ForcedTermination" + _nextScene);
+            Debug.LogWarning("Forced Termination : " + _nextScene);
 
             SetnextNum_Edit(SceneManager.GetActiveScene().name, _nextScene);
             SetflgSceneChgTrue();
@@ -181,44 +168,28 @@ public class sceneManage : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!flgSceneChg) return;
 
+        
         //シーンチェンジを指示されている場合
-        if (flgSceneChg)
+        //Debug.LogWarning("[シーンチェンジ中]" + StepChgScene + "  now_sceneName:" + now_sceneName);
+        switch (StepChgScene)
         {
-            //Debug.LogWarning("[シーンチェンジ中]" + StepChgScene + "  now_sceneName:" + now_sceneName);
+            //AssetBundleの読み込み＆次のシーンへ切り替え
+            case SCENE_CHANGE.STEP_0:
+                if (NowCoroutine == null) NowCoroutine = StartCoroutine(ChgScene(OnFinichedCoroutine_NextStep));
+                break;
 
-            switch (StepChgScene)
-            {
-                //--シーン切り替え処理を開始
-                case SCENE_CHANGE.STEP_0:
-                    //フェードアウトするorしないを判断し、必要に応じてフェードアウトする
-                    if (NowCoroutine == null) NowCoroutine = StartCoroutine(isFadeOut(OnFinichedCoroutine_NextStep));
-                    break;
+            //切り替え後の初期化
+            case SCENE_CHANGE.STEP_1:
+                if (NowCoroutine == null) NowCoroutine = StartCoroutine(EndChgScene());
+                break;
 
-                //--フェードアウト終了
-                case SCENE_CHANGE.STEP_1:
-                    //AssetBundleの読み込み＆次のシーンへ切り替え
-                    if (NowCoroutine == null) NowCoroutine = StartCoroutine(ChgScene(OnFinichedCoroutine_NextStep));
-                    break;
-
-                //--シーンの切り替え終了
-                case SCENE_CHANGE.STEP_2:
-                    //フェードインするorしないを判断し、必要に応じてフェードインする
-                    if (NowCoroutine == null) NowCoroutine = StartCoroutine(isFadeIn(OnFinichedCoroutine_NextStep));
-                    break;
-
-                //--フェードイン終了
-                case SCENE_CHANGE.STEP_3:
-                    //シーンの切り替えが終了しているので、色々初期化する
-                    if (NowCoroutine == null) NowCoroutine = StartCoroutine(EndChgScene(OnFinichedCoroutine_NextStep));
-                    break;
-
-                default:
-                    break;
-
-            }
+            default:
+                break;
 
         }
+
     }
 
     void OnFinichedCoroutine_NextStep()
@@ -231,57 +202,13 @@ public class sceneManage : MonoBehaviour
             NowCoroutine = null;
         } else
         {
-            Debug.LogWarning("NowCoroutine is null");
+            //Debug.LogWarning("NowCoroutine is null");
         }
         StepChgScene++;
     }
 
 
     bool isRunning = false;
-    /// <summary>
-    /// フェードアウト
-    /// </summary>
-    /// <returns></returns>
-    private IEnumerator isFadeOut(UnityAction callback)
-    {
-        if (isRunning) yield break;
-        isRunning = true;
-
-        //シーン切り替えと同時にマウス入力を無効にする ※未使用
-        //mouseManage.Instance.Init();
-        yield return null;
-        
-        //フェードアウトの処理
-        if(FadeManager.Instance != null)
-        {
-            //フェードアウトの指定がない場合は何もしない
-            if (!ScenePool[(int)now_sceneName].isEndFadeOut)
-            {
-                //フェードインのように、α値＝1.0fにして不透明にすることはしない。
-            }
-            else
-            {
-                //フェードアウト
-                FadeManager.Instance.StartFadeOut(0.5f, ScenePool[(int)now_sceneName].MainCamera);
-                //Debug.LogWarning("StartFadeOut");
-                yield return null;
-                while (!FadeManager.Instance.GetisFadeEnd())
-                {
-                    yield return null;
-                }
-            }
-        }
-
-
-        //Debug.LogWarning("GetisFadeEnd");
-
-        //コールバック
-        callback();
-        isRunning = false;
-        yield break;
-
-    }
-
     /// <summary>
     /// AssetBundleの読み込み＆次のシーンへ切り替え
     /// </summary>
@@ -303,7 +230,7 @@ public class sceneManage : MonoBehaviour
         //AssetBundleを読み込む
         if (isUseAssetBundle)
         {
-            AssetBundleManager.Instance.ChgScene_AssetBundleLoad(next_sceneName.ToString(), ScenePool[(int)now_sceneName].MainCamera);
+            //AssetBundleManager.Instance.ChgScene_AssetBundleLoad(next_sceneName.ToString(), ScenePool[(int)now_sceneName].MainCamera);
             yield return null;
             while (!AssetBundleManager.Instance.GetisLoadEnd())
             {
@@ -315,45 +242,6 @@ public class sceneManage : MonoBehaviour
         ScenePool[(int)now_sceneName].ActiveFlg = false;
         SceneManager.LoadScene(next_sceneName.ToString());
         yield return null;
-
-        //NowLoadingを非表示にする
-        if(isUseAssetBundle) AssetBundleManager.Instance.ChgScene_AssetBundleLoadEnd(ScenePool[(int)now_sceneName].MainCamera);
-
-
-        //コールバック
-        callback();
-        isRunning = false;
-        yield break;
-    }
-
-    /// <summary>
-    /// フェードイン
-    /// </summary>
-    /// <returns></returns>
-    private IEnumerator isFadeIn(UnityAction callback)
-    {
-        if (isRunning) yield break;
-        isRunning = true;
-
-        //フェードインの処理
-        if (FadeManager.Instance != null)
-        {
-            //フェードインの指定がない場合はα値を戻す
-            if (!ScenePool[(int)now_sceneName].isStartFadeIn)
-            {
-                //α値＝0.0fにして透明にする
-                FadeManager.Instance.FadeAlpha(0.0f, ScenePool[(int)now_sceneName].MainCamera);
-            }
-            else
-            {
-                //フェードイン
-                FadeManager.Instance.StartFadeIn(0.5f, ScenePool[(int)now_sceneName].MainCamera);
-            }
-            while (!FadeManager.Instance.GetisFadeEnd())
-            {
-                yield return null;
-            }
-        }
         
         //コールバック
         callback();
@@ -361,11 +249,12 @@ public class sceneManage : MonoBehaviour
         yield break;
     }
 
+
     /// <summary>
     /// シーンの切り替えが終了したときの後処理
     /// </summary>
     /// <returns></returns>
-    public IEnumerator EndChgScene(UnityAction callback)
+    public IEnumerator EndChgScene()
     {
 
         //Debug.LogWarning("EndChgScene");
@@ -375,9 +264,6 @@ public class sceneManage : MonoBehaviour
 
         now_sceneName = next_sceneName; //現在のシーン名を更新
         ScenePool[(int)now_sceneName].ActiveFlg = true;
-        Camera _camera = null;
-        if (ScenePool[(int)now_sceneName].MainCamera != null) _camera = ScenePool[(int)now_sceneName].MainCamera.GetComponent<Camera>();
-        SetupProject.Instance.SetDisplayOrthographic(_camera);
 
         //次のシーン名(編集)と次のシーン名を一致させる
         ScenePool[(int)now_sceneName].nextNum_Edit = ScenePool[(int)now_sceneName].nextNum;
@@ -388,13 +274,7 @@ public class sceneManage : MonoBehaviour
         //シーンチェンジ指示をfalseにする
         flgSceneChg = false;
         isRunning = false;
-
-        //マウス入力を有効にする ※未使用
-        //mouseManage.Instance.ReStart();
-        yield return null;
-
-        //コールバック
-        callback();
+        
         yield break;
 
 
