@@ -94,11 +94,12 @@ public class Sponge_PlotMesh : MonoBehaviour {
     /// <param name="id"></param>
     void CreatePlotMeshOb(SerialConnect_Sponge _serial, int id)
     {
-        GameObject _ob;
-        Material _mat;
+        GameObject _ob = null;
+        Material _mat = null;
 
-        _ob = AssetBundleManager.Instance.GetGameObjectFromAssetBundle(MeshName, SceneManager.GetActiveScene().name);
-        _mat = AssetBundleManager.Instance.GetMaterialFromAssetBundle(MeshShaderName, SceneManager.GetActiveScene().name);
+//アセットバンドル関係を削除したのでここで何かしなければならない。(覚えていない・・・)
+ //       _ob = AssetBundleManager.Instance.GetGameObjectFromAssetBundle(MeshName, SceneManager.GetActiveScene().name);
+ //       _mat = AssetBundleManager.Instance.GetMaterialFromAssetBundle(MeshShaderName, SceneManager.GetActiveScene().name);
 
         GameObject _tmp_ob;
         _tmp_ob = Instantiate(_ob, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity);

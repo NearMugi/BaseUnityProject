@@ -135,7 +135,8 @@ public class SpriteRenbanControl : MonoBehaviour {
             //        Debug.Log(" SpriteRenbanControl Update : " + s);
             if (_sp != null)
             {
-                _sp.sprite = AssetBundleManager.Instance.GetSpriteFromAssetBundle(s, SceneManager.GetActiveScene().name);
+                //アセットバンドル関係を削除したのでここで何かしなければならない。(覚えていない・・・)
+//                _sp.sprite = AssetBundleManager.Instance.GetSpriteFromAssetBundle(s, SceneManager.GetActiveScene().name);
             }
         }
         
@@ -146,6 +147,8 @@ public class SpriteRenbanControl : MonoBehaviour {
     {
         if (fileName == "") return;
 
+//アセットバンドル関係を削除したので何かしなければならない.(今後使う？？？)
+#if false
         //桁数を調べる。
         //"ヘッダー_nnnnn"となっている前提
         string s = "";
@@ -161,5 +164,6 @@ public class SpriteRenbanControl : MonoBehaviour {
         cnt = AssetBundleManager.Instance.CntSpriteFromAssetBundle(fileName, SceneManager.GetActiveScene().name);
 
         Debug.LogWarning("[" + fileName + "] keta:" + keta + " cnt:" + cnt);
+#endif 
     }
 }

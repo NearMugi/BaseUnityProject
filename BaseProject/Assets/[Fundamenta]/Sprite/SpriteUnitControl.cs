@@ -43,7 +43,8 @@ public class SpriteUnitControl : MonoBehaviour {
 
         if (sw)
         {
-            _sp.sprite = AssetBundleManager.Instance.GetSpriteFromAssetBundle(_FileName, _AssetBundle);
+            //アセットバンドル関係を削除したのでここで何かしなければならない。(覚えていない・・・)
+//            _sp.sprite = AssetBundleManager.Instance.GetSpriteFromAssetBundle(_FileName, _AssetBundle);
         }
     }
 
