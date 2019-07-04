@@ -4,7 +4,8 @@ using System.IO.Ports;
 using System.Threading;
 using UnityEngine;
 
-public class SerialHandler : MonoBehaviour {
+public class SerialHandler : MonoBehaviour
+{
 
     #region Singleton
 
@@ -39,6 +40,7 @@ public class SerialHandler : MonoBehaviour {
         POTENTIONMETER = 0xFC,
         MPU6050 = 0xFB,
         BLUETOOTH = 0xFA,
+        ZIGBEE = 0xF9,
     }
 
     public List<serial_unit> PortList;
@@ -163,7 +165,7 @@ public class SerialHandler : MonoBehaviour {
             }
             isNewMessageReceived_ = false;
         }
-        
+
         private void Read()
         {
             while (isRunning_ && serialPort_ != null && serialPort_.IsOpen)
@@ -193,7 +195,7 @@ public class SerialHandler : MonoBehaviour {
             }
             catch (System.Exception ex)
             {
-                errMsg = "[Write]" +  ex.Message;
+                errMsg = "[Write]" + ex.Message;
             }
         }
 
@@ -216,7 +218,7 @@ public class SerialHandler : MonoBehaviour {
 
         foreach (serial_unit _serial in PortList)
         {
-            if(_serial.portName == _portName)
+            if (_serial.portName == _portName)
             {
                 _data = _serial;
                 break;
@@ -298,7 +300,7 @@ public class SerialHandler : MonoBehaviour {
         }
 
 
-        foreach(string port in SerialPort.GetPortNames())
+        foreach (string port in SerialPort.GetPortNames())
         {
             //Debug.LogWarning(port);
         }
@@ -311,7 +313,7 @@ public class SerialHandler : MonoBehaviour {
         if (PortList.Count <= 0) return;
         foreach (serial_unit _serial in PortList)
         {
-            _serial.Close();          
+            _serial.Close();
         }
     }
 }

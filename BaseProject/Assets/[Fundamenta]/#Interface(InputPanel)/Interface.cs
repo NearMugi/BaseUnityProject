@@ -7,7 +7,8 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.Video;
 
-public class Interface : MonoBehaviour {
+public class Interface : MonoBehaviour
+{
 
     [SerializeField]
     Text txtActiveObjectList;
@@ -24,14 +25,16 @@ public class Interface : MonoBehaviour {
     GameObject Button;
 
     // Use this for initialization
-    void Start () {
+    void Start()
+    {
         sb_1 = new StringBuilder();
         sb_2 = new StringBuilder();
         btn_isTarget();
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    // Update is called once per frame
+    void Update()
+    {
         createActiveObjectList();
         createDispDebugList_1();
         createDispDebugList_2();
@@ -100,6 +103,12 @@ public class Interface : MonoBehaviour {
         SerialConnect_BlueTooth.Instance_BlueTooth.Disconnect();
     }
 
+    public void btn_Connect_Zigbee()
+    {
+        if (SerialConnect_Zigbee.Instance_Zigbee == null) return;
+        SerialConnect_Zigbee.Instance_Zigbee.Connect();
+    }
+
 
     /// <summary>
     /// ボタン名の記載されていないボタンは無効にする
@@ -112,10 +121,10 @@ public class Interface : MonoBehaviour {
         {
             sw = false;
             _c = child.Find("Text").gameObject;
-            if(_c != null)
+            if (_c != null)
             {
                 //Debug.LogWarning(child.name + "  " + _c.name);
-                if (_c.GetComponent<Text>().text.Length != 0 )
+                if (_c.GetComponent<Text>().text.Length != 0)
                 {
                     sw = true;
                 }
@@ -154,6 +163,8 @@ public class Interface : MonoBehaviour {
 
         if (SerialConnect_BlueTooth.Instance_BlueTooth != null) sb_2.Append(SerialConnect_BlueTooth.Instance_BlueTooth.DebugList());
 
+        if (SerialConnect_Zigbee.Instance_Zigbee != null) sb_2.Append(SerialConnect_Zigbee.Instance_Zigbee.DebugList());
+
         txtDispDebug_2.text = sb_2.ToString();
 
     }
@@ -171,16 +182,16 @@ public class Interface : MonoBehaviour {
         int sceneCnt = SceneManager.sceneCount;
         Scene sc;
         int videocnt = 0;
-        for (int i = 0; i<sceneCnt; i++)
+        for (int i = 0; i < sceneCnt; i++)
         {
             sc = SceneManager.GetSceneAt(i);
             sb.Append("[");
             sb.Append(sc.name);
             sb.Append("]");
             sb.Append("\n");
-            
+
             //親
-            foreach(GameObject ob in sc.GetRootGameObjects())
+            foreach (GameObject ob in sc.GetRootGameObjects())
             {
                 if (!ob.activeSelf) continue;
 
@@ -206,7 +217,7 @@ public class Interface : MonoBehaviour {
                     sb.Append("\n");
 
                     //孫
-                    foreach(Transform childchild in child.transform)
+                    foreach (Transform childchild in child.transform)
                     {
                         if (!childchild.gameObject.activeSelf) continue;
 
@@ -226,6 +237,6 @@ public class Interface : MonoBehaviour {
 
         txtActiveObjectList.text = "MOVIE :" + videocnt + "\n" + sb.ToString();
     }
-    
+
 
 }
