@@ -129,7 +129,7 @@ public class SerialConnect_Zigbee : MonoBehaviour
 
 
         //USBの接続
-        _serial.Open();
+        _serial.Open(true);
         _serial.OnDataReceived += OnDataReceived;
 
         isConnect = true;

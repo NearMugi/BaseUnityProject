@@ -41,6 +41,7 @@ public class SerialHandler : MonoBehaviour
         MPU6050 = 0xFB,
         BLUETOOTH = 0xFA,
         ZIGBEE = 0xF9,
+        THREE_D_FILM = 0xF8,
     }
 
     public List<serial_unit> PortList;
@@ -49,6 +50,8 @@ public class SerialHandler : MonoBehaviour
     {
         public delegate void SerialDataReceivedEventHandler(string[] message);
         public event SerialDataReceivedEventHandler OnDataReceived = delegate { };
+        public delegate void SerialDataReceivedByteEventHandler(byte[] message);
+        public event SerialDataReceivedByteEventHandler OnDataReceivedByte = delegate { };
 
         // Use this for initialization
         public Def_PortName portName_def;
@@ -60,8 +63,11 @@ public class SerialHandler : MonoBehaviour
         private Thread _thread;
         private bool isRunning_ = false;
 
+        private bool isString_ = true;
+
         private static int MESSAGE_SIZE = 20;//大きめに確保
         private string[] message_ = new string[MESSAGE_SIZE];
+        private byte[] messageByte_ = new byte[MESSAGE_SIZE];
         private int readCnt;
         private bool isNewMessageReceived_ = false;
         private bool isMessageProcessing = false;
@@ -72,7 +78,7 @@ public class SerialHandler : MonoBehaviour
         public string errMsg;
 
 
-        public bool Open()
+        public bool Open(bool isString)
         {
             try
             {
@@ -85,8 +91,17 @@ public class SerialHandler : MonoBehaviour
                 //Debug.LogWarning("[Open]" + serialPort_.PortName + ", IsOpen " + serialPort_.IsOpen);
 
                 isRunning_ = true;
+                isString_ = isString;
 
-                _thread = new Thread(Read);
+                if (isString_)
+                {
+                    _thread = new Thread(Read);
+                }
+                else
+                {
+                    serialPort_.ReadTimeout = 1;
+                    _thread = new Thread(ReadByte);
+                }
                 _thread.Start();
 
                 errMsg = "OPEN";
@@ -149,6 +164,7 @@ public class SerialHandler : MonoBehaviour
             for (int i = 0; i < MESSAGE_SIZE; i++)
             {
                 message_[i] = string.Empty;
+                messageByte_[i] = 0x00;
             }
             isNewMessageReceived_ = false;
         }
@@ -159,7 +175,14 @@ public class SerialHandler : MonoBehaviour
             {
                 isMessageProcessing = true;
                 //Debug.LogWarning("OnDataRead Call");
-                OnDataReceived(message_);
+                if (isString_)
+                {
+                    OnDataReceived(message_);
+                }
+                else
+                {
+                    OnDataReceivedByte(messageByte_);
+                }
                 InitMessage();
                 isMessageProcessing = false;
             }
@@ -174,7 +197,27 @@ public class SerialHandler : MonoBehaviour
                 try
                 {
                     message_[readCnt] = serialPort_.ReadLine();
-                    //Debug.LogWarning("[Read] " + serialPort_.PortName+" message_[0] " + (int)message_[0].ToString()[0] + " message_[1] " + (int)message_[0].ToString()[1]);
+                    //Debug.LogWarning("[Read] " + serialPort_.PortName + " message_[0] " + (int)message_[0].ToString()[0] + " message_[1] " + (int)message_[0].ToString()[1]);
+                    readCnt++;
+                    isNewMessageReceived_ = true;
+                }
+                catch (System.Exception)
+                {
+                    //errMsg = "[Read]" + ex.Message;
+                    //Debug.LogWarning("[SerialHandler][Read] ErrMessage " + ex.Message);
+                }
+                Thread.Sleep(1);
+            }
+        }
+        private void ReadByte()
+        {
+            while (isRunning_ && serialPort_ != null && serialPort_.IsOpen)
+            {
+                if (isMessageProcessing) continue;
+                try
+                {
+                    messageByte_[readCnt] = (byte)serialPort_.ReadByte();
+                    //Debug.Log(messageByte_[readCnt]);
                     readCnt++;
                     isNewMessageReceived_ = true;
                 }
@@ -202,7 +245,7 @@ public class SerialHandler : MonoBehaviour
         public void ReConnect()
         {
             Close();
-            Open();
+            Open(isString_);
         }
 
         public bool isOpen()

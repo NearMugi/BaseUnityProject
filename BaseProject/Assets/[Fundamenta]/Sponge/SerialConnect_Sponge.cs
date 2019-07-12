@@ -7,7 +7,8 @@ using UnityEngine.Events;
 using UnityEditor;
 #endif
 
-public class SerialConnect_Sponge : MonoBehaviour {
+public class SerialConnect_Sponge : MonoBehaviour
+{
 
     #region Singleton
 
@@ -19,7 +20,7 @@ public class SerialConnect_Sponge : MonoBehaviour {
         {
             if (instance == null)
             {
-                instance = (SerialConnect_Sponge)FindObjectOfType(typeof(SerialConnect_Sponge));                
+                instance = (SerialConnect_Sponge)FindObjectOfType(typeof(SerialConnect_Sponge));
             }
             return instance;
         }
@@ -31,7 +32,7 @@ public class SerialConnect_Sponge : MonoBehaviour {
     /// スポンジセンサーと紐づくSerialHandler.serial_unit
     /// </summary>
     SerialHandler.serial_unit _serial;
-    
+
     [SerializeField]
     int Def_SensorCnt;         //基準値　使用するセンサーの個数(個)
     [SerializeField]
@@ -69,7 +70,7 @@ public class SerialConnect_Sponge : MonoBehaviour {
         REQ_SENSOR_ID_0 = 0x49,     //'I'
         REQ_SENSOR_ID_1 = 0x3A,     //':'
     }
-    
+
     /// <summary>
     /// センサー値の返値の構成
     /// </summary>
@@ -195,7 +196,7 @@ public class SerialConnect_Sponge : MonoBehaviour {
                 sendCmd = SENDCMD_CONTINUE;
                 break;
         }
-        if(sendCmd.Length > 0) DataSend(sendCmd);
+        if (sendCmd.Length > 0) DataSend(sendCmd);
     }
     /// <summary>
     /// データ送信
@@ -206,7 +207,7 @@ public class SerialConnect_Sponge : MonoBehaviour {
         //       DebugMsg("[DataSend] ", _s);
         _serial.Write(_s);
     }
-    
+
     /// <summary>
     /// int型→16進数文字列→そのままString型に
     /// <para>15→0x0F→"0F"</para>
@@ -241,7 +242,8 @@ public class SerialConnect_Sponge : MonoBehaviour {
     }
 
     // Use this for initialization
-    void Start() {
+    void Start()
+    {
 
     }
 
@@ -274,16 +276,16 @@ public class SerialConnect_Sponge : MonoBehaviour {
         //USBの切断
         _serial.Close();
         yield return wait;
-        
+
 
         _serial.OnDataReceived -= OnDataRead_Init;
         _serial.OnDataReceived -= OnDataRead_Receive_Interval;
         _serial.OnDataReceived -= OnDataRead_Communication;
         yield return wait;
-        
+
 
         //USBの接続
-        _serial.Open();
+        _serial.Open(true);
         yield return wait;
 
 
@@ -298,7 +300,7 @@ public class SerialConnect_Sponge : MonoBehaviour {
     private void Update()
     {
         //Debug.LogWarning("[SerialConnect_Sponge Update] Bef_Mode:" + Bef_Mode + " Now_Mode:" + Now_Mode);
-        
+
 
         //モードが変更になった場合のみ実行
         //各モードでやりたい処理はコルーチンで実行
@@ -374,7 +376,7 @@ public class SerialConnect_Sponge : MonoBehaviour {
 
         Debug.LogWarning(msg);
     }
-    
+
     /// <summary>
     /// [初期設定]分割したデータからキーワードを探す
     /// </summary>
@@ -385,7 +387,7 @@ public class SerialConnect_Sponge : MonoBehaviour {
     bool FindKeyword_Init(string[] _data, byte b0, byte b1)
     {
         //Debug.LogWarning("_data[0]" + _data[0] + "   b0 , b1 " + b0 + " , " + b1);
-        
+
         bool sw = false;
         try
         {
@@ -404,7 +406,7 @@ public class SerialConnect_Sponge : MonoBehaviour {
         }
         catch (System.Exception e)
         {
-            Debug.LogWarning(e.Message + "[_data]" + _data[0] +" , "+ _data[1] + "  [" + Now_Status_Init+ "]");
+            Debug.LogWarning(e.Message + "[_data]" + _data[0] + " , " + _data[1] + "  [" + Now_Status_Init + "]");
         }
 
         return sw;
@@ -430,18 +432,18 @@ public class SerialConnect_Sponge : MonoBehaviour {
             //センサーID指定の要求待ち
             case STATUS_INIT.SENSOR_ID_WAIT:
                 //最後は"I:"を受信しない仕様
-                if(_init_SensorCnt < Def_SensorCnt)
+                if (_init_SensorCnt < Def_SensorCnt)
                 {
                     if (FindKeyword_Init(_data, (byte)RECEIVECMD_PTN.REQ_SENSOR_ID_0, (byte)RECEIVECMD_PTN.REQ_SENSOR_ID_1))
                     {
-//                        Debug.LogWarning("I: を受信");
+                        //                        Debug.LogWarning("I: を受信");
                         Now_Status_Init = STATUS_INIT.SENSOR_ID;   //センサーIDの送信指示
                     }
                 }
                 else
                 {
                     char[] c = new char[2];
-                    if(Def_SensorCnt >= 10)
+                    if (Def_SensorCnt >= 10)
                     {
                         c[0] = (char)Def_SensorCnt.ToString()[0];
                         c[1] = (char)Def_SensorCnt.ToString()[1];
@@ -454,7 +456,7 @@ public class SerialConnect_Sponge : MonoBehaviour {
 
                     if (FindKeyword_Init(_data, (byte)c[0], (byte)c[1]))
                     {
-//                        Debug.LogWarning("最後のIDを受信");
+                        //                        Debug.LogWarning("最後のIDを受信");
                         Now_Status_Init = STATUS_INIT.SENSOR_ID;   //センサーIDの送信指示
                     }
                 }
@@ -479,10 +481,10 @@ public class SerialConnect_Sponge : MonoBehaviour {
     /// <param name="message"></param>
     void OnDataRead_Init(string[] message)
     {
-//        foreach(string _s in message)
-//        {
-//            DebugMsg("[OnDataRead_Init] ", _s);
-//        }
+        //        foreach(string _s in message)
+        //        {
+        //            DebugMsg("[OnDataRead_Init] ", _s);
+        //        }
 
         //初期設定用の処理を行う
         RecieveData_Check_Init(message);
@@ -505,7 +507,7 @@ public class SerialConnect_Sponge : MonoBehaviour {
         while (Now_Status_Init != STATUS_INIT.SENSOR_CNT)
         {
             ChkTimeOver();
-            if(flg_TimeOver)
+            if (flg_TimeOver)
             {
                 callback(true);
                 yield break;
@@ -522,7 +524,7 @@ public class SerialConnect_Sponge : MonoBehaviour {
 
         //センサーIDの指定をPC・中継基板間でやり取りする
         _init_SensorCnt = 0;
-        while(_init_SensorCnt <= Def_SensorCnt)
+        while (_init_SensorCnt <= Def_SensorCnt)
         {
             //[中継基板→PC]使用センサ数のID要求待ち
             while (Now_Status_Init != STATUS_INIT.SENSOR_ID)
@@ -569,7 +571,9 @@ public class SerialConnect_Sponge : MonoBehaviour {
         {
             Now_Mode = MODE.RECEIVE_INTERVAL;
             if (NowCoroutine != null) StopCoroutine(NowCoroutine);
-        } else {
+        }
+        else
+        {
             StartCoroutine(ConnectCoroutine());
         }
     }
@@ -585,10 +589,10 @@ public class SerialConnect_Sponge : MonoBehaviour {
 
         foreach (string _t in _data)
         {
-            if(_t != string.Empty)
+            if (_t != string.Empty)
             {
                 string tmp = string.Empty;
-                for(int i=0;i < _t.Length; i++)
+                for (int i = 0; i < _t.Length; i++)
                 {
                     tmp += _t[i];
                 }
@@ -600,7 +604,7 @@ public class SerialConnect_Sponge : MonoBehaviour {
             }
         }
 
-        
+
     }
 
 
@@ -665,7 +669,7 @@ public class SerialConnect_Sponge : MonoBehaviour {
             if (NowCoroutine != null) StopCoroutine(NowCoroutine);
         }
     }
-    
+
     /// <summary>
     /// [連続データ要求]区切り文字で分割したデータを処理する
     /// </summary>
@@ -732,7 +736,7 @@ public class SerialConnect_Sponge : MonoBehaviour {
 
         //Debug.LogWarning("[SetInput] ID:" + _id + " CH:(" + Input[_id-1].CH[0] + "," + Input[_id - 1].CH[1] + "," + Input[_id - 1].CH[2] + "," + Input[_id - 1].CH[3] + ")");
         _spongeManage.SetSpongeInfo((_id - 1).ToString(), input);
-        
+
     }
 
     /// <summary>
@@ -757,7 +761,7 @@ public class SerialConnect_Sponge : MonoBehaviour {
         //連続データ要求を送信、1回だけで終了
         SetSendCmd(string.Empty);
         yield return null;
-        
+
         callback(true);
         yield break;
     }
@@ -796,7 +800,7 @@ public class SerialConnect_Sponge : MonoBehaviour {
         }
 
         callback(false);
-        while(!_spongeManage._isEndSetting) yield return null;
+        while (!_spongeManage._isEndSetting) yield return null;
 
         var wait = new WaitForSeconds(0.01f);
         yield return null;

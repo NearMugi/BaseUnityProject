@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class SerialConnect_BlueTooth_Base : MonoBehaviour {
+public class SerialConnect_BlueTooth_Base : MonoBehaviour
+{
 
     #region Singleton
 
@@ -43,7 +44,7 @@ public class SerialConnect_BlueTooth_Base : MonoBehaviour {
 
     public const char endPoint = '@';
     public const char splitPoint = ',';
-    
+
     [HideInInspector]
     public string[] GetData;
     [HideInInspector]
@@ -94,7 +95,7 @@ public class SerialConnect_BlueTooth_Base : MonoBehaviour {
         Debug.LogWarning(msg);
         return msg;
     }
-    
+
 
     public void StartInit()
     {
@@ -132,7 +133,7 @@ public class SerialConnect_BlueTooth_Base : MonoBehaviour {
 
         //USBの接続
         joinMsg = string.Empty;
-        _serial.Open();
+        _serial.Open(true);
         _serial.OnDataReceived += OnDataReceived;
 
         isConnect = true;

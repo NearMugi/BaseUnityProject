@@ -156,6 +156,7 @@ Transform:
   - {fileID: 1160996957}
   - {fileID: 1303989200}
   - {fileID: 527313230}
+  - {fileID: 1324303285}
   m_Father: {fileID: 2091987216}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -541,7 +542,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 
+  m_Text: 3DFilm
 --- !u!222 &108742766
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1705,18 +1706,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isConnect: 0
   isAnalysis: 0
-  GetData:
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  GetDataSize: 0
 --- !u!114 &527313232
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3607,6 +3596,68 @@ MonoBehaviour:
   UserName: Bluetooth
   portName: COM8
   baudRate: 115200
+--- !u!1 &1324303284
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1324303285}
+  - component: {fileID: 1324303287}
+  - component: {fileID: 1324303286}
+  m_Layer: 0
+  m_Name: Arduino_3DFilm
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1324303285
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1324303284}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 9386384}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1324303286
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1324303284}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3bd79c6689fb94c4f96fd288e33b3b2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isConnect: 0
+  isAnalysis: 0
+--- !u!114 &1324303287
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1324303284}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd3ef3e2f143d244a8e193dc27acd961, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  portName_def: 248
+  UserName: 3DFilm
+  portName: COM13
+  baudRate: 9600
 --- !u!1 &1473032450
 GameObject:
   m_ObjectHideFlags: 0
@@ -4441,7 +4492,7 @@ GameObject:
   - component: {fileID: 1810100667}
   - component: {fileID: 1810100666}
   m_Layer: 0
-  m_Name: Button35_
+  m_Name: Button35_3DFilm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4510,8 +4561,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: 
+      - m_Target: {fileID: 1626540638}
+        m_MethodName: btn_Connect_3DFilm
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

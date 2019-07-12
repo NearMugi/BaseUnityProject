@@ -109,6 +109,11 @@ public class Interface : MonoBehaviour
         SerialConnect_Zigbee.Instance_Zigbee.Connect();
     }
 
+    public void btn_Connect_3DFilm()
+    {
+        if (SerialConnect_Arduino_3DFilm.Instance == null) return;
+        SerialConnect_Arduino_3DFilm.Instance.Connect();
+    }
 
     /// <summary>
     /// ボタン名の記載されていないボタンは無効にする
@@ -164,6 +169,8 @@ public class Interface : MonoBehaviour
         if (SerialConnect_BlueTooth.Instance_BlueTooth != null) sb_2.Append(SerialConnect_BlueTooth.Instance_BlueTooth.DebugList());
 
         if (SerialConnect_Zigbee.Instance_Zigbee != null) sb_2.Append(SerialConnect_Zigbee.Instance_Zigbee.DebugList());
+
+        if (SerialConnect_Arduino_3DFilm.Instance != null) sb_2.Append(SerialConnect_Arduino_3DFilm.Instance.DebugList());
 
         txtDispDebug_2.text = sb_2.ToString();
 

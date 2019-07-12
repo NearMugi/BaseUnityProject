@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class SerialConnect_Arduino_Base : MonoBehaviour {
+public class SerialConnect_Arduino_Base : MonoBehaviour
+{
 
     #region Singleton
 
@@ -55,7 +56,7 @@ public class SerialConnect_Arduino_Base : MonoBehaviour {
         flg_3 = 1 << 3,//
         flg_2 = 1 << 2,//
         flg_1 = 1 << 1,//
-        flg_0 = 1,               
+        flg_0 = 1,
     };
     public const int MAX_GETDATA_SIZE = 10;
     [HideInInspector]
@@ -109,7 +110,7 @@ public class SerialConnect_Arduino_Base : MonoBehaviour {
 
         Debug.LogWarning(msg);
     }
-    
+
 
     public void StartInit()
     {
@@ -142,7 +143,7 @@ public class SerialConnect_Arduino_Base : MonoBehaviour {
 
         //USBの接続
         joinMsg = string.Empty;
-        _serial.Open();
+        _serial.Open(true);
         _serial.OnDataReceived += OnDataReceived;
 
         isConnect = true;
@@ -212,7 +213,7 @@ public class SerialConnect_Arduino_Base : MonoBehaviour {
         }
 
         //一つでも条件に合うデータを取得出来たら、連結データを削除する
-        if(GetData.Length > 0)
+        if (GetData.Length > 0)
         {
             joinMsg = string.Empty;
         }
