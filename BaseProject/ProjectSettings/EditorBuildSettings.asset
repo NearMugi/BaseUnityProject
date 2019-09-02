@@ -35,4 +35,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/!Scene/Connect_mpu6050_mqtt.unity
     guid: 2dc7d692d54ab4c4d8a49c4c165a260b
+  - enabled: 0
+    path: Assets/!Scene/BLE.unity
+    guid: c687e7d4e43ec514e981cd6be8dc68b2
   m_configObjects: {}
