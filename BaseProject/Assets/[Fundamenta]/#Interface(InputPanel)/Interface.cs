@@ -113,6 +113,12 @@ public class Interface : MonoBehaviour
         SerialConnect_Arduino_3DFilm.Instance.Connect();
     }
 
+    public void btn_Connect_JetsonNano()
+    {
+        if (SerialConnect_JetsonNano.Instance == null) return;
+        SerialConnect_JetsonNano.Instance.Connect();
+    }
+
     /// <summary>
     /// ボタン名の記載されていないボタンは無効にする
     /// </summary>
@@ -169,6 +175,8 @@ public class Interface : MonoBehaviour
         if (SerialConnect_Zigbee.Instance_Zigbee != null) sb_2.Append(SerialConnect_Zigbee.Instance_Zigbee.DebugList());
 
         if (SerialConnect_Arduino_3DFilm.Instance != null) sb_2.Append(SerialConnect_Arduino_3DFilm.Instance.DebugList());
+
+        if (SerialConnect_JetsonNano.Instance != null) sb_2.Append(SerialConnect_JetsonNano.Instance.DebugList());
 
         txtDispDebug_2.text = sb_2.ToString();
 

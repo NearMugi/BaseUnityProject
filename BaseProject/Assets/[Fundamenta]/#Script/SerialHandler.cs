@@ -42,6 +42,7 @@ public class SerialHandler : MonoBehaviour
         BLUETOOTH = 0xFA,
         ZIGBEE = 0xF9,
         THREE_D_FILM = 0xF8,
+        JETSON_NANO = 0xF7,
     }
 
     public List<serial_unit> PortList;
