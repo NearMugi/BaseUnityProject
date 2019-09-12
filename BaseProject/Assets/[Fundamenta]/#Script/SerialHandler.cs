@@ -78,7 +78,11 @@ public class SerialHandler : MonoBehaviour
         [HideInInspector]
         public string errMsg;
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="isString">True : String型でRead, False : Byte[]型でRead</param>
+        /// <returns></returns>
         public bool Open(bool isString)
         {
             try
@@ -242,6 +246,21 @@ public class SerialHandler : MonoBehaviour
                 errMsg = "[Write]" + ex.Message;
             }
         }
+
+        public void WriteByte(string message)
+        {
+            try
+            {
+                //byte型に変換
+                byte[] bytes = System.Text.Encoding.UTF8.GetBytes(message);
+                serialPort_.Write(bytes, 0, bytes.Length);
+            }
+            catch (System.Exception ex)
+            {
+                errMsg = "[WriteByte]" + ex.Message;
+            }
+        }
+
 
         public void ReConnect()
         {

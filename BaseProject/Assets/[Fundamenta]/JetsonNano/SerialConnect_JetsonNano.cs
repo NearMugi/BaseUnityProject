@@ -53,12 +53,12 @@ public class SerialConnect_JetsonNano : MonoBehaviour
     [HideInInspector]
     public string GetLastData;  //最新受信データ
 
-    string joinMsg;
 
+    private const int MAXSIZE = 60;
+    private byte[] joinMsg = new byte[MAXSIZE];
+    private int cnt;
+    private string msg;
 
-    const int dataSize = 9; //nnn,nn,nn
-    const int cmdSize = 3;
-    string[] cmd = new string[cmdSize];
 
     /// <summary>
     /// シリアル通信が出来ているかチェック
@@ -76,31 +76,17 @@ public class SerialConnect_JetsonNano : MonoBehaviour
         System.Text.StringBuilder sb = new System.Text.StringBuilder();
         sb.Append("--- CONNECT JETSON NANO INFO ---  ");
         sb.Append("\n");
-        sb.Append("[GetLastData]");
+        sb.Append("[GetData]");
         sb.Append("\n");
-        sb.Append(cmd[0]);
+       // sb.Append(msg);
         sb.Append("\n");
-        sb.Append(cmd[1]);
-        sb.Append("\n");
-        sb.Append(cmd[2]);
+
         return sb.ToString();
     }
 
-    string DebugMsg(string head, string _s)
+    string getJoinMsg(byte[] list)
     {
-        string msg = head + _s;
-
-        byte[] _tmp = System.Text.Encoding.ASCII.GetBytes(_s);
-        msg += " Length:" + _tmp.Length;
-
-        msg += " Hex:";
-        foreach (byte b in _tmp)
-        {
-            msg += Convert.ToString(b, 16) + " - ";
-        }
-
-        Debug.LogWarning(msg);
-        return msg;
+        return System.Text.Encoding.ASCII.GetString(list);
     }
 
 
@@ -120,7 +106,6 @@ public class SerialConnect_JetsonNano : MonoBehaviour
     {
         _serial.Close();
         _serial.OnDataReceivedByte -= OnDataReceivedByte;
-        _serial.OnDataReceived -= OnDataReceived;
     }
 
     private IEnumerator ConnectCoroutine()
@@ -136,15 +121,14 @@ public class SerialConnect_JetsonNano : MonoBehaviour
         //USBの切断
         _serial.Close();
         _serial.OnDataReceivedByte -= OnDataReceivedByte;
-        _serial.OnDataReceived -= OnDataReceived;
         yield return wait;
 
 
         //USBの接続
-        joinMsg = string.Empty;
-        _serial.Open(true);
+        _serial.Open(false); //byte[]型で受信
         _serial.OnDataReceivedByte += OnDataReceivedByte;
-        _serial.OnDataReceived += OnDataReceived;
+        cnt = 0;
+        msg = string.Empty;
 
         isConnect = true;
         yield break;
@@ -154,45 +138,35 @@ public class SerialConnect_JetsonNano : MonoBehaviour
     public void DataSend(string _s)
     {
         if (_serial == null) return;
-        string _send = _s + (char)endPoint;
-        //DebugMsg("[DataSend] SendData ", _send);
-        _serial.Write(_send);
+        string _send = _s; // + (char)endPoint;
+        Debug.Log("[DataSend] SendData " + _send);
+
+        //byte[]型に変換して送信
+        _serial.WriteByte(_s);
     }
 
 
     //受信した信号(message)に対する処理
     void OnDataReceivedByte(byte[] message)
     {
-        Debug.Log("OnDataReceivedByte");
-
         //メッセージを保存
         foreach (byte _t in message)
         {
-            Debug.Log(_t);
-        }
-    }
-
-    //受信した信号(message)に対する処理
-    void OnDataReceived(string[] message)
-    {
-        Debug.Log("OnDataReceived");
-
-        //メッセージを保存
-        foreach (string _t in message)
-        {
-            Debug.Log(_t);
+            if (_t != 0x00) joinMsg[cnt++] = _t;
+            if (cnt >= MAXSIZE) cnt = 0;
         }
     }
 
     private void Start()
     {
+        StartCoroutine(SendCoroutine());
     }
 
     private void Update()
     {
         isAnalysis = true;
 
-        Debug.Log(isConnect);
+        //Debug.Log(isConnect);
 
         //接続できていない場合は何もしない。
         if (!isConnect) { isAnalysis = false; return; }
@@ -202,24 +176,32 @@ public class SerialConnect_JetsonNano : MonoBehaviour
         //cmd = new string[cmdSize];
         //analisysGetData(GetLastData);
 
+        msg = getJoinMsg(joinMsg);
+
         isAnalysis = false;
 
 
-       // DataSend("Hoge HOGE");
 
     }
 
+
+    private IEnumerator SendCoroutine()
+    {
+        var wait = new WaitForSeconds(1.0f);
+        while (true)
+        {
+            if (isConnect)
+            {
+                //DataSend("Hoge");
+            }
+            Debug.Log(msg);
+
+            yield return wait;
+        }
+    }
+
+
     void analisysGetData(string data)
     {
-        if (data == null) return;
-        if (data.Length != dataSize) return;
-
-        string[] _tmp = data.Split(splitPoint);
-        if (_tmp.Length != cmdSize) return;
-        int i = 0;
-        foreach (string d in _tmp)
-        {
-            cmd[i++] = d;
-        }
     }
 }
