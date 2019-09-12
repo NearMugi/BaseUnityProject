@@ -179,11 +179,13 @@ public class SerialConnect_JetsonNano : MonoBehaviour
         msg = getJoinMsg(joinMsg);
 
         isAnalysis = false;
-
-
-
     }
 
+
+    private void OnDestroy()
+    {
+        if(isConnect) Disconnect();
+    }
 
     private IEnumerator SendCoroutine()
     {
