@@ -74,11 +74,11 @@ public class SerialConnect_JetsonNano : MonoBehaviour
         if (_serial == null) return string.Empty;
 
         System.Text.StringBuilder sb = new System.Text.StringBuilder();
-        sb.Append("--- CONNECT JETSON NANO INFO ---  ");
+        sb.Append("--- CONNECT JETSON NANO INFO ---");
         sb.Append("\n");
         sb.Append("[GetData]");
         sb.Append("\n");
-       // sb.Append(msg);
+        sb.Append(msg);
         sb.Append("\n");
 
         return sb.ToString();
@@ -156,27 +156,24 @@ public class SerialConnect_JetsonNano : MonoBehaviour
             if (cnt >= MAXSIZE) cnt = 0;
         }
     }
+    void analisysGetData()
+    {
+        msg = getJoinMsg(joinMsg);
+    }
 
     private void Start()
     {
-        StartCoroutine(SendCoroutine());
     }
 
     private void Update()
     {
-        isAnalysis = true;
-
-        //Debug.Log(isConnect);
-
         //接続できていない場合は何もしない。
         if (!isConnect) { isAnalysis = false; return; }
 
+        isAnalysis = true;
 
         //入力値を解析する
-        //cmd = new string[cmdSize];
-        //analisysGetData(GetLastData);
-
-        msg = getJoinMsg(joinMsg);
+        analisysGetData();
 
         isAnalysis = false;
     }
@@ -187,23 +184,4 @@ public class SerialConnect_JetsonNano : MonoBehaviour
         if(isConnect) Disconnect();
     }
 
-    private IEnumerator SendCoroutine()
-    {
-        var wait = new WaitForSeconds(1.0f);
-        while (true)
-        {
-            if (isConnect)
-            {
-                //DataSend("Hoge");
-            }
-            Debug.Log(msg);
-
-            yield return wait;
-        }
-    }
-
-
-    void analisysGetData(string data)
-    {
-    }
 }
