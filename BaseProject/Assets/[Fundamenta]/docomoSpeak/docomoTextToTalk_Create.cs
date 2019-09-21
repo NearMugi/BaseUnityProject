@@ -7,8 +7,32 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class docomoTextToTalk : MonoBehaviour
+public class docomoTextToTalk_Create : MonoBehaviour
 {
+    #region Singleton
+
+    private static docomoTextToTalk_Create instance;
+
+    public static docomoTextToTalk_Create Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                instance = (docomoTextToTalk_Create)FindObjectOfType(typeof(docomoTextToTalk_Create));
+
+                if (instance == null)
+                {
+                    Debug.LogError(typeof(docomoTextToTalk_Create) + "is nothing");
+                }
+            }
+            return instance;
+        }
+    }
+
+    #endregion Singleton
+
+
     //テキストを変換したwavバイナリーデータ
     public byte[] wavBinaryData;
 
@@ -31,7 +55,7 @@ public class docomoTextToTalk : MonoBehaviour
     string powerRate;
     string voiceType;
     string audioFileFormat;
-    public docomoTextToTalk()
+    public docomoTextToTalk_Create()
     {
         speakerID = "1";
         styleID = "1";
@@ -53,7 +77,7 @@ public class docomoTextToTalk : MonoBehaviour
         styleID = t;
     }
 
-    private IEnumerator getBinaryWavData()
+    public IEnumerator getBinaryWavData()
     {
 
         UnityWebRequest request = new UnityWebRequest(URI, "POST");
@@ -103,7 +127,5 @@ public class docomoTextToTalk : MonoBehaviour
 
     private void Start()
     {
-        setText("ほげ");
-        StartCoroutine(getBinaryWavData());
     }
 }
