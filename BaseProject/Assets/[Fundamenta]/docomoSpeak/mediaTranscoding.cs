@@ -1,69 +1,52 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
-using NAudio.Wave;
+using System.Diagnostics;
 using System.IO;
+using UnityEngine;
 
 public class mediaTranscoding : MonoBehaviour
 {
+    private string folderPath;
+    private string pyExePath = @"C:\Users\Kuroda-NotePC\Anaconda3\python.exe";
 
-    void hoge()
+    private string pyCodePath = @"/transcodingToWav.py";
+
+    IEnumerator transcodingToWav(string fn)
     {
-        var path = "おめでとう_noHeader.m4a";
-        var s = new RawSourceWaveStream(File.OpenRead(path), new WaveFormat(16000, 1));
-        var outpath = "example_noHeader_2.wav";
-        WaveFileWriter.CreateWaveFile(outpath, s);
-    }
-
-    void hogehoge()
-    {
-        WaveFormat format = new WaveFormat(16000, 16, 1);
-        try
+        //外部プロセスの設定
+        ProcessStartInfo processStartInfo = new ProcessStartInfo()
         {
-            using (MediaFoundationReader reader = new MediaFoundationReader("D:\\#WorkSpace\\#PersonalDevelop\\BaseUnityProject\\BaseProject\\ykbr0-i5fv9.wav"))
-            {
-                using (MediaFoundationResampler resampler = new MediaFoundationResampler(reader, format))
-                {
-                    WaveFileWriter.CreateWaveFile("sample.wav", resampler);
-                }
-            }
+            FileName = pyExePath, //実行するファイル(python)
+            UseShellExecute = false, //シェルを使うかどうか
+            CreateNoWindow = true, //ウィンドウを開くかどうか
+            RedirectStandardOutput = true, //テキスト出力をStandardOutputストリームに書き込むかどうか
+            Arguments = folderPath + pyCodePath + " " + fn + " " + folderPath, //実行するスクリプト 引数(複数可)
+        };
 
-        }
-        catch (FileNotFoundException e)
-        {
-            Debug.LogError(e.Message);
-        }
-    }
+        //外部プロセスの開始
+        Process process = Process.Start(processStartInfo);
+        yield return null;
 
-    void hogehogehoge()
-    {
-        //https://codeday.me/jp/qa/20190626/1109062.html
+        //ストリームから出力を得る
+        StreamReader streamReader = process.StandardOutput;
+        string str = streamReader.ReadLine();
 
-        // convert source audio to AAC
-        // create media foundation reader to read the source (can be any supported format, mp3, wav, ...)
-        using (MediaFoundationReader reader = new MediaFoundationReader(@"d:\ykbr0-i5fv9.wav"))
-        {
-            MediaFoundationEncoder.EncodeToAac(reader, @"D:\test.mp4");
-        }
+        //外部プロセスの終了
+        process.WaitForExit();
+        process.Close();
 
-        // convert "back" to WAV
-        // create media foundation reader to read the AAC encoded file
-        using (MediaFoundationReader reader = new MediaFoundationReader(@"D:\test.mp4"))
-        // resample the file to PCM with same sample rate, channels and bits per sample
-        using (ResamplerDmoStream resampledReader = new ResamplerDmoStream(reader,
-            new WaveFormat(reader.WaveFormat.SampleRate, reader.WaveFormat.BitsPerSample, reader.WaveFormat.Channels)))
-        // create WAVe file
-        using (WaveFileWriter waveWriter = new WaveFileWriter(@"d:\test.wav", resampledReader.WaveFormat))
-        {
-            // copy samples
-            resampledReader.CopyTo(waveWriter);
-        }
+        //実行
+        print(str);
+        yield break;
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        hogehogehoge();
+        folderPath = Application.dataPath + @"/StreamingAssets";
+        //        string filePath = folderPath + @"/hoge.aac";
+        string filePath = folderPath + @"/Super.aac";
+        StartCoroutine(transcodingToWav(filePath));
     }
 
     // Update is called once per frame
