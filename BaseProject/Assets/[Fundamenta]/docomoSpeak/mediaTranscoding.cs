@@ -53,7 +53,7 @@ public class mediaTranscoding : MonoBehaviour
             sb.Append(binary[i]);
             sb.Append(",");
         }
-        //UnityEngine.Debug.Log(sb.ToString());
+        UnityEngine.Debug.Log(sb.ToString());
 
         //外部プロセスの設定
         ProcessStartInfo processStartInfo = new ProcessStartInfo()
