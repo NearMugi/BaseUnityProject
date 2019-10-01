@@ -1,9 +1,11 @@
-folderPath = Wscript.Arguments(0)
-bat = Wscript.Arguments(1) 
-aac = Wscript.Arguments(2) 
+pyExe = Wscript.Arguments(0)
+pyCode = Wscript.Arguments(1) 
+folderPath = Wscript.Arguments(2)
+aac = Wscript.Arguments(3) 
 
-'batファイルを呼び出すコマンドを生成する
-cmd = "cmd /c " & bat 
+'pythonを呼び出すコマンドを生成する
+cmd = pyExe 
+cmd = cmd & " " & pyCode
 cmd = cmd & " " & folderPath
 cmd = cmd & " " & aac
 'WScript.Echo cmd 
