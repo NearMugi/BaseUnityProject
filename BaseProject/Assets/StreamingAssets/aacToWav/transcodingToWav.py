@@ -16,6 +16,10 @@ if os.path.exists(filePath):
         aacFile = AudioSegment.from_file(filePath, "aac")
         aacFile.export(outFilePath, format="wav")
         print("...get WavFile! %s -> %s" % (filePath, outFilePath))
+
+        # Delete aacFile
+        os.remove(filePath)
+
     except Exception as e:
         print("...Err \n" + e.args)
 else:

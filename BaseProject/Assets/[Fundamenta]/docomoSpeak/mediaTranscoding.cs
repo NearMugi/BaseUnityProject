@@ -50,9 +50,9 @@ public class mediaTranscoding : MonoBehaviour {
         while (!System.IO.File.Exists (folderPath + aacFilePath)) {
             yield return null;
         }
-
         UnityEngine.Debug.Log ("Created aac :" + aacFilePath);
 
+        //wavファイルの作成、aacファイルの削除
         callVbs (@"/aacToWav.vbs", aacFilePath);
         //wavファイルが出来るまで待つ
         while (!System.IO.File.Exists (folderPath + wavFilePath)) {
