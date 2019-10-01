@@ -84,7 +84,7 @@ public class mediaTranscoding : MonoBehaviour {
         process = new Process ();
         process.StartInfo.FileName = folderPath + batFilePath;
         //vbs用
-        process.StartInfo.Arguments = folderPath + " " + @"/aacToWav.bat" + " " + @"/hoge.aac";
+        process.StartInfo.Arguments = folderPath + " " + @"aacToWav.bat" + " " + @"/hoge.aac";
         //bat用
         //process.StartInfo.Arguments = folderPath + " " + @"/hoge.aac";
 
