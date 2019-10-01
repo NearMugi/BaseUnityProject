@@ -21,6 +21,7 @@ public class sceneManage_Name : MonoBehaviour
         CONNECT_MPU6050,
         CONNECT_MPU6050_MQTT,
         MQTT,
+        DOCOMOSPEAK,
 
         TERMINAL,
     }

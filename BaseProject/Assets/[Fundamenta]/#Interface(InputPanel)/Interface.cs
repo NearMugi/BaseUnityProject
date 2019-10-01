@@ -58,6 +58,12 @@ public class Interface : MonoBehaviour
         sceneManage.Instance.chgScene(sceneManage_Name.SCENE_NAME.CONNECT_UNIPOLAR);
     }
 
+    public void btn_MoveToDocomoSpeak()
+    {
+        sceneManage.Instance.chgScene(sceneManage_Name.SCENE_NAME.DOCOMOSPEAK);
+    }
+
+
     public void btn_Connect_UnipolarMotor()
     {
         if (SerialConnect_Arduino_Unipolar.Instance_Unipolar == null) return;

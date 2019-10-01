@@ -1,7 +1,0 @@
-cd /d D:\#WorkSpace\BaseUnityProject\BaseProject\Assets\StreamingAssets
-python transcodingBinaryToWav.py D:\#WorkSpace\BaseUnityProject\BaseProject\Assets/StreamingAssets
-
-
-
-
-python transcodingToWav.py D:\#WorkSpace\BaseUnityProject\BaseProject\Assets\StreamingAssets/‚¨‚ß‚Å‚Æ‚¤.aac D:\#WorkSpace\BaseUnityProject\BaseProject\Assets/StreamingAssets
