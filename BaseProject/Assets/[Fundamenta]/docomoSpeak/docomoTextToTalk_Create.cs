@@ -2,6 +2,7 @@
 // https://qiita.com/kanatano_mirai/items/677fde8589a4d810329a
 // http://kan-kikuchi.hatenablog.com/entry/UnityWebRequest
 // 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -136,7 +137,10 @@ public class docomoTextToTalk_Create : MonoBehaviour {
             Debug.Log ("...Error docomoTextToTalk_Play.Instance is Nothing");
             return;
         }
-        StartCoroutine (docomoTextToTalk_Play.Instance.playAudioClip (textData));
+        string fn = textData;
+        DateTime dt = DateTime.Now;
+        fn = dt.ToString ("yyMMdd_HHmmss");
+        StartCoroutine (docomoTextToTalk_Play.Instance.playAudioClip (fn));
     }
 
     bool isOn = true;

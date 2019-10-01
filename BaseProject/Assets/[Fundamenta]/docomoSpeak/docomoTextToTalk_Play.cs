@@ -30,15 +30,15 @@ public class docomoTextToTalk_Play : MonoBehaviour {
     public AudioSource audioSource;
     private string filePath;
 
-    public IEnumerator playAudioClip (string textData) {
+    public IEnumerator playAudioClip (string fn) {
         if (docomoTextToTalk_Create.Instance == null) yield break;
 
-        filePath = Application.dataPath + @"/StreamingAssets/aacToWav/" + textData + ".wav";
+        filePath = Application.dataPath + @"/StreamingAssets/aacToWav/" + fn + ".wav";
         //wavファイルを作成する
         //aacバイナリーデータ -> aacファイル -> wavファイル
         byte[] aacBinary = docomoTextToTalk_Create.Instance.aacBinaryData;
         mediaTranscoding m = gameObject.GetComponent<mediaTranscoding> ();
-        yield return m.createWav (aacBinary, textData);
+        yield return m.createWav (aacBinary, fn);
 
         using (WWW www = new WWW (filePath)) {
             while (!www.isDone)
