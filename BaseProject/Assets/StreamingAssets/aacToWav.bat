@@ -1,2 +1,7 @@
-cd /d D:\#WorkSpace\#PersonalDevelop\BaseUnityProject\BaseProject\Assets\StreamingAssets
-python transcodingBinaryToWav.py D:\#WorkSpace\#PersonalDevelop\BaseUnityProject\BaseProject\Assets\StreamingAssets
+rem @echo off
+set folderPath=%1
+set aac=%2
+
+cd /d %folderPath%
+python transcodingToWav.py %folderPath% %aac%
+pause

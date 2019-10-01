@@ -83,6 +83,10 @@ public class mediaTranscoding : MonoBehaviour {
         // 新規プロセスを作成し、batファイルのパスを登録
         process = new Process ();
         process.StartInfo.FileName = folderPath + batFilePath;
+        //vbs用
+        process.StartInfo.Arguments = folderPath + " " + @"/aacToWav.bat" + " " + @"/hoge.aac";
+        //bat用
+        //process.StartInfo.Arguments = folderPath + " " + @"/hoge.aac";
 
         // 外部プロセスの終了を検知するための設定
         process.EnableRaisingEvents = true;
@@ -102,13 +106,14 @@ public class mediaTranscoding : MonoBehaviour {
     public void createWav (byte[] binary) {
         //string filePath = folderPath + @"/hoge.aac";
         //StartCoroutine (transcodingToWav (binary));
-        callBatFile (@"/aacToWav.bat");
+        callBatFile (@"/aacToWav.vbs");
     }
 
     // Start is called before the first frame update
     void Start () {
         folderPath = Application.dataPath + @"/StreamingAssets";
-
+        byte[] b = { 0x00 };
+        createWav (b);
         //string filePath = folderPath + @"/hoge.aac";
         //StartCoroutine(transcodingToWav(filePath));
     }
