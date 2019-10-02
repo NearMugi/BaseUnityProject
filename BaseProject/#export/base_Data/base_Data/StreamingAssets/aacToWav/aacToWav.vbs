@@ -3,7 +3,12 @@ pyCode = Wscript.Arguments(1)
 folderPath = Wscript.Arguments(2)
 aac = Wscript.Arguments(3) 
 
-'python‚ğŒÄ‚Ño‚·ƒRƒ}ƒ“ƒh‚ğ¶¬‚·‚é
+
+Set FS = CreateObject("Scripting.FileSystemObject")
+ret = FS.FileExists(folderPath & aac)
+'WScript.Echo ret
+
+'pythonï¿½ï¿½ï¿½Ä‚Ñoï¿½ï¿½ï¿½Rï¿½}ï¿½ï¿½ï¿½hï¿½ğ¶ï¿½ï¿½ï¿½ï¿½ï¿½
 cmd = pyExe 
 cmd = cmd & " " & pyCode
 cmd = cmd & " " & folderPath
