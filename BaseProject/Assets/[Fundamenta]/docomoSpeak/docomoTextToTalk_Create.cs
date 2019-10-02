@@ -33,141 +33,155 @@ public class docomoTextToTalk_Create : MonoBehaviour
 
     #endregion Singleton
 
-    //テキストを変換したaacバイナリーデータ
-    public byte[] aacBinaryData;
-
-    //const string API_KEY = "hoge";
-    const string API_KEY = "59666366673443544162684477452f3078323146507170533538364347395a5152534569615437592e7633";
-
-    const string URI = "https://api.apigw.smt.docomo.ne.jp/crayon/v1/textToSpeechSsml?APIKEY=" + API_KEY;
-
-    //TextData
-    const string textSSML_Header = "<?xml version=\\\"1.0\\\" encoding=\\\"utf-8\\\"?>" +
-        "<!DOCTYPE speak SYSTEM \\\"ssml.dtd\\\">" +
-        "<speak version=\\\"1.0\\\" xmlns=\\\"http://www.w3.org/2001/10/synthesis\\\" xml:lang=\\\"japanese\\\">";
-
-    const string textSSML_Footer = "</speak>";
-
-    //パラメータ        
-    string speakerID;
-    string styleID;
-    string textData;
-
-    //必要あれば使う
-    string speechRate;
-    string powerRate;
-    string voiceType;
-    string audioFileFormat;
-    public docomoTextToTalk_Create()
+    public class httpRequest
     {
-        textData = string.Empty;
-        speakerID = "14";
-        styleID = "14";
-        speechRate = "1.00";
-        voiceType = "1.00";
-        audioFileFormat = "0";
-    }
+        public bool isGet;
+        //テキストを変換したaacバイナリーデータ
+        public byte[] aacBinaryData;
 
-    public void setText(string t)
-    {
-        textData = t;
-    }
-    public void setSpeakerID(string t)
-    {
-        speakerID = t;
-    }
-    public void setStyleID(string t)
-    {
-        styleID = t;
-    }
-    public void setSpeechRate(float v)
-    {
-        speechRate = v.ToString();
-    }
-    public void setVoiceType(float v)
-    {
-        voiceType = v.ToString();
-    }
+        //const string API_KEY = "hoge";
+        const string API_KEY = "59666366673443544162684477452f3078323146507170533538364347395a5152534569615437592e7633";
 
+        const string URI = "https://api.apigw.smt.docomo.ne.jp/crayon/v1/textToSpeechSsml?APIKEY=" + API_KEY;
 
-    public IEnumerator getBinaryWavData(UnityAction<bool> callback)
-    {
+        //TextData
+        const string textSSML_Header = "<?xml version=\\\"1.0\\\" encoding=\\\"utf-8\\\"?>" +
+            "<!DOCTYPE speak SYSTEM \\\"ssml.dtd\\\">" +
+            "<speak version=\\\"1.0\\\" xmlns=\\\"http://www.w3.org/2001/10/synthesis\\\" xml:lang=\\\"japanese\\\">";
 
-        UnityWebRequest request = new UnityWebRequest(URI, "POST");
+        const string textSSML_Footer = "</speak>";
 
-        //リクエストボディ(json)をセットする
-        System.Text.StringBuilder sb = new System.Text.StringBuilder();
-        sb.Append("{");
-        sb.Append("\"Command\":\"AP_Synth\", ");
-        sb.Append("\"SpeakerID\":\"");
-        sb.Append(speakerID);
-        sb.Append("\", ");
-        sb.Append("\"StyleID\":\"");
-        sb.Append(styleID);
-        sb.Append("\", ");
-        sb.Append("\"SpeechRate\":\"");
-        sb.Append(speechRate);
-        sb.Append("\", ");
-        sb.Append("\"VoiceType\":\"");
-        sb.Append(voiceType);
-        sb.Append("\", ");
-        sb.Append("\"TextData\":\"");
-        sb.Append(textSSML_Header);
-        sb.Append(textData);
-        sb.Append(textSSML_Footer);
-        sb.Append("\"}");
-
-        string body = sb.ToString();
-        Debug.Log(body);
-
-        //json(string)をbyte[]に変換
-        byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(body);
-
-        //jsonを設定
-        request.uploadHandler = (UploadHandler)new UploadHandlerRaw(bodyRaw);
-        request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
-
-        //ヘッダーをセットする
-        request.SetRequestHeader("Content-Type", "application/json");
-
-        //送受信開始
-        yield return request.SendWebRequest();
-
-        //エラー判定
-        if (request.isHttpError || request.isNetworkError)
+        //パラメータ        
+        string speakerID;
+        string styleID;
+        string textData;
+        string speechRate;
+        string powerRate;
+        string voiceType;
+        public httpRequest()
         {
-            Debug.Log(request.error);
-            callback(false);
+            textData = string.Empty;
+            speakerID = "14";
+            styleID = "14";
+            speechRate = "1.00";
+            voiceType = "1.00";
         }
-        else
+
+        public void setText(string t)
         {
-            aacBinaryData = request.downloadHandler.data;
-            Debug.Log("...Get aacBinaryData");
-            callback(true);
+            textData = t;
         }
+        public void setSpeakerID(string t)
+        {
+            speakerID = t;
+        }
+        public void setStyleID(string t)
+        {
+            styleID = t;
+        }
+        public void setSpeechRate(float v)
+        {
+            speechRate = v.ToString();
+        }
+        public void setVoiceType(float v)
+        {
+            voiceType = v.ToString();
+        }
+
+
+        public IEnumerator getAACBinaryData(UnityAction<bool> callback)
+        {
+            isGet = false;
+            //入力値のチェック
+            if (textData.Length <= 0)
+            {
+                callback(false);
+                yield break;
+            }
+
+            UnityWebRequest request = new UnityWebRequest(URI, "POST");
+
+            //リクエストボディ(json)をセットする
+            System.Text.StringBuilder sb = new System.Text.StringBuilder();
+            sb.Append("{");
+            sb.Append("\"Command\":\"AP_Synth\", ");
+            sb.Append("\"SpeakerID\":\"");
+            sb.Append(speakerID);
+            sb.Append("\", ");
+            sb.Append("\"StyleID\":\"");
+            sb.Append(styleID);
+            sb.Append("\", ");
+            sb.Append("\"SpeechRate\":\"");
+            sb.Append(speechRate);
+            sb.Append("\", ");
+            sb.Append("\"VoiceType\":\"");
+            sb.Append(voiceType);
+            sb.Append("\", ");
+            sb.Append("\"TextData\":\"");
+            sb.Append(textSSML_Header);
+            sb.Append(textData);
+            sb.Append(textSSML_Footer);
+            sb.Append("\"}");
+
+            string body = sb.ToString();
+            Debug.Log(body);
+
+            //json(string)をbyte[]に変換
+            byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(body);
+
+            //jsonを設定
+            request.uploadHandler = (UploadHandler)new UploadHandlerRaw(bodyRaw);
+            request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
+
+            //ヘッダーをセットする
+            request.SetRequestHeader("Content-Type", "application/json");
+
+            //送受信開始
+            yield return request.SendWebRequest();
+
+            //エラー判定
+            if (request.isHttpError || request.isNetworkError)
+            {
+                Debug.Log(request.error);
+                callback(false);
+            }
+            else
+            {
+                aacBinaryData = request.downloadHandler.data;
+                callback(true);
+            }
+        }
+
+        public void OnFinishedCoroutine(bool _isGet)
+        {
+            isGet = _isGet;
+            if (!isGet)
+            {
+                Debug.Log("...Error getAACBinaryData");
+                return;
+            }
+
+            Debug.Log("Success getAACBinaryData");
+        }
+
     }
 
-    public void Play()
+    [HideInInspector]
+    public httpRequest httpReq;
+    private void Start()
     {
-        if (textData.Length <= 0) return;
-        StartCoroutine(getBinaryWavData(OnFinishedCoroutine));
+        httpReq = new httpRequest();
     }
-    private void OnFinishedCoroutine(bool isGet)
+
+
+    public IEnumerator PlayCoroutine()
     {
-        if (!isGet)
-        {
-            Debug.Log("...Error getBinaryWavData");
-            return;
-        }
-        if (docomoTextToTalk_Play.Instance == null)
-        {
-            Debug.Log("...Error docomoTextToTalk_Play.Instance is Nothing");
-            return;
-        }
-        string fn = textData;
+        yield return httpReq.getAACBinaryData(httpReq.OnFinishedCoroutine);
+        if (!httpReq.isGet) yield break;
+
         DateTime dt = DateTime.Now;
-        fn = dt.ToString("yyMMdd_HHmmss");
-        StartCoroutine(docomoTextToTalk_Play.Instance.playAudioClip(fn));
-    }
+        string fn = dt.ToString("yyMMdd_HHmmss");
 
+        yield return docomoTextToTalk_Play.Instance.playAudioClip(httpReq.aacBinaryData, fn);
+    }
 }
