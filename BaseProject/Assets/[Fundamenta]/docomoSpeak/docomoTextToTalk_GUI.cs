@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class docomoTextToTalk_GUI : MonoBehaviour
 {
     [SerializeField]
-    private docomoTextToTalk_Create d;
+    private docomoTextToTalk d;
 
     [SerializeField]
     private InputField wordField;

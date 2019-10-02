@@ -33,18 +33,9 @@ public class docomoTextToTalk_Play : MonoBehaviour
 
     #endregion Singleton
     public AudioSource audioSource;
-    private string filePath;
 
-    public IEnumerator playAudioClip(byte[] aacBinary, string fn)
+    public IEnumerator playAudioClip(string filePath)
     {
-        if (docomoTextToTalk_Create.Instance == null) yield break;
-
-        filePath = Application.dataPath + @"/StreamingAssets/aacToWav/" + fn + ".wav";
-        //wavファイルを作成する
-        //aacバイナリーデータ -> aacファイル -> wavファイル
-        mediaTranscoding m = gameObject.GetComponent<mediaTranscoding>();
-        yield return m.createWav(aacBinary, fn);
-
         using (WWW www = new WWW(filePath))
         {
             while (!www.isDone)

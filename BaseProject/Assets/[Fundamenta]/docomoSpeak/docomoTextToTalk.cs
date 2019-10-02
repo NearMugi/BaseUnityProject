@@ -8,23 +8,23 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Networking;
-public class docomoTextToTalk_Create : MonoBehaviour
+public class docomoTextToTalk : MonoBehaviour
 {
     #region Singleton
 
-    private static docomoTextToTalk_Create instance;
+    private static docomoTextToTalk instance;
 
-    public static docomoTextToTalk_Create Instance
+    public static docomoTextToTalk Instance
     {
         get
         {
             if (instance == null)
             {
-                instance = (docomoTextToTalk_Create)FindObjectOfType(typeof(docomoTextToTalk_Create));
+                instance = (docomoTextToTalk)FindObjectOfType(typeof(docomoTextToTalk));
 
                 if (instance == null)
                 {
-                    Debug.LogError(typeof(docomoTextToTalk_Create) + "is nothing");
+                    Debug.LogError(typeof(docomoTextToTalk) + "is nothing");
                 }
             }
             return instance;
@@ -176,12 +176,19 @@ public class docomoTextToTalk_Create : MonoBehaviour
 
     public IEnumerator PlayCoroutine()
     {
+        //httpRequest
         yield return httpReq.getAACBinaryData(httpReq.OnFinishedCoroutine);
         if (!httpReq.isGet) yield break;
 
+        //wavファイルを作成する
+        //aacバイナリーデータ -> aacファイル -> wavファイル
         DateTime dt = DateTime.Now;
         string fn = dt.ToString("yyMMdd_HHmmss");
+        mediaTranscoding m = gameObject.GetComponent<mediaTranscoding>();
+        yield return m.createWav(httpReq.aacBinaryData, fn);
 
-        yield return docomoTextToTalk_Play.Instance.playAudioClip(httpReq.aacBinaryData, fn);
+        //wavファイルをAudioClipにセットして再生する
+        string filePath = Application.dataPath + @"/StreamingAssets/aacToWav/" + fn + ".wav";
+        yield return docomoTextToTalk_Play.Instance.playAudioClip(filePath);
     }
 }
