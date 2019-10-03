@@ -3152,9 +3152,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2080888524}
-  - component: {fileID: 2080888525}
   - component: {fileID: 2080888523}
-  - component: {fileID: 2080888526}
   - component: {fileID: 2080888527}
   m_Layer: 0
   m_Name: speak
@@ -3175,7 +3173,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a95c7d4df20bbc43ba0b7ec9591d436, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  aacBinaryData: 
 --- !u!4 &2080888524
 Transform:
   m_ObjectHideFlags: 0
@@ -3190,31 +3187,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2080888525
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2080888522}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 46c91deec863a1c459ccbf9e6a02ef0c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  audioSource: {fileID: 2080888527}
---- !u!114 &2080888526
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2080888522}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 625174aaa08cc9e41b6e1c468bbd98e6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!82 &2080888527
 AudioSource:
   m_ObjectHideFlags: 0

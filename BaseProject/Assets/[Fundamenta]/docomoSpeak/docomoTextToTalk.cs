@@ -5,9 +5,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Networking;
+
 public class docomoTextToTalk : MonoBehaviour
 {
     #region Singleton
@@ -24,7 +27,7 @@ public class docomoTextToTalk : MonoBehaviour
 
                 if (instance == null)
                 {
-                    Debug.LogError(typeof(docomoTextToTalk) + "is nothing");
+                    UnityEngine.Debug.LogError(typeof(docomoTextToTalk) + "is nothing");
                 }
             }
             return instance;
@@ -33,6 +36,9 @@ public class docomoTextToTalk : MonoBehaviour
 
     #endregion Singleton
 
+    /// <summary>
+    /// docomoAPIにアクセスする
+    /// </summary>
     public class httpRequest
     {
         public bool isGet;
@@ -124,7 +130,7 @@ public class docomoTextToTalk : MonoBehaviour
             sb.Append("\"}");
 
             string body = sb.ToString();
-            Debug.Log(body);
+            UnityEngine.Debug.Log(body);
 
             //json(string)をbyte[]に変換
             byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(body);
@@ -142,7 +148,7 @@ public class docomoTextToTalk : MonoBehaviour
             //エラー判定
             if (request.isHttpError || request.isNetworkError)
             {
-                Debug.Log(request.error);
+                UnityEngine.Debug.Log(request.error);
                 callback(false);
             }
             else
@@ -157,22 +163,116 @@ public class docomoTextToTalk : MonoBehaviour
             isGet = _isGet;
             if (!isGet)
             {
-                Debug.Log("...Error getAACBinaryData");
+                UnityEngine.Debug.Log("...Error getAACBinaryData");
                 return;
             }
 
-            Debug.Log("Success getAACBinaryData");
+            UnityEngine.Debug.Log("Success getAACBinaryData");
+        }
+
+    }
+    /// <summary>
+    /// バイナリーデータ(aac)からwavファイルを生成する
+    /// </summary>
+    public class createWav
+    {
+        private string folderPath;
+        private string pyExePath = @"C:\Users\Kuroda-NotePC\Anaconda3\python.exe";
+        //private string pyExePath = @"C:\Users\Teppei\Anaconda3\python.exe";
+
+        private string pyCodePath = @"transcodingToWav.py";
+
+        public createWav(string _fp)
+        {
+            folderPath = _fp;
+        }
+
+        Process process;
+        private void callVbs(string batFilePath, string tmpAacFile)
+        {
+            // 他のプロセスが実行しているなら行わない
+            if (process != null) return;
+
+            // 新規プロセスを作成し、batファイルのパスを登録
+            process = new Process();
+            process.StartInfo.FileName = folderPath + batFilePath;
+            process.StartInfo.Arguments = pyExePath + " " +
+                pyCodePath + " " +
+                folderPath + " " +
+                tmpAacFile;
+
+            // 外部プロセスの終了を検知するための設定
+            process.EnableRaisingEvents = true;
+            process.Exited += process_Exited;
+
+            // 外部プロセスを実行
+            process.Start();
+        }
+
+        // 外部プロセスの終了を検知してプロセスを終了
+        void process_Exited(object sender, System.EventArgs e)
+        {
+            //UnityEngine.Debug.Log ("process_Exited");
+            process.Dispose();
+            process = null;
+        }
+
+        public IEnumerator create(byte[] aacBinary, string fn)
+        {
+            string aacFilePath = "/" + fn + ".aac";
+            string wavFilePath = "/" + fn + ".wav";
+            //binaryからaacファイルを作る
+            using (FileStream stream = new FileStream(folderPath + aacFilePath, FileMode.Create))
+            {
+                stream.Write(aacBinary, 0, aacBinary.Length);
+            }
+
+            //aacファイルが出来るまで待つ
+            while (!System.IO.File.Exists(folderPath + aacFilePath))
+            {
+                yield return null;
+            }
+            UnityEngine.Debug.Log("Created aac :" + aacFilePath);
+
+            //wavファイルの作成、aacファイルの削除
+            callVbs(@"/aacToWav.vbs", aacFilePath);
+            //wavファイルが出来るまで待つ
+            while (!System.IO.File.Exists(folderPath + wavFilePath))
+            {
+                yield return null;
+            }
+
+            yield break;
         }
 
     }
 
     [HideInInspector]
     public httpRequest httpReq;
-    private void Start()
+    [HideInInspector]
+    public createWav cW;
+    private AudioSource audioSource;
+    // 作業するフォルダ(バッチファイル・pythonファイルも入っている)
+    private string folderPath;
+    public IEnumerator playAudioClip(string filePath)
     {
-        httpReq = new httpRequest();
-    }
+        using (WWW www = new WWW(filePath))
+        {
+            while (!www.isDone)
+                yield return null;
 
+            AudioClip audioClip = www.GetAudioClip(false, true);
+            if (audioClip.loadState != AudioDataLoadState.Loaded)
+            {
+                UnityEngine.Debug.Log("Failed to load AudioClip.");
+                yield break;
+            }
+
+            audioSource.clip = audioClip;
+            audioSource.Play();
+            UnityEngine.Debug.Log("Load success : " + filePath);
+        }
+    }
 
     public IEnumerator PlayCoroutine()
     {
@@ -182,13 +282,21 @@ public class docomoTextToTalk : MonoBehaviour
 
         //wavファイルを作成する
         //aacバイナリーデータ -> aacファイル -> wavファイル
+        //※aacファイルは削除する
         DateTime dt = DateTime.Now;
         string fn = dt.ToString("yyMMdd_HHmmss");
-        mediaTranscoding m = gameObject.GetComponent<mediaTranscoding>();
-        yield return m.createWav(httpReq.aacBinaryData, fn);
+        yield return cW.create(httpReq.aacBinaryData, fn);
 
         //wavファイルをAudioClipにセットして再生する
-        string filePath = Application.dataPath + @"/StreamingAssets/aacToWav/" + fn + ".wav";
-        yield return docomoTextToTalk_Play.Instance.playAudioClip(filePath);
+        string filePath = folderPath + "/" + fn + ".wav";
+        yield return playAudioClip(filePath);
+    }
+
+    private void Start()
+    {
+        folderPath = Application.dataPath + @"/StreamingAssets/aacToWav";
+        httpReq = new httpRequest();
+        cW = new createWav(folderPath);
+        audioSource = GetComponent<AudioSource>();
     }
 }
