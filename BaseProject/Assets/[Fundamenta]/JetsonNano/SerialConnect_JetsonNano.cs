@@ -24,7 +24,7 @@ public class SerialConnect_JetsonNano : MonoBehaviour
 
                 if (instance == null)
                 {
-                    Debug.LogError(typeof(SerialConnect_JetsonNano) + "is nothing");
+                    //Debug.LogError(typeof(SerialConnect_JetsonNano) + " is nothing");
                 }
             }
             return instance;

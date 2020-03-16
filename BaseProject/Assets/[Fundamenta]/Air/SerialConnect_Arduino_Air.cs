@@ -16,7 +16,7 @@ public class SerialConnect_Arduino_Air : SerialConnect_Arduino_Base
         {
             if (instance == null)
             {
-                instance = (SerialConnect_Arduino_Air)FindObjectOfType(typeof(SerialConnect_Arduino_Air));                
+                instance = (SerialConnect_Arduino_Air)FindObjectOfType(typeof(SerialConnect_Arduino_Air));
             }
             return instance;
         }
@@ -29,16 +29,16 @@ public class SerialConnect_Arduino_Air : SerialConnect_Arduino_Base
     [HideInInspector]
     public float Def_OneTime_On { get; private set; } //基準値　1サイクルのOn時間(ms)
     [HideInInspector]
-    public int Def_CycleCnt { get; private set; }//基準値　1サイクルを実行する回数(回)
+    public int Def_CycleCnt { get; private set; } //基準値　1サイクルを実行する回数(回)
 
     //設定値の制限
-    const float MIN_UP = 3.5f;   //パルス立ち上がりに要する時間(ms)
+    const float MIN_UP = 3.5f; //パルス立ち上がりに要する時間(ms)
     const float MIN_DOWN = 1.5f; //パルス立ち下がりに要する時間(ms)
 
-    const float ONETIME_MIN = 5.0f;    //1サイクルの時間(ms)
+    const float ONETIME_MIN = 5.0f; //1サイクルの時間(ms)
     const float ONETIME_MAX = 5000.0f;
 
-    const int CYCLECNT_MIN = 1;   //1サイクルを実行する回数
+    const int CYCLECNT_MIN = 1; //1サイクルを実行する回数
     const int CYCLECNT_MAX = 100;
 
     Coroutine NowCoroutine;
@@ -47,20 +47,20 @@ public class SerialConnect_Arduino_Air : SerialConnect_Arduino_Base
     public enum CMD_TYPE
     {
         NONE,
-        VALVE,        //バルブ実行・停止
-        PUMP,         //ポンプ実行・停止
-        ONETIME_INT,  //1サイクルの時間(ms)　※整数部分
-        ONETIME_DEC,  //1サイクルの時間(ms)　※小数部分 2位まで
-        ONETIME_ON,   //1サイクルのOn時間(ms)  ※1桁目は小数点第1位
-        CYCLECNT,     //1サイクルを実行する回数(回)
-        ONETIME_RESET,//1サイクルの時間を初期化
+        VALVE, //バルブ実行・停止
+        PUMP, //ポンプ実行・停止
+        ONETIME_INT, //1サイクルの時間(ms)　※整数部分
+        ONETIME_DEC, //1サイクルの時間(ms)　※小数部分 2位まで
+        ONETIME_ON, //1サイクルのOn時間(ms)  ※1桁目は小数点第1位
+        CYCLECNT, //1サイクルを実行する回数(回)
+        ONETIME_RESET, //1サイクルの時間を初期化
 
         PHOTO_SENSOR, //光電センサモードON/OFF
 
-        TERMINAL,   //
+        TERMINAL, //
     }
 
-    const int CmdLength = 6;    //コマンドの長さ(終点を除く文字列)
+    const int CmdLength = 6; //コマンドの長さ(終点を除く文字列)
 
     const string cmd_A0 = "A0"; //0x0000　バルブ実行・0x0001　ポンプ実行・0x0002　光電センサモードON
     const string cmd_80 = "80"; //0x0000  バルブ停止・0x0001　ポンプ停止・0x0002　光電センサモードOFF
@@ -75,7 +75,6 @@ public class SerialConnect_Arduino_Air : SerialConnect_Arduino_Base
     const string subCmd_PhotoelectricSensor = "0002";
 
     const string subCmd_OneTime_Reset = "0000";
-    
 
     public class ArduinoSendData
     {
@@ -88,9 +87,9 @@ public class SerialConnect_Arduino_Air : SerialConnect_Arduino_Base
         public bool isPhotoSensorTriggerOn; //トリガーON(光電センサ)
 
         //Arduino側が認識している設定値
-        public float _OneTime;    //1サイクルの時間(ms)
+        public float _OneTime; //1サイクルの時間(ms)
         public float _OneTime_On; //1サイクルのOn時間(ms)
-        public int   _CycleCnt;   //1サイクルを実行する回数(回)
+        public int _CycleCnt; //1サイクルを実行する回数(回)
     }
     ArduinoSendData _arData = new ArduinoSendData();
 
@@ -98,15 +97,15 @@ public class SerialConnect_Arduino_Air : SerialConnect_Arduino_Base
     [Flags]
     public new enum ReceiveCmd
     {
-        flg_7 = 1 << 7,//
-        flg_6 = 1 << 6,//光電センサモード
-        flg_5 = 1 << 5,//1ループ終了
-        flg_4 = 1 << 4,//電磁弁の開閉
-        flg_3 = 1 << 3,//ポンプON
-        flg_2 = 1 << 2,//電磁弁ON
-        flg_1 = 1 << 1,//トリガーON(光電センサ)
-        flg_0 = 1,//
-    };
+        flg_7 = 1 << 7, //
+        flg_6 = 1 << 6, //光電センサモード
+        flg_5 = 1 << 5, //1ループ終了
+        flg_4 = 1 << 4, //電磁弁の開閉
+        flg_3 = 1 << 3, //ポンプON
+        flg_2 = 1 << 2, //電磁弁ON
+        flg_1 = 1 << 1, //トリガーON(光電センサ)
+        flg_0 = 1, //
+    }
 
     Coroutine NowCoroutine_Air;
 
@@ -149,17 +148,18 @@ public class SerialConnect_Arduino_Air : SerialConnect_Arduino_Base
         sb.Append(_arData._CycleCnt);
         sb.Append("\n");
 
-
         sb.Append("[GetData] ");
         if (GetData != null) sb.Append(GetData[0]);
         sb.Append("\n");
 
         return sb.ToString();
     }
-    
 
     private void Start()
     {
+        Def_OneTime = ONETIME_MIN;
+        Def_OneTime_On = MIN_UP;
+        Def_CycleCnt = CYCLECNT_MIN;
     }
 
     private void Update()
@@ -170,7 +170,7 @@ public class SerialConnect_Arduino_Air : SerialConnect_Arduino_Base
         if (!isConnect) { isAnalysis = false; return; }
 
         //入力値を解析する
-        foreach (string _d in GetData) analisysGetData(_d);
+        foreach (string _d in GetData) analysisGetData(_d);
 
         isAnalysis = false;
 
@@ -181,7 +181,6 @@ public class SerialConnect_Arduino_Air : SerialConnect_Arduino_Base
         return _arData;
     }
 
-
     public void Set_Def_OneTime(float _v)
     {
         //1サイクルを短くする場合はOn時間を初期化する
@@ -190,7 +189,8 @@ public class SerialConnect_Arduino_Air : SerialConnect_Arduino_Base
         {
             Def_OneTime_On = _v;
             Def_OneTime = Def_OneTime_On;
-        } else
+        }
+        else
         {
             Def_OneTime = _v;
         }
@@ -198,14 +198,14 @@ public class SerialConnect_Arduino_Air : SerialConnect_Arduino_Base
 
     public void Set_Def_OneTime_On(float _v)
     {
-        if(_v > Def_OneTime)
+        if (_v > Def_OneTime)
         {
             Def_OneTime_On = Def_OneTime - MIN_DOWN;
-        } else
+        }
+        else
         {
             Def_OneTime_On = _v;
         }
-
 
     }
 
@@ -241,7 +241,6 @@ public class SerialConnect_Arduino_Air : SerialConnect_Arduino_Base
         return _tmp;
     }
 
-
     /// <summary>
     /// 「1サイクルの時間」の妥当性チェック
     /// </summary>
@@ -264,10 +263,8 @@ public class SerialConnect_Arduino_Air : SerialConnect_Arduino_Base
         //小数点第3位で切り捨てる
         _tmp_OneTime = ((int)(_tmp_OneTime * 100)) / 100.0f;
 
-
         return _tmp_OneTime;
     }
-
 
     /// <summary>
     /// 「1サイクルを実行する回数」の妥当性チェック
@@ -349,7 +346,7 @@ public class SerialConnect_Arduino_Air : SerialConnect_Arduino_Base
             //1サイクルの時間(ms)　※小数部分
             case CMD_TYPE.ONETIME_DEC:
                 sendCmd = cmd_B1;
-                int _tmp = (int)((Def_OneTime % 1) * 1000);   //1で割った余り＝小数点以下の値 → 3桁のusに変換
+                int _tmp = (int)((Def_OneTime % 1) * 1000); //1で割った余り＝小数点以下の値 → 3桁のusに変換
                 sendCmd += _tmp.ToString("X4");
                 break;
 
@@ -374,11 +371,10 @@ public class SerialConnect_Arduino_Air : SerialConnect_Arduino_Base
         if (sendCmd.Length == CmdLength) DataSend(sendCmd);
     }
 
-    void analisysGetData(string data)
+    void analysisGetData(string data)
     {
         if (data == null) return;
         if (data.Length <= 0) return;
-
 
         //カンマ区切りでデータを分ける。
         string[] Onebyte = data.Split(splitPoint);
@@ -389,16 +385,16 @@ public class SerialConnect_Arduino_Air : SerialConnect_Arduino_Base
         //---1バイト目---
         //0～7ビットを見て1バイト目のデータだと判断する
         //全てTrue
-        
+
         //---2バイト目---
         //ステータス
-        
+
         //---3バイト目---
         //1サイクルの時間(us)
-        
+
         //---4バイト目---
         //1サイクルのOn時間(us)
-        
+
         //---5バイト目---
         //実行回数
 
@@ -431,7 +427,7 @@ public class SerialConnect_Arduino_Air : SerialConnect_Arduino_Base
             return;
         }
     }
-    
+
     /// <summary>
     /// 設定値だけ送信する
     /// </summary>
@@ -445,6 +441,17 @@ public class SerialConnect_Arduino_Air : SerialConnect_Arduino_Base
         Def_OneTime_On = _Def_OneTime_On;
         Def_CycleCnt = _Def_CycleCnt;
 
+        //設定値を送信する
+        chkData();
+        SendSettingValue();
+    }
+
+
+    /// <summary>
+    /// 設定値だけ送信する
+    /// </summary>
+    public void SettingValve()
+    {
         //設定値を送信する
         chkData();
         SendSettingValue();
@@ -495,7 +502,6 @@ public class SerialConnect_Arduino_Air : SerialConnect_Arduino_Base
         SetSendCmd(CMD_TYPE.PUMP, false);
     }
 
-
     private IEnumerator PlayAllCoroutine(UnityAction<string> callback)
     {
         //バルブの設定値を送信する
@@ -503,16 +509,15 @@ public class SerialConnect_Arduino_Air : SerialConnect_Arduino_Base
         chkData();
         SendSettingValue();
 
-
         //ポンプを可動させる
         SetSendCmd(CMD_TYPE.PUMP, true);
 
         //ポンプが十分可動するまで待つ
         yield return new WaitForSeconds(1.0f);
-        
+
         //電磁弁を可動させる
         SetSendCmd(CMD_TYPE.VALVE, true);
-        yield return new WaitForSeconds(1.0f);  //ポンプを一定時間可動させる。
+        yield return new WaitForSeconds(1.0f); //ポンプを一定時間可動させる。
 
         //電磁弁が止まるまで待つ
         while (_arData.isValvePlay)
@@ -522,13 +527,12 @@ public class SerialConnect_Arduino_Air : SerialConnect_Arduino_Base
         //ポンプを止める
         SetSendCmd(CMD_TYPE.PUMP, false);
 
-
         callback("End all Operations");
     }
 
     private void OnResponseCoroutine(string s)
     {
-        Debug.LogWarning("[SerialConnect_Arduino_Air]"+ s );
+        Debug.LogWarning("[SerialConnect_Arduino_Air]" + s);
     }
 
 }

@@ -21,7 +21,7 @@ public class SerialConnect_Arduino_3DFilm : MonoBehaviour
 
                 if (instance == null)
                 {
-                    Debug.LogError(typeof(SerialConnect_Arduino_3DFilm) + "is nothing");
+                    //Debug.LogError(typeof(SerialConnect_Arduino_3DFilm) + " is nothing");
                 }
             }
             return instance;

@@ -15,7 +15,7 @@ public class SerialConnect_Zigbee : MonoBehaviour {
                 instance = (SerialConnect_Zigbee) FindObjectOfType (typeof (SerialConnect_Zigbee));
 
                 if (instance == null) {
-                    Debug.LogError (typeof (SerialConnect_Zigbee) + "is nothing");
+                    //Debug.LogError (typeof (SerialConnect_Zigbee) + " is nothing");
                 }
             }
             return instance;
