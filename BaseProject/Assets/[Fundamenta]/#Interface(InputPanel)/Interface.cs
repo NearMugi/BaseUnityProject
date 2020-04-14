@@ -15,11 +15,9 @@ public class Interface : MonoBehaviour
 
     [SerializeField]
     Text txtDispDebug_1;
-    StringBuilder sb_1;
 
     [SerializeField]
     Text txtDispDebug_2;
-    StringBuilder sb_2;
 
     [SerializeField]
     GameObject Button;
@@ -27,8 +25,6 @@ public class Interface : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        sb_1 = new StringBuilder();
-        sb_2 = new StringBuilder();
         btn_isTarget();
     }
 
@@ -151,40 +147,31 @@ public class Interface : MonoBehaviour
     void createDispDebugList_1()
     {
         if (txtDispDebug_1 == null) return;
-
-        sb_1.Length = 0;
-        sb_1.Append(SetupProject.Instance.DebugList());
-        sb_1.Append("\n");
-        sb_1.Append(SerialHandler.Instance.DebugList());
-        sb_1.Append("\n");
-        txtDispDebug_1.text = sb_1.ToString();
+        StringBuilder sb = new StringBuilder();
+        sb.Append(SetupProject.Instance.DebugList());
+        sb.Append("\n");
+        sb.Append(SerialHandler.Instance.DebugList());
+        sb.Append("\n");
+        txtDispDebug_1.text = sb.ToString();
     }
 
     void createDispDebugList_2()
     {
         if (txtDispDebug_2 == null) return;
-        sb_2.Length = 0;
-        if (SerialConnect_Sponge.Instance != null) sb_2.Append(SerialConnect_Sponge.Instance.DebugList());
+        StringBuilder sb = new StringBuilder();
 
-        if (SerialConnect_Arduino_Unipolar.Instance_Unipolar != null) sb_2.Append(SerialConnect_Arduino_Unipolar.Instance_Unipolar.DebugList());
+        if (SerialConnect_Sponge.Instance != null) sb.Append(SerialConnect_Sponge.Instance.DebugList());
+        if (SerialConnect_Arduino_Unipolar.Instance_Unipolar != null) sb.Append(SerialConnect_Arduino_Unipolar.Instance_Unipolar.DebugList());
+        if (SerialConnect_Arduino_DCMotor.Instance_DCMotor != null) sb.Append(SerialConnect_Arduino_DCMotor.Instance_DCMotor.DebugList());
+        if (SerialConnect_Arduino_Air.Instance_Air != null) sb.Append(SerialConnect_Arduino_Air.Instance_Air.DebugList());
+        if (SerialConnect_Arduino_PotentioMeter.Instance_PotentioMeter != null) sb.Append(SerialConnect_Arduino_PotentioMeter.Instance_PotentioMeter.DebugList());
+        if (SerialConnect_Arduino_mpu6050.Instance_mpu6050 != null) sb.Append(SerialConnect_Arduino_mpu6050.Instance_mpu6050.DebugList());
+        if (SerialConnect_BlueTooth.Instance_BlueTooth != null) sb.Append(SerialConnect_BlueTooth.Instance_BlueTooth.DebugList());
+        if (SerialConnect_Zigbee.Instance_Zigbee != null) sb.Append(SerialConnect_Zigbee.Instance_Zigbee.DebugList());
+        if (SerialConnect_Arduino_3DFilm.Instance != null) sb.Append(SerialConnect_Arduino_3DFilm.Instance.DebugList());
+        if (SerialConnect_JetsonNano.Instance != null) sb.Append(SerialConnect_JetsonNano.Instance.DebugList());
 
-        if (SerialConnect_Arduino_DCMotor.Instance_DCMotor != null) sb_2.Append(SerialConnect_Arduino_DCMotor.Instance_DCMotor.DebugList());
-
-        if (SerialConnect_Arduino_Air.Instance_Air != null) sb_2.Append(SerialConnect_Arduino_Air.Instance_Air.DebugList());
-
-        if (SerialConnect_Arduino_PotentioMeter.Instance_PotentioMeter != null) sb_2.Append(SerialConnect_Arduino_PotentioMeter.Instance_PotentioMeter.DebugList());
-
-        if (SerialConnect_Arduino_mpu6050.Instance_mpu6050 != null) sb_2.Append(SerialConnect_Arduino_mpu6050.Instance_mpu6050.DebugList());
-
-        if (SerialConnect_BlueTooth.Instance_BlueTooth != null) sb_2.Append(SerialConnect_BlueTooth.Instance_BlueTooth.DebugList());
-
-        if (SerialConnect_Zigbee.Instance_Zigbee != null) sb_2.Append(SerialConnect_Zigbee.Instance_Zigbee.DebugList());
-
-        if (SerialConnect_Arduino_3DFilm.Instance != null) sb_2.Append(SerialConnect_Arduino_3DFilm.Instance.DebugList());
-
-        if (SerialConnect_JetsonNano.Instance != null) sb_2.Append(SerialConnect_JetsonNano.Instance.DebugList());
-
-        txtDispDebug_2.text = sb_2.ToString();
+        txtDispDebug_2.text = sb.ToString();
 
     }
 

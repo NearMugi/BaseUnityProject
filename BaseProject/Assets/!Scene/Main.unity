@@ -714,7 +714,7 @@ GameObject:
   - component: {fileID: 220095659}
   - component: {fileID: 220095658}
   m_Layer: 0
-  m_Name: Button21_Unipolar
+  m_Name: Button21_
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -843,7 +843,7 @@ GameObject:
   - component: {fileID: 245852360}
   - component: {fileID: 245852359}
   m_Layer: 0
-  m_Name: Button34_Zigbee
+  m_Name: Button34_
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -972,7 +972,7 @@ GameObject:
   - component: {fileID: 258739232}
   - component: {fileID: 258739231}
   m_Layer: 0
-  m_Name: Button24_Air
+  m_Name: Button24_
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1180,7 +1180,7 @@ GameObject:
   - component: {fileID: 308025896}
   - component: {fileID: 308025895}
   m_Layer: 0
-  m_Name: Button13_ToDocomoSpeak
+  m_Name: Button13_
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1719,7 +1719,7 @@ GameObject:
   - component: {fileID: 536379928}
   - component: {fileID: 536379927}
   m_Layer: 0
-  m_Name: Button31_MPU6050
+  m_Name: Button31_
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2497,7 +2497,7 @@ GameObject:
   - component: {fileID: 823868642}
   - component: {fileID: 823868641}
   m_Layer: 0
-  m_Name: Button25_PotentioMeter
+  m_Name: Button25_
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3007,7 +3007,7 @@ GameObject:
   - component: {fileID: 1083252142}
   - component: {fileID: 1083252141}
   m_Layer: 0
-  m_Name: Button33_BlueToothDisconnect
+  m_Name: Button33_
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3366,7 +3366,7 @@ GameObject:
   - component: {fileID: 1220854618}
   - component: {fileID: 1220854617}
   m_Layer: 0
-  m_Name: Button22_DCMotor
+  m_Name: Button22_
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4165,7 +4165,7 @@ GameObject:
   - component: {fileID: 1713974738}
   - component: {fileID: 1713974737}
   m_Layer: 0
-  m_Name: Button23_Sponge
+  m_Name: Button23_
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4294,7 +4294,7 @@ GameObject:
   - component: {fileID: 1775746460}
   - component: {fileID: 1775746459}
   m_Layer: 0
-  m_Name: Button32_BlueTooth
+  m_Name: Button32_
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4500,7 +4500,7 @@ GameObject:
   - component: {fileID: 1810100667}
   - component: {fileID: 1810100666}
   m_Layer: 0
-  m_Name: Button35_3DFilm
+  m_Name: Button35_
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4862,7 +4862,7 @@ GameObject:
   - component: {fileID: 1947326950}
   - component: {fileID: 1947326949}
   m_Layer: 0
-  m_Name: Button45_Exit
+  m_Name: Button45_
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5094,11 +5094,6 @@ PrefabInstance:
       propertyPath: m_RootOrder
       value: 4
       objectReference: {fileID: 0}
-    - target: {fileID: 81760719740810610, guid: 10ea0881ac6c118468498955f4cd341c,
-        type: 2}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 20969842470462212, guid: 10ea0881ac6c118468498955f4cd341c,
         type: 2}
       propertyPath: m_TargetDisplay
@@ -5132,6 +5127,11 @@ PrefabInstance:
     - target: {fileID: 20969842470462212, guid: 10ea0881ac6c118468498955f4cd341c,
         type: 2}
       propertyPath: m_AllowMSAA
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 81760719740810610, guid: 10ea0881ac6c118468498955f4cd341c,
+        type: 2}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
@@ -5209,7 +5209,7 @@ GameObject:
   - component: {fileID: 2042466401}
   - component: {fileID: 2042466400}
   m_Layer: 0
-  m_Name: Button12_ToMain
+  m_Name: Button12_
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5621,7 +5621,7 @@ GameObject:
   - component: {fileID: 2114972146}
   - component: {fileID: 2114972145}
   m_Layer: 0
-  m_Name: Button41_Jetson
+  m_Name: Button41_
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5750,7 +5750,7 @@ GameObject:
   - component: {fileID: 2120283726}
   - component: {fileID: 2120283725}
   m_Layer: 0
-  m_Name: Button11_ToMenu
+  m_Name: Button11_
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
