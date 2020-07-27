@@ -57,6 +57,7 @@ public class SerialHandler : MonoBehaviour
         // Use this for initialization
         public Def_PortName portName_def;
         public string UserName; //分かりやすい名前
+        public bool isAutoSetPortName;
         public string portName; //ポート名
         public int baudRate;   //ボードレート
 
@@ -85,6 +86,12 @@ public class SerialHandler : MonoBehaviour
         /// <returns></returns>
         public bool Open(bool isString)
         {
+            //
+            if (isAutoSetPortName)
+            {
+
+            }
+
             try
             {
                 serialPort_ = new SerialPort(portName, baudRate, Parity.None, 8, StopBits.One);
@@ -332,6 +339,7 @@ public class SerialHandler : MonoBehaviour
                 _unit = new serial_unit();
                 _unit.portName_def = _sp.portName_def;
                 _unit.UserName = _sp.UserName;
+                _unit.isAutoSetPortName = _sp.isAutoSetPortName;
                 _unit.portName = _sp.portName;
                 _unit.baudRate = _sp.baudRate;
                 PortList.Add(_unit);
@@ -341,6 +349,20 @@ public class SerialHandler : MonoBehaviour
         }
     }
 
+    string getPortName()
+    {
+        string ret = string.Empty;
+        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+        string[] ports = SerialPort.GetPortNames();
+        foreach (string p in ports)
+        {
+            sb.Append(p);
+            sb.Append(", ");
+        }
+        ret = sb.ToString();
+
+        return ret;
+    }
     void Awake()
     {
         SetUpSerialPort();
@@ -362,6 +384,7 @@ public class SerialHandler : MonoBehaviour
             _serial.chkReadMessage();
         }
 
+        Debug.Log(getPortName());
 
         foreach (string port in SerialPort.GetPortNames())
         {

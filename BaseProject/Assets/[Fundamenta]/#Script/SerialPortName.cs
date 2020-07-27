@@ -2,11 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SerialPortName : MonoBehaviour {
+public class SerialPortName : MonoBehaviour
+{
+    // SerialHandlerのリストと紐づく
     [System.NonSerialized]
-    public int SerialListNo;   //SerialHandlerのリストと紐づく
+    public int SerialListNo;
     public SerialHandler.Def_PortName portName_def;
-    public string UserName; //分かりやすい名前
-    public string portName; //ポート名
-    public int baudRate;   //ボードレート
+    // 分かりやすい名前
+    public string UserName;
+    // 自動でポート番号を設定する
+    public bool isAutoSetPortName;
+    // ポート名
+    public string portName;
+    // ボーレート 
+    public int baudRate;
 }
