@@ -349,20 +349,6 @@ public class SerialHandler : MonoBehaviour
         }
     }
 
-    string getPortName()
-    {
-        string ret = string.Empty;
-        System.Text.StringBuilder sb = new System.Text.StringBuilder();
-        string[] ports = SerialPort.GetPortNames();
-        foreach (string p in ports)
-        {
-            sb.Append(p);
-            sb.Append(", ");
-        }
-        ret = sb.ToString();
-
-        return ret;
-    }
     void Awake()
     {
         SetUpSerialPort();
@@ -383,8 +369,6 @@ public class SerialHandler : MonoBehaviour
         {
             _serial.chkReadMessage();
         }
-
-        Debug.Log(getPortName());
 
         foreach (string port in SerialPort.GetPortNames())
         {
