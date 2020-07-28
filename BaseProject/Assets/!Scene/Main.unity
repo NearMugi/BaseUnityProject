@@ -2417,51 +2417,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c573dd952813ac46a00e8d7ffc1e411, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ScenePool:
-  - name: 0
-    nextNum: 4
-    nextNum_Edit: 0
-    ActiveFlg: 0
-  - name: 1
-    nextNum: 2
-    nextNum_Edit: 0
-    ActiveFlg: 0
-  - name: 2
-    nextNum: 2
-    nextNum_Edit: 0
-    ActiveFlg: 0
-  - name: 3
-    nextNum: 3
-    nextNum_Edit: 0
-    ActiveFlg: 0
-  - name: 4
-    nextNum: 4
-    nextNum_Edit: 0
-    ActiveFlg: 0
-  - name: 5
-    nextNum: 5
-    nextNum_Edit: 0
-    ActiveFlg: 0
-  - name: 6
-    nextNum: 6
-    nextNum_Edit: 0
-    ActiveFlg: 0
-  - name: 7
-    nextNum: 7
-    nextNum_Edit: 0
-    ActiveFlg: 0
-  - name: 8
-    nextNum: 8
-    nextNum_Edit: 0
-    ActiveFlg: 0
-  - name: 9
-    nextNum: 9
-    nextNum_Edit: 0
-    ActiveFlg: 0
-  - name: 10
-    nextNum: 10
-    nextNum_Edit: 0
-    ActiveFlg: 0
+  nextScene: 1
 --- !u!81 &712182262
 AudioListener:
   m_ObjectHideFlags: 0
