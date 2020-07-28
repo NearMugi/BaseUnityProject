@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
 using System.Collections;
 using UnityEngine.SceneManagement;
 
@@ -49,10 +50,9 @@ public class sceneManage : MonoBehaviour
     /// <param name="_nextScene"></param>
     public void chgScene(sceneManage_Name.SCENE_NAME _nextScene)
     {
-        if (_nextScene == sceneManage_Name.SCENE_NAME.NONE)
-            return;
         nextScene = _nextScene;
         flgSceneChg = true;
+        Debug.Log(nextScene);
     }
 
     void Start()
@@ -62,30 +62,43 @@ public class sceneManage : MonoBehaviour
         NowCoroutine = null;
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (!flgSceneChg) return;
+        if (NowCoroutine != null) return;
+        NowCoroutine = StartCoroutine(chgSceneCoroutine(OnFinishChgSceneCoroutine));
+    }
+
+    private void OnFinishChgSceneCoroutine()
+    {
         if (NowCoroutine != null)
             StopCoroutine(NowCoroutine);
-        NowCoroutine = StartCoroutine(chgSceneCoroutine());
+        NowCoroutine = null;
     }
 
     /// <summary>
     /// 次のシーンへ切り替えるコルーチン
     /// </summary>
-    private IEnumerator chgSceneCoroutine()
+    private IEnumerator chgSceneCoroutine(UnityAction callback)
     {
-        //シーンチェンジ指示をfalseにする
+        // シーンチェンジ指示をfalseにする
         flgSceneChg = false;
 
-        //シーン切り替え
+        // シーン切り替え
         SceneManager.LoadScene(nextScene.ToString());
         yield return null;
 
-        //現在のシーン名を更新
-        nowScene = nextScene;
+        // シーンが切り替わるまで待つ
+        Scene tmpScene = SceneManager.GetActiveScene();
+        while (tmpScene.name.ToLower() != nextScene.ToString().ToLower())
+        {
+            tmpScene = SceneManager.GetActiveScene();
+            yield return null;
+        }
 
+        // 現在のシーン名を更新
+        nowScene = nextScene;
+        callback();
         yield break;
     }
 }
