@@ -9,25 +9,28 @@ public class PlayableBehaviour_Init : PlayableBehaviour
     public PlayableDirector _timeline;
 
     // Called when the owning graph starts playing
-    public override void OnGraphStart(Playable playable) {
+    public override void OnGraphStart(Playable playable)
+    {
         _timeline.extrapolationMode = DirectorWrapMode.Loop;
     }
 
     // Called when the owning graph stops playing
-    public override void OnGraphStop(Playable playable) {
+    public override void OnGraphStop(Playable playable)
+    {
     }
 
     // Called when the state of the playable is set to Play
-    public override void OnBehaviourPlay(Playable playable, FrameData info) {
-        if (EventTrigger.Instance == null) return;
-        EventTrigger.Instance._reset();
+    public override void OnBehaviourPlay(Playable playable, FrameData info)
+    {
     }
 
     // Called when the state of the playable is set to Paused
-    public override void OnBehaviourPause(Playable playable, FrameData info) {
+    public override void OnBehaviourPause(Playable playable, FrameData info)
+    {
     }
 
     // Called each frame while the state is set to Play
-    public override void PrepareFrame(Playable playable, FrameData info) {
+    public override void PrepareFrame(Playable playable, FrameData info)
+    {
     }
 }
