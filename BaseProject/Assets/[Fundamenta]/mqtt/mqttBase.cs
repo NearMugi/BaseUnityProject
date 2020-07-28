@@ -11,7 +11,8 @@ using System.IO;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 
-public class mqttBase : MonoBehaviour {
+public class mqttBase : MonoBehaviour
+{
     #region Singleton
 
     private static mqttBase instance;
@@ -81,7 +82,8 @@ public class mqttBase : MonoBehaviour {
         if (token.Length <= 0)
         {
             client.Connect(clientId);
-        } else
+        }
+        else
         {
             client.Connect(clientId, token, "");
         }
@@ -105,7 +107,7 @@ public class mqttBase : MonoBehaviour {
     {
         client.Publish(topic, System.Text.Encoding.UTF8.GetBytes(msg), MqttMsgBase.QOS_LEVEL_AT_MOST_ONCE, false);
     }
-    
+
 
     /// <summary>
     /// 外部にある設定ファイルを読む
@@ -125,7 +127,7 @@ public class mqttBase : MonoBehaviour {
                 token = "token:" + sr.ReadLine().Split(',')[1];
             }
         }
-        catch (Exception e)
+        catch (Exception)
         {
         }
     }
