@@ -21,27 +21,27 @@ public class Connection : MonoBehaviour
     /// </summary>
     public IEnumerator ConvertTextToVoice(string text)
     {
-        string url = "https://api.apigw.smt.docomo.ne.jp/crayon/v1/textToSpeechSsml?APIKEY=" + Parameter.compositionAPIkey;
+        string uri = "https://api.apigw.smt.docomo.ne.jp/crayon/v1/textToSpeechSsml?APIKEY=" + Parameter.compositionAPIkey;
 
         Dictionary<string, string> aiTalksParams = new Dictionary<string, string>();
 
         gameObject.AddComponent<Voice>();
         var postData = gameObject.GetComponent<Voice>().CreateSSML(text, aiTalksParams);
-        var data = System.Text.Encoding.UTF8.GetBytes(postData);
 
-        Dictionary<string, string> headers = new Dictionary<string, string>();
-        headers["Content-Type"] = "application/ssml+xml";
-        headers["Accept"] = "audio/L16";
-        WWW www = new WWW(url, data, headers);
-        yield return www;
-        if (www.error != null)
+        UnityWebRequest request = new UnityWebRequest(uri, postData);
+        request.SetRequestHeader("Content-Type", "application/ssml+xml");
+        request.SetRequestHeader("Accept", "audio/L16");
+        yield return request.SendWebRequest();
+
+        if (request.isHttpError || request.isNetworkError)
         {
-            Debug.LogError(www.error);
+            Debug.LogError(request.error);
             yield break;
         }
+        Debug.Log(request.downloadHandler.text);
+        byte[] wavData = request.downloadHandler.data;
+        AudioClip audioClip = gameObject.GetComponent<Voice>().CreateAudioClip(wavData, "test.wav");
 
-        AudioClip audioClip = gameObject.GetComponent<Voice>().CreateAudioClip(www.bytes, "test.wav");
-
-        StartCoroutine(gameObject.GetComponent<Voice>().Play(audioClip, www.bytes.Length / 2));
+        StartCoroutine(gameObject.GetComponent<Voice>().Play(audioClip, wavData.Length / 2));
     }
 }

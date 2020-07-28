@@ -339,7 +339,6 @@ public class SerialHandler : MonoBehaviour
                 _unit = new serial_unit();
                 _unit.portName_def = _sp.portName_def;
                 _unit.UserName = _sp.UserName;
-                _unit.isAutoSetPortName = _sp.isAutoSetPortName;
                 _unit.portName = _sp.portName;
                 _unit.baudRate = _sp.baudRate;
                 PortList.Add(_unit);

@@ -10,8 +10,6 @@ public class SerialPortName : MonoBehaviour
     public SerialHandler.Def_PortName portName_def;
     // 分かりやすい名前
     public string UserName;
-    // 自動でポート番号を設定する
-    public bool isAutoSetPortName;
     // ポート名
     public string portName;
     // ボーレート 
