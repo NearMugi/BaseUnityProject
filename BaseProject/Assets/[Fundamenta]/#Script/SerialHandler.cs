@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO.Ports;
+using System.Runtime.InteropServices;
 using System.Threading;
 using UnityEngine;
 
@@ -59,7 +60,7 @@ public class SerialHandler : MonoBehaviour
         public string UserName; //分かりやすい名前
         public bool isAutoSetPortName;
         public string portName; //ポート名
-        public int baudRate;   //ボードレート
+        public int baudRate; //ボードレート
 
         private SerialPort serialPort_;
         private Thread _thread;
@@ -67,7 +68,7 @@ public class SerialHandler : MonoBehaviour
 
         private bool isString_ = true;
 
-        private static int MESSAGE_SIZE = 20;//大きめに確保
+        private static int MESSAGE_SIZE = 20; //大きめに確保
         private string[] message_ = new string[MESSAGE_SIZE];
         private byte[] messageByte_ = new byte[MESSAGE_SIZE];
         private int readCnt;
@@ -79,6 +80,21 @@ public class SerialHandler : MonoBehaviour
         [HideInInspector]
         public string errMsg;
 
+        private string getComportArduino()
+        {
+            string ret = "";
+            //string[] ports = GetDeviceNames();
+            string[] ports = { "" };
+            if (ports != null)
+            {
+                foreach (string port in ports)
+                {
+                    Debug.Log(port);
+                }
+            }
+            return ret;
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -89,7 +105,7 @@ public class SerialHandler : MonoBehaviour
             //
             if (isAutoSetPortName)
             {
-
+                portName = getComportArduino();
             }
 
             try
@@ -268,7 +284,6 @@ public class SerialHandler : MonoBehaviour
             }
         }
 
-
         public void ReConnect()
         {
             Close();
@@ -339,6 +354,7 @@ public class SerialHandler : MonoBehaviour
                 _unit = new serial_unit();
                 _unit.portName_def = _sp.portName_def;
                 _unit.UserName = _sp.UserName;
+                _unit.isAutoSetPortName = _sp.isAutoSetPortName;
                 _unit.portName = _sp.portName;
                 _unit.baudRate = _sp.baudRate;
                 PortList.Add(_unit);
@@ -373,7 +389,6 @@ public class SerialHandler : MonoBehaviour
         {
             //Debug.LogWarning(port);
         }
-
 
     }
 

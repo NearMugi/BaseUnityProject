@@ -332,6 +332,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   portName_def: 1
   UserName: Spoonge
+  isAutoSetPortName: 0
   portName: COM5
   baudRate: 115200
 --- !u!1 &102568785
@@ -1636,6 +1637,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   portName_def: 255
   UserName: UnipolarMotor
+  isAutoSetPortName: 0
   portName: COM4
   baudRate: 115200
 --- !u!1 &527313229
@@ -1698,6 +1700,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   portName_def: 249
   UserName: Dice
+  isAutoSetPortName: 0
   portName: COM12
   baudRate: 115200
 --- !u!1 &536379925
@@ -2378,7 +2381,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 684217709}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -2398,6 +2401,7 @@ GameObject:
   - component: {fileID: 712182263}
   - component: {fileID: 712182262}
   - component: {fileID: 712182261}
+  - component: {fileID: 712182264}
   m_Layer: 0
   m_Name: Main[DontDestroy]
   m_TagString: Untagged
@@ -2440,6 +2444,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DisplayCount: 1
+--- !u!114 &712182264
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 712182260}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c7955dea39a9f642bd38bb9b311a2e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &823868639
 GameObject:
   m_ObjectHideFlags: 0
@@ -2642,6 +2658,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   portName_def: 254
   UserName: Air
+  isAutoSetPortName: 1
   portName: COM3
   baudRate: 115200
 --- !u!1 &855698310
@@ -2716,6 +2733,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   portName_def: 253
   UserName: DCMotor
+  isAutoSetPortName: 0
   portName: COM4
   baudRate: 115200
 --- !u!1 &919189773
@@ -3159,6 +3177,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   portName_def: 252
   UserName: PotentioMeter
+  isAutoSetPortName: 0
   portName: COM3
   baudRate: 115200
 --- !u!1 &1118553257
@@ -3313,6 +3332,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   portName_def: 251
   UserName: MPU6050
+  isAutoSetPortName: 0
   portName: COM4
   baudRate: 115200
 --- !u!1 &1220854615
@@ -3517,6 +3537,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   portName_def: 250
   UserName: Bluetooth
+  isAutoSetPortName: 0
   portName: COM8
   baudRate: 115200
 --- !u!1 &1324303284
@@ -3579,6 +3600,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   portName_def: 248
   UserName: 3DFilm
+  isAutoSetPortName: 0
   portName: COM13
   baudRate: 9600
 --- !u!1 &1445738491
@@ -3643,6 +3665,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   portName_def: 247
   UserName: JetsonNano
+  isAutoSetPortName: 0
   portName: COM16
   baudRate: 115200
 --- !u!1 &1473032450
