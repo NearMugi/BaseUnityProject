@@ -85,11 +85,10 @@ public class SerialHandler : MonoBehaviour
 
         private string getComportArduino()
         {
-            // Arduinoは1つだけ接続している前提
             string ret = "";
             String[] l = SerialHandler.instance.arduinoPortList;
-            if (l.Length == 1)
-                ret = l[0];
+            // Arduinoは1つだけ接続している前提
+            ret = l[0];
             return ret;
         }
 
@@ -104,6 +103,7 @@ public class SerialHandler : MonoBehaviour
             if (isAutoSetPortName)
             {
                 portName = getComportArduino();
+                Debug.Log("Auto Connect Port: " + portName);
             }
 
             try
