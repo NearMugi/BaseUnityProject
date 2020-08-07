@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO.Ports;
 using System.Runtime.InteropServices;
@@ -47,6 +48,8 @@ public class SerialHandler : MonoBehaviour
     }
 
     public List<serial_unit> PortList;
+    [HideInInspector]
+    public String[] arduinoPortList;
 
     public class serial_unit
     {
@@ -82,16 +85,11 @@ public class SerialHandler : MonoBehaviour
 
         private string getComportArduino()
         {
+            // Arduinoは1つだけ接続している前提
             string ret = "";
-            //string[] ports = GetDeviceNames();
-            string[] ports = { "" };
-            if (ports != null)
-            {
-                foreach (string port in ports)
-                {
-                    Debug.Log(port);
-                }
-            }
+            String[] l = SerialHandler.instance.arduinoPortList;
+            if (l.Length == 1)
+                ret = l[0];
             return ret;
         }
 
@@ -364,6 +362,12 @@ public class SerialHandler : MonoBehaviour
         }
     }
 
+    void updateComportList()
+    {
+        dll_comport dllComport = GetComponent<dll_comport>();
+        arduinoPortList = dllComport.getArduinoPort();
+    }
+
     void Awake()
     {
         SetUpSerialPort();
@@ -380,6 +384,10 @@ public class SerialHandler : MonoBehaviour
     void Update()
     {
         if (PortList.Count <= 0) return;
+
+        // Update Connect Comport List
+        updateComportList();
+
         foreach (serial_unit _serial in PortList)
         {
             _serial.chkReadMessage();

@@ -131,6 +131,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9386384}
   - component: {fileID: 9386385}
+  - component: {fileID: 9386386}
   m_Layer: 0
   m_Name: Serial
   m_TagString: Untagged
@@ -172,6 +173,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3d97f8844f178a648b9bf947611b7e57, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  arduinoPortList: []
+--- !u!114 &9386386
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9386383}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c7955dea39a9f642bd38bb9b311a2e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &38144061
@@ -2401,7 +2415,6 @@ GameObject:
   - component: {fileID: 712182263}
   - component: {fileID: 712182262}
   - component: {fileID: 712182261}
-  - component: {fileID: 712182264}
   m_Layer: 0
   m_Name: Main[DontDestroy]
   m_TagString: Untagged
@@ -2444,18 +2457,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DisplayCount: 1
---- !u!114 &712182264
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 712182260}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3c7955dea39a9f642bd38bb9b311a2e6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &823868639
 GameObject:
   m_ObjectHideFlags: 0
