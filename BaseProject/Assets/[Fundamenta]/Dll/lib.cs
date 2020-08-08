@@ -3,5 +3,5 @@ using System.Text;
 static class Lib
 {
     [DllImport("DllComport", CallingConvention = CallingConvention.StdCall)]
-    public static extern void getComportList(StringBuilder ret, int retLen);
+    public static extern void getComportList(StringBuilder ret);
 }

@@ -39,7 +39,6 @@ public class dll_comport : MonoBehaviour
     List<port> portList = new List<port>();
     bool isGet;
     StringBuilder str;
-    const int STRING_MAX_LENGTH = 512;
 
     public String[] getArduinoPort()
     {
@@ -59,13 +58,13 @@ public class dll_comport : MonoBehaviour
     void Start()
     {
         isGet = false;
-        str = new StringBuilder(STRING_MAX_LENGTH);
+        str = new StringBuilder();
     }
 
     void Update()
     {
         if (isGet) return;
-        Lib.getComportList(str, STRING_MAX_LENGTH);
+        Lib.getComportList(str);
         if (str.Length > 0)
         {
             isGet = true;
