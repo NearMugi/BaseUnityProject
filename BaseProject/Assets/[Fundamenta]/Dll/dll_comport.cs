@@ -64,7 +64,9 @@ public class dll_comport : MonoBehaviour
     void Update()
     {
         if (isGet) return;
-        Lib.getComportList(str);
+        int l = Lib.getComportList(str, 256);
+        Debug.Log(l);
+        Debug.Log(str.ToString());
         if (str.Length > 0)
         {
             isGet = true;
@@ -74,6 +76,7 @@ public class dll_comport : MonoBehaviour
             {
                 if (p.Length <= 0) continue;
                 String[] tmp = p.Split(':');
+                if (tmp.Length != 2) continue;
                 portList.Add(new port()
                 {
                     id = idx++,
