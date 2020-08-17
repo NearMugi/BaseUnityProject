@@ -1,6 +1,7 @@
 ﻿// 参考URL [UnityでC++を使う方法]
 // https://qiita.com/8128/items/7cd0bf0b3f5bad60f709
 using System;
+using System.Collections;
 using System.Text;
 using System.Collections.Generic;
 using UnityEngine;
@@ -37,8 +38,7 @@ public class port : IEquatable<port>
 public class dll_comport : MonoBehaviour
 {
     List<port> portList = new List<port>();
-    bool isGet;
-    StringBuilder str;
+    Coroutine NowCoroutine;
 
     public String[] getArduinoPort()
     {
@@ -54,43 +54,55 @@ public class dll_comport : MonoBehaviour
         }
         return ret;
     }
+    private IEnumerator getComportListCoroutine()
+    {
+        var wait = new WaitForSeconds(0.1f);
+        bool isGet = false;
+        while (!isGet)
+        {
+            StringBuilder str = new StringBuilder();
+            int l = Lib.getComportList(str, 256);
+            yield return null;
+
+            Debug.Log(str.ToString());
+            if (str.Length > 0)
+            {
+                Debug.Log(l);
+                isGet = true;
+                String[] tmpPort = str.ToString().Split(',');
+                int idx = 0;
+                foreach (string p in tmpPort)
+                {
+                    if (p.Length <= 0) continue;
+                    String[] tmp = p.Split(':');
+                    if (tmp.Length != 2) continue;
+                    portList.Add(new port()
+                    {
+                        id = idx++,
+                        portName = tmp[0],
+                        portInfo = tmp[1],
+                    });
+                }
+            }
+            yield return wait;
+        }
+
+        foreach (port p in portList)
+        {
+            Debug.Log(p.ToString());
+        }
+        yield break;
+    }
+
+    public void getComportList()
+    {
+        if (NowCoroutine != null) StopCoroutine(NowCoroutine);
+        NowCoroutine = StartCoroutine(getComportListCoroutine());
+    }
 
     void Start()
     {
-        isGet = false;
-        str = new StringBuilder();
-    }
-
-    void Update()
-    {
-        if (isGet) return;
-        int l = Lib.getComportList(str, 256);
-        Debug.Log(l);
-        Debug.Log(str.ToString());
-        if (str.Length > 0)
-        {
-            isGet = true;
-            String[] tmpPort = str.ToString().Split(',');
-            int idx = 0;
-            foreach (string p in tmpPort)
-            {
-                if (p.Length <= 0) continue;
-                String[] tmp = p.Split(':');
-                if (tmp.Length != 2) continue;
-                portList.Add(new port()
-                {
-                    id = idx++,
-                    portName = tmp[0],
-                    portInfo = tmp[1],
-                });
-            }
-
-            foreach (port p in portList)
-            {
-                Debug.Log(p.ToString());
-            }
-
-        }
+        getComportList();
     }
 
 }
