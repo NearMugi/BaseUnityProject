@@ -2,8 +2,8 @@
 // https://qiita.com/8128/items/7cd0bf0b3f5bad60f709
 using System;
 using System.Collections;
-using System.Text;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 public class port : IEquatable<port>
 {
@@ -34,7 +34,6 @@ public class port : IEquatable<port>
     }
 }
 
-
 public class dll_comport : MonoBehaviour
 {
     List<port> portList = new List<port>();
@@ -60,9 +59,9 @@ public class dll_comport : MonoBehaviour
         bool isGet = false;
         while (!isGet)
         {
-            StringBuilder str = new StringBuilder();
-            int l = Lib.getComportList(str, 256);
-            yield return null;
+            StringBuilder str = new StringBuilder(256);
+            int l = Lib.getComportList(str, str.Capacity);
+            yield return wait;
 
             Debug.Log(str.ToString());
             if (str.Length > 0)
@@ -84,7 +83,7 @@ public class dll_comport : MonoBehaviour
                     });
                 }
             }
-            yield return wait;
+            yield return null;
         }
 
         foreach (port p in portList)
