@@ -51,6 +51,8 @@ public class SerialHandler : MonoBehaviour
     [HideInInspector]
     public String[] arduinoPortList;
 
+    dll_comport dllComport;
+
     public class serial_unit
     {
         public delegate void SerialDataReceivedEventHandler(string[] message);
@@ -87,6 +89,7 @@ public class SerialHandler : MonoBehaviour
         {
             string ret = "";
             String[] l = SerialHandler.instance.arduinoPortList;
+            if (l == null) return ret;
             // Arduinoは1つだけ接続している前提
             ret = l[0];
             return ret;
@@ -103,7 +106,12 @@ public class SerialHandler : MonoBehaviour
             if (isAutoSetPortName)
             {
                 portName = getComportArduino();
-                Debug.Log("Auto Connect Port: " + portName);
+                if (portName.Length == 0)
+                {
+                    errMsg = "Fail to Auto Connecting...";
+                    err++;
+                    return false;
+                }
             }
 
             try
@@ -316,11 +324,29 @@ public class SerialHandler : MonoBehaviour
         sb.Append("--- SERIAL HANDLER ---");
         sb.Append("\n");
 
+        sb.Append("Comport List");
+        sb.Append("\n");
+        if (dllComport != null)
+        {
+            String[] list = dllComport.getComport();
+            if (list != null)
+            {
+                foreach (string l in list)
+                {
+                    sb.Append(l);
+                    sb.Append("\n");
+                }
+            }
+        }
+
         foreach (serial_unit _serial in PortList)
         {
             sb.Append("[");
             sb.Append(_serial.UserName);
-            sb.Append("]");
+            sb.Append("]\n");
+            sb.Append("AutoConnect:");
+            sb.Append(_serial.isAutoSetPortName);
+            sb.Append("\n");
             sb.Append(_serial.errMsg);
             sb.Append(" @Err:");
             sb.Append(_serial.err);
@@ -364,8 +390,14 @@ public class SerialHandler : MonoBehaviour
 
     void updateComportList()
     {
-        dll_comport dllComport = GetComponent<dll_comport>();
+        if (dllComport == null) return;
         arduinoPortList = dllComport.getArduinoPort();
+    }
+
+    public void reGetComportList()
+    {
+        dllComport = GetComponent<dll_comport>();
+        dllComport.getComportList();
     }
 
     void Awake()
@@ -379,6 +411,7 @@ public class SerialHandler : MonoBehaviour
             _serial.InitMessage();
         }
 
+        reGetComportList();
     }
 
     void Update()

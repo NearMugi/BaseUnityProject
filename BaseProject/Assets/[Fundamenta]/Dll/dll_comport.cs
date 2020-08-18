@@ -38,12 +38,32 @@ public class dll_comport : MonoBehaviour
 {
     List<port> portList = new List<port>();
     Coroutine NowCoroutine;
+    bool isGet;
+
+    public String[] getComport()
+    {
+        const int MAX_PORT = 5;
+        String[] ret = new String[MAX_PORT];
+        if (!isGet) return null;
+        if (portList.Count <= 0) return null;
+
+        int idx = 0;
+        foreach (port p in portList)
+        {
+            ret[idx++] = p.ToString();
+            if (idx >= MAX_PORT) break;
+        }
+        return ret;
+    }
 
     public String[] getArduinoPort()
     {
         const int MAX_PORT = 5;
         String[] ret = new String[MAX_PORT];
+        if (!isGet) return null;
+
         List<port> tmp = portList.FindAll(x => x.portInfo.Contains("Arduino"));
+        if (tmp.Count <= 0) return null;
 
         int idx = 0;
         foreach (port p in tmp)
@@ -56,7 +76,8 @@ public class dll_comport : MonoBehaviour
     private IEnumerator getComportListCoroutine()
     {
         var wait = new WaitForSeconds(0.1f);
-        bool isGet = false;
+        portList = new List<port>();
+        isGet = false;
         while (!isGet)
         {
             StringBuilder str = new StringBuilder(256);
@@ -85,11 +106,6 @@ public class dll_comport : MonoBehaviour
             }
             yield return null;
         }
-
-        foreach (port p in portList)
-        {
-            Debug.Log(p.ToString());
-        }
         yield break;
     }
 
@@ -98,10 +114,4 @@ public class dll_comport : MonoBehaviour
         if (NowCoroutine != null) StopCoroutine(NowCoroutine);
         NowCoroutine = StartCoroutine(getComportListCoroutine());
     }
-
-    void Start()
-    {
-        getComportList();
-    }
-
 }
