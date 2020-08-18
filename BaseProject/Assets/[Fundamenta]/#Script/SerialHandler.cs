@@ -324,7 +324,7 @@ public class SerialHandler : MonoBehaviour
         sb.Append("--- SERIAL HANDLER ---");
         sb.Append("\n");
 
-        sb.Append("Comport List");
+        sb.Append("- Comport List -");
         sb.Append("\n");
         if (dllComport != null)
         {
@@ -337,14 +337,19 @@ public class SerialHandler : MonoBehaviour
                     sb.Append("\n");
                 }
             }
+            else
+            {
+                sb.Append("Null\n");
+            }
         }
-
+        sb.Append("- Serial List -");
+        sb.Append("\n");
         foreach (serial_unit _serial in PortList)
         {
             sb.Append("[");
             sb.Append(_serial.UserName);
-            sb.Append("]\n");
-            sb.Append("AutoConnect:");
+            sb.Append("]");
+            sb.Append(" AutoConnect : ");
             sb.Append(_serial.isAutoSetPortName);
             sb.Append("\n");
             sb.Append(_serial.errMsg);
@@ -396,6 +401,7 @@ public class SerialHandler : MonoBehaviour
 
     public void reGetComportList()
     {
+        if (PortList.Count <= 0) return;
         dllComport = GetComponent<dll_comport>();
         dllComport.getComportList();
     }

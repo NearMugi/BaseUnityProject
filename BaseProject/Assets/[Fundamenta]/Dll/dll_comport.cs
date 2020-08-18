@@ -78,7 +78,8 @@ public class dll_comport : MonoBehaviour
         var wait = new WaitForSeconds(0.1f);
         portList = new List<port>();
         isGet = false;
-        while (!isGet)
+        int cnt = 10;
+        while (cnt-- > 0 && !isGet)
         {
             StringBuilder str = new StringBuilder(256);
             int l = Lib.getComportList(str, str.Capacity);
