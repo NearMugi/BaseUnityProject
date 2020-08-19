@@ -1,23 +1,23 @@
 ﻿using UnityEngine;
 using System.Text;
-public class SetupProject : MonoBehaviour
+public class displaySetting : MonoBehaviour
 {
 
     #region Singleton
 
-    private static SetupProject instance;
+    private static displaySetting instance;
 
-    public static SetupProject Instance
+    public static displaySetting Instance
     {
         get
         {
             if (instance == null)
             {
-                instance = (SetupProject)FindObjectOfType(typeof(SetupProject));
+                instance = (displaySetting)FindObjectOfType(typeof(displaySetting));
 
                 if (instance == null)
                 {
-                    Debug.LogError(typeof(SetupProject) + "is nothing");
+                    Debug.LogError(typeof(displaySetting) + "is nothing");
                 }
             }
             return instance;
@@ -34,17 +34,15 @@ public class SetupProject : MonoBehaviour
     public string DebugList()
     {
         StringBuilder sb = new StringBuilder();
-        sb.Append("--- SETUP PROJECT INFO ---");
-        sb.Append("\n");
-        sb.Append("[DiplayInfo]");
+        sb.Append("--- DISPLAY INFO ---");
         sb.Append("\n");
         sb.Append(debugDisplayList);
 
-        sb.Append("[MainCameraInfo]");
+        sb.Append("[MainCamera]");
         sb.Append("\n");
         if (MainCamera == null)
         {
-            sb.Append("Setting null\n");
+            sb.Append("Nothing\n");
         }
         else
         {
@@ -72,6 +70,7 @@ public class SetupProject : MonoBehaviour
     //使用するディスプレイ数を指定
     void SetDisplay()
     {
+        debugDisplayList = string.Empty;
         displayCnt = Display.displays.Length;
         if (displayCnt <= 0)
         {

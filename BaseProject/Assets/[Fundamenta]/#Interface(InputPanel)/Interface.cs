@@ -162,7 +162,7 @@ public class Interface : MonoBehaviour
     {
         if (txtDispDebug_1 == null) return;
         StringBuilder sb = new StringBuilder();
-        sb.Append(SetupProject.Instance.DebugList());
+        sb.Append(displaySetting.Instance.DebugList());
         sb.Append("\n");
         sb.Append(SerialHandler.Instance.DebugList());
         sb.Append("\n");
