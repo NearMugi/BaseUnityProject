@@ -41,7 +41,7 @@ public class Interface : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            btn_Exit();
+            Application.Quit();
             return;
         }
 
@@ -51,88 +51,39 @@ public class Interface : MonoBehaviour
         }
     }
 
-    public void btn_Exit()
+    public void btn_Click(Button btn)
     {
-        Application.Quit();
-    }
+        string nm = btn.name;
+        switch (nm)
+        {
+            case "Button11":
+                //[example] scene change 
+                //sceneManage.Instance.chgScene(sceneManage_Name.SCENE_NAME.MENU);
 
-    public void btn_MoveToMenu()
-    {
-        sceneManage.Instance.chgScene(sceneManage_Name.SCENE_NAME.MENU);
-    }
-    public void btn_MoveToMainEvent()
-    {
-        sceneManage.Instance.chgScene(sceneManage_Name.SCENE_NAME.MAINEVENT);
-    }
-    public void btn_MoveToConnect_Unipolar()
-    {
-        sceneManage.Instance.chgScene(sceneManage_Name.SCENE_NAME.CONNECT_UNIPOLAR);
-    }
+                //[example] serial connect
+                //if (SerialConnect_Arduino_Unipolar.Instance_Unipolar == null) return;
+                //SerialConnect_Arduino_Unipolar.Instance_Unipolar.Connect();
+                break;
+            case "Button12":
+                break;
+            case "Button13":
+                break;
+            case "Button21":
+                break;
+            case "Button22":
+                break;
+            case "Button23":
+                break;
+            case "Button31":
+                break;
+            case "Button32":
+                SerialHandler.Instance.reGetComportList();
+                break;
+            case "Button33":
+                Application.Quit();
+                break;
+        }
 
-    public void btn_MoveToDocomoSpeak()
-    {
-        sceneManage.Instance.chgScene(sceneManage_Name.SCENE_NAME.DOCOMOSPEAK);
-    }
-
-    public void btn_Connect_UnipolarMotor()
-    {
-        if (SerialConnect_Arduino_Unipolar.Instance_Unipolar == null) return;
-        SerialConnect_Arduino_Unipolar.Instance_Unipolar.Connect();
-    }
-    public void btn_Connect_DCMotor()
-    {
-        if (SerialConnect_Arduino_DCMotor.Instance_DCMotor == null) return;
-        SerialConnect_Arduino_DCMotor.Instance_DCMotor.Connect();
-        SerialConnect_Arduino_DCMotor.Instance_DCMotor.SerialInit();
-    }
-    public void btn_Connect_Sponge()
-    {
-        if (SerialConnect_Sponge.Instance == null) return;
-        SerialConnect_Sponge.Instance.Connect();
-    }
-    public void btn_Connect_Air()
-    {
-        if (SerialConnect_Arduino_Air.Instance_Air == null) return;
-        SerialConnect_Arduino_Air.Instance_Air.Connect();
-    }
-    public void btn_Connect_PotentioMeter()
-    {
-        if (SerialConnect_Arduino_PotentioMeter.Instance_PotentioMeter == null) return;
-        SerialConnect_Arduino_PotentioMeter.Instance_PotentioMeter.Connect();
-    }
-    public void btn_Connect_MPU6050()
-    {
-        if (SerialConnect_Arduino_mpu6050.Instance_mpu6050 == null) return;
-        SerialConnect_Arduino_mpu6050.Instance_mpu6050.Connect();
-    }
-    public void btn_Connect_BlueTooth()
-    {
-        if (SerialConnect_BlueTooth.Instance_BlueTooth == null) return;
-        SerialConnect_BlueTooth.Instance_BlueTooth.Connect();
-    }
-
-    public void btn_Disconnect_BlueTooth()
-    {
-        if (SerialConnect_BlueTooth.Instance_BlueTooth == null) return;
-        SerialConnect_BlueTooth.Instance_BlueTooth.Disconnect();
-    }
-
-    public void btn_Connect_Zigbee()
-    {
-        if (SerialConnect_Zigbee.Instance_Zigbee == null) return;
-        SerialConnect_Zigbee.Instance_Zigbee.Connect();
-    }
-
-    public void btn_Connect_3DFilm()
-    {
-        if (SerialConnect_Arduino_3DFilm.Instance == null) return;
-        SerialConnect_Arduino_3DFilm.Instance.Connect();
-    }
-
-    public void btn_Connect_JetsonNano()
-    {
-        if (SerialConnect_JetsonNano.Instance == null) return;
-        SerialConnect_JetsonNano.Instance.Connect();
     }
 
     /// <summary>
