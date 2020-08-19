@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-
+using System.Text;
 public class SetupProject : MonoBehaviour
 {
 
@@ -26,33 +26,23 @@ public class SetupProject : MonoBehaviour
 
     #endregion Singleton
 
-
-    [SerializeField]
-    int DisplayCount;   //ディスプレイ数
+    int displayCnt;   //ディスプレイ数
+    string debugDisplayList;
     Camera MainCamera;  //そのシーンでのメインカメラ
 
 
     public string DebugList()
     {
-        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+        StringBuilder sb = new StringBuilder();
         sb.Append("--- SETUP PROJECT INFO ---");
         sb.Append("\n");
         sb.Append("[DiplayInfo]");
         sb.Append("\n");
-
-        for (int i = 0; i < DisplayCount && i < Display.displays.Length; i++)
-        {
-            sb.Append(i);
-            sb.Append(" : ");
-            sb.Append(Display.displays[i].renderingWidth);
-            sb.Append(" , ");
-            sb.Append(Display.displays[i].renderingHeight);
-            sb.Append("\n");
-        }
+        sb.Append(debugDisplayList);
 
         sb.Append("[MainCameraInfo]");
         sb.Append("\n");
-        if(MainCamera == null)
+        if (MainCamera == null)
         {
             sb.Append("Setting null\n");
         }
@@ -82,24 +72,41 @@ public class SetupProject : MonoBehaviour
     //使用するディスプレイ数を指定
     void SetDisplay()
     {
-        if (DisplayCount <= 0)
+        displayCnt = Display.displays.Length;
+        if (displayCnt <= 0)
         {
             Debug.LogWarning("[SetDisplay]ディスプレイ数の指定に失敗");
             return;
         }
-        for (int i = 0; i < DisplayCount && i < Display.displays.Length; i++)
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < displayCnt; i++)
         {
             Display.displays[i].Activate();
+            sb.Append(i);
+            sb.Append(" : ");
+            sb.Append(Display.displays[i].renderingWidth);
+            sb.Append(" , ");
+            sb.Append(Display.displays[i].renderingHeight);
+            sb.Append("\n");
         }
+        debugDisplayList = sb.ToString();
     }
+
+    /// <summary>
+    /// カメラの設定を解像度(1920*1080)に合わせる
+    /// </summary>
+    /// <param name="_TargetCamera">表示するカメラ</param>
     public void SetDisplayOrthographic(Camera _TargetCamera)
     {
         SetDisplayOrthographic(_TargetCamera, 1920f, 1080f);
     }
+
     /// <summary>
-    /// 表示に使用するディスプレイごとにOrthographicのSizeを変更する
-    /// <para>「ディスプレイの解像度に合わせて動画を全画面表示する」ことを基準にしている。</para>
+    /// カメラの設定をディスプレイの解像度に合わせる
     /// </summary>
+    /// <param name="_TargetCamera">表示するカメラ</param>
+    /// <param name="_width">解像度(幅)</param>
+    /// <param name="_height">解像度(高さ)</param>
     public void SetDisplayOrthographic(Camera _TargetCamera, float _width, float _height)
     {
         MainCamera = _TargetCamera;
@@ -111,12 +118,6 @@ public class SetupProject : MonoBehaviour
         // 画像のPixel Per Unit
         float pixelPerUnit = 100f;
 
-        //シーンごとに設定を変えたい場合はここに記述
-        //sceneManage_Name.SCENE_NAME nowScene = sceneManage.Instance.GetNowSceneName();
-        //switch (nowScene)
-        //{
-        //}
-
         int displayNo = MainCamera.targetDisplay;
         float Screen_width;
         float Screen_height;
@@ -127,7 +128,7 @@ public class SetupProject : MonoBehaviour
 
         }
         catch (System.Exception)
-        {   
+        {
             //デバッグで起動させた場合はDisplayを正しく認識できないのでエラーになる。
             //回避策として起動しているディスプレイのサイズを取得する
             Screen_width = Screen.width;
@@ -154,7 +155,7 @@ public class SetupProject : MonoBehaviour
             // viewportRectを設定
             MainCamera.rect = new Rect((1f - camWidth) / 2f, 0f, camWidth, 1f);
         }
-        else if(bgAspect < aspect)
+        else if (bgAspect < aspect)
         {
             // 倍率
             float bgScale = width / Screen.width;
